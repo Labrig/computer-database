@@ -100,6 +100,6 @@ public class Computer {
 	@Override
 	public String toString() {
 		return "Computer [id=" + this.id + ", name=" + this.name + ", introduced=" + ((this.introduced == null) ? "NA" : this.introduced.toString())
-			+ ", discontinued=" + ((this.discontinued == null) ? "NA" : this.discontinued.toString()) + ", company=" + this.company.toString() + "]";
+			+ ", discontinued=" + ((this.discontinued == null) ? "NA" : this.discontinued.toString()) + ", company=" + (this.company == null ? "NA" : this.company.toString()) + "]";
 	}
 }

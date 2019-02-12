@@ -10,7 +10,7 @@ public class ComputerManager extends ModelManager {
 	 * @return the list of all computers
 	 */
 	public List<Computer> listComputer() {
-		return entityManager.createQuery("FROM Computer").getResultList();
+		return this.entityManager.createQuery("FROM Computer").getResultList();
 	}
 	
 	/**
@@ -18,7 +18,7 @@ public class ComputerManager extends ModelManager {
 	 * @return the desired computer
 	 */
 	public Computer findComputer(long computerId) {
-		return entityManager.find(Computer.class, computerId);
+		return this.entityManager.find(Computer.class, computerId);
 	}
 	
 	/**
@@ -26,7 +26,9 @@ public class ComputerManager extends ModelManager {
 	 * @param computer
 	 */
 	public void createComputer(Computer computer) {
-		entityManager.persist(computer);
+		this.entityManager.getTransaction().begin();
+		this.entityManager.persist(computer);
+		this.entityManager.getTransaction().commit();
 	}
 	
 	/**
@@ -35,13 +37,18 @@ public class ComputerManager extends ModelManager {
 	 * @return the computer updated
 	 */
 	public Computer updateComputer(Computer computer) {
-		return entityManager.merge(computer);
+		this.entityManager.getTransaction().begin();
+		Computer newComputer = this.entityManager.merge(findComputer(computer.getId()));
+		this.entityManager.getTransaction().commit();
+		return newComputer;
 	}
 	
 	/**
 	 * @param computer the computer to delete
 	 */
 	public void deleteComputer(Computer computer) {
-		entityManager.remove(computer);
+		this.entityManager.getTransaction().begin();
+		this.entityManager.remove(findComputer(computer.getId()));
+		this.entityManager.getTransaction().commit();
 	}
 }

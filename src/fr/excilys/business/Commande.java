@@ -9,14 +9,14 @@ import fr.excilys.model.Computer;
 
 public class Commande {
 	
-	public String execute(String message) throws NotCommandeException {
+	public static String execute(String message) throws NotCommandeException {
 		StringBuilder result = new StringBuilder();
 		String[] messageDecompose = message.split(" ");
-		if(messageDecompose.length > 2) {
+		if(messageDecompose.length > 1) {
 			switch(messageDecompose[1]) {
 			case "computer":
-				Computer computer = this.buildComputer(messageDecompose);
-				result.append(this.readCommande(messageDecompose[0], computer));
+				Computer computer = buildComputer(messageDecompose);
+				result.append(readCommande(messageDecompose[0], computer));
 				break;
 			case "company":
 				CompanyManager manager = ManagerFactory.getInstance().getCompanyManager();
@@ -26,6 +26,9 @@ public class Commande {
 						result.append(company.toString());
 						result.append("\n");
 					}
+				} else if(messageDecompose[0].equals("/h")) {
+					result.append("Command for company object :\n");
+					result.append("/l company (list of the company)\n");
 				} else {
 					throw new NotCommandeException("La commande n'existe pas");
 				}
@@ -39,7 +42,7 @@ public class Commande {
 		return result.toString();
 	}
 
-	private String readCommande(String commande, Computer computer)
+	private static String readCommande(String commande, Computer computer)
 			throws NotCommandeException {
 		StringBuilder result = new StringBuilder();
 		ComputerManager manager = ManagerFactory.getInstance().getComputerManager();
@@ -57,17 +60,42 @@ public class Commande {
 			break;
 		case "/r":
 			computer = manager.findComputer(computer.getId());
-			result.append("Computer found :\n");
-			result.append(computer.toString());
+			if(computer == null) {
+				result.append("Computer not found");
+			} else {
+				result.append("Computer found :\n");
+				result.append(computer.toString());
+			}
 			break;
 		case "/u":
 			computer = manager.updateComputer(computer);
-			result.append("Computer updated :\n");
-			result.append(computer.toString());
+			if(computer.getId() == 0) {
+				result.append("Computer not updated");
+			} else {
+				result.append("Computer updated :\n");
+				result.append(computer.toString());
+			}
 			break;
 		case "/d":
 			manager.deleteComputer(computer);
 			result.append("The computer as been deleted");
+			break;
+		case "/h":
+			result.append("Command for computer object :\n");
+			result.append("-> /l computer (list of the computer)\n");
+			result.append("-> /r computer id=<searched computer id> (find a computer computer)\n");
+			result.append("-> /c computer name=<computer name> (create a computer)\n");
+			result.append("\tOptional :\n");
+			result.append("\t* intro=<introduction date (YYYY-MM-DD hh:mm:ss format)>\n");
+			result.append("\t* disco=<discontinued date (YYYY-MM-DD hh:mm:ss format)>\n");
+			result.append("\t* idCompany=<id of an existing company>\n");
+			result.append("-> /d computer id=<computer to delete id> (delete a computer)\n");
+			result.append("-> /u computer id=<computer to update> (update a computer)\n");
+			result.append("\tOptional :\n");
+			result.append("\t* name=<computer name>\n");
+			result.append("\t* intro=<introduction date (YYYY-MM-DD hh:mm:ss format)>\n");
+			result.append("\t* disco=<discontinued date (YYYY-MM-DD hh:mm:ss format)>\n");
+			result.append("\t* idCompany=<id of an existing company>\n");
 			break;
 		default:
 			throw new NotCommandeException("La commande n'existe pas");
@@ -75,7 +103,7 @@ public class Commande {
 		return result.toString();
 	}
 	
-	public Computer buildComputer(String[] messageDecompose) throws NotCommandeException {
+	public static Computer buildComputer(String[] messageDecompose) throws NotCommandeException {
 		Computer computer = new Computer();
 		for(int i = 2; i < messageDecompose.length; i++) {
 			String[] argument = messageDecompose[i].split("=");
