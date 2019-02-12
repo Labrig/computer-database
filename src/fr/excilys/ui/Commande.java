@@ -1,14 +1,28 @@
-package fr.excilys.business;
+package fr.excilys.ui;
 
 import java.sql.Timestamp;
 import java.util.List;
 
+import fr.excilys.business.CompanyManager;
+import fr.excilys.business.ComputerManager;
+import fr.excilys.business.ManagerFactory;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 
+/**
+ * Read and treat the user command
+ * @author Matheo
+ */
 public class Commande {
 	
+	/**
+	 * Execute the command give by the user and return a response in consequence
+	 * 
+	 * @param message the command gave by the user
+	 * @return the response for the user
+	 * @throws NotCommandeException caused if the command is not standard
+	 */
 	public static String execute(String message) throws NotCommandeException {
 		StringBuilder result = new StringBuilder();
 		String[] messageDecompose = message.split(" ");
@@ -42,6 +56,14 @@ public class Commande {
 		return result.toString();
 	}
 
+	/**
+	 * Read the command specified and use the database in consequence
+	 * 
+	 * @param commande the specified command
+	 * @param computer the computer object to interact with
+	 * @return the response to give to the user
+	 * @throws NotCommandeException caused id the command is note a good one
+	 */
 	private static String readCommande(String commande, Computer computer)
 			throws NotCommandeException {
 		StringBuilder result = new StringBuilder();
@@ -86,15 +108,15 @@ public class Commande {
 			result.append("-> /r computer id=<searched computer id> (find a computer computer)\n");
 			result.append("-> /c computer name=<computer name> (create a computer)\n");
 			result.append("\tOptional :\n");
-			result.append("\t* intro=<introduction date (YYYY-MM-DD hh:mm:ss format)>\n");
-			result.append("\t* disco=<discontinued date (YYYY-MM-DD hh:mm:ss format)>\n");
+			result.append("\t* intro=<introduction date (YYYY-MM-DD format)>\n");
+			result.append("\t* disco=<discontinued date (YYYY-MM-DD format)>\n");
 			result.append("\t* idCompany=<id of an existing company>\n");
 			result.append("-> /d computer id=<computer to delete id> (delete a computer)\n");
 			result.append("-> /u computer id=<computer to update> (update a computer)\n");
 			result.append("\tOptional :\n");
 			result.append("\t* name=<computer name>\n");
-			result.append("\t* intro=<introduction date (YYYY-MM-DD hh:mm:ss format)>\n");
-			result.append("\t* disco=<discontinued date (YYYY-MM-DD hh:mm:ss format)>\n");
+			result.append("\t* intro=<introduction date (YYYY-MM-DD format)>\n");
+			result.append("\t* disco=<discontinued date (YYYY-MM-DD format)>\n");
 			result.append("\t* idCompany=<id of an existing company>\n");
 			break;
 		default:
@@ -103,11 +125,20 @@ public class Commande {
 		return result.toString();
 	}
 	
+	/**
+	 * Build a computer object depending on the attributes gave in messageDecompose
+	 * 
+	 * @param messageDecompose, an array of attributes and their value
+	 * @return the computer builded
+	 * @throws NotCommandeException caused if the attributes does not exist
+	 * or have a bad format value
+	 */
 	public static Computer buildComputer(String[] messageDecompose) throws NotCommandeException {
 		Computer computer = new Computer();
 		for(int i = 2; i < messageDecompose.length; i++) {
 			String[] argument = messageDecompose[i].split("=");
 			if(argument.length == 2) {
+				//check if the attribute is one of the computer attribute
 				switch(argument[0]) {
 				case "id":
 					try {
@@ -121,16 +152,16 @@ public class Commande {
 					break;
 				case "intro":
 					try {
-						computer.setIntroduced(Timestamp.valueOf(argument[1]));
+						computer.setIntroduced(Timestamp.valueOf(argument[1] + " 00:00:00"));
 					} catch(IllegalArgumentException e) {
-						throw new NotCommandeException("La date n'est pas au format yyyy-[m]m-[d]d hh:mm:ss");
+						throw new NotCommandeException("La date n'est pas au format yyyy-mm-dd");
 					}
 					break;
 				case "disco":
 					try {
-						computer.setDiscontinued(Timestamp.valueOf(argument[1]));
+						computer.setDiscontinued(Timestamp.valueOf(argument[1] + " 00:00:00"));
 					} catch(IllegalArgumentException e) {
-						throw new NotCommandeException("La date n'est pas au format yyyy-[m]m-[d]d hh:mm:ss");
+						throw new NotCommandeException("La date n'est pas au format yyyy-mm-dd");
 					}
 					break;
 				case "idCompany":

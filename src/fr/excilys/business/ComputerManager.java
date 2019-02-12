@@ -4,6 +4,15 @@ import java.util.List;
 
 import fr.excilys.model.Computer;
 
+/**
+ * Manager of the computer model. Allow :
+ * - create
+ * - update
+ * - delete
+ * - find
+ * - list
+ * @author Matheo
+ */
 public class ComputerManager extends ModelManager {
 
 	/**

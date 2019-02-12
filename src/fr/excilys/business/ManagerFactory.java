@@ -1,5 +1,10 @@
 package fr.excilys.business;
 
+/**
+ * Factory creating all the needed managers
+ * (implementing as a singleton)
+ * @author Matheo
+ */
 public class ManagerFactory {
 
 	private static ManagerFactory instance = new ManagerFactory();

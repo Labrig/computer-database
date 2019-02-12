@@ -8,6 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Beans using JPA for persistence
+ * @author Matheo
+ */
 @Entity
 @Table(name="computer")
 public class Computer {

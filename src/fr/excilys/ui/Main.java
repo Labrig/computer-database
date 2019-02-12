@@ -2,9 +2,13 @@ package fr.excilys.ui;
 
 import java.util.Scanner;
 
-import fr.excilys.business.Commande;
 import fr.excilys.exceptions.NotCommandeException;
 
+/**
+ * Class for running the application in CLI
+ * @author Matheo
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) {
@@ -20,6 +24,7 @@ public class Main {
 			}
 		    System.out.println("\n");
 		}
+		sc.close();
 	}
 
 }

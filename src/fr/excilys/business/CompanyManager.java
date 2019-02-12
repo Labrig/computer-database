@@ -3,8 +3,11 @@ package fr.excilys.business;
 import java.util.List;
 
 import fr.excilys.model.Company;
-import fr.excilys.model.Computer;
 
+/**
+ * Manager of the computer model. Allow only list.
+ * @author Matheo
+ */
 public class CompanyManager extends ModelManager {
 	
 	/**
