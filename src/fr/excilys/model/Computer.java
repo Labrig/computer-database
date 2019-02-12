@@ -1,6 +1,9 @@
 package fr.excilys.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -12,10 +15,14 @@ public class Computer {
 	@Id
 	private long id;
 	private String name;
-	private String introduced;
-	private String discontinued;
 	
-	@ManyToOne
+	//The date of the introduction of the product
+	private Timestamp introduced;
+	
+	//The date of the end of the production
+	private Timestamp discontinued;
+
+	@ManyToOne(fetch=FetchType.EAGER)
 	private Company company;
 	
 	public Computer() { }
@@ -51,28 +58,28 @@ public class Computer {
 	/**
 	 * @return the introduced
 	 */
-	public String getIntroduced() {
+	public Timestamp getIntroduced() {
 		return introduced;
 	}
 
 	/**
 	 * @param introduced the introduced to set
 	 */
-	public void setIntroduced(String introduced) {
+	public void setIntroduced(Timestamp introduced) {
 		this.introduced = introduced;
 	}
 
 	/**
 	 * @return the discontinued
 	 */
-	public String getDiscontinued() {
+	public Timestamp getDiscontinued() {
 		return discontinued;
 	}
 
 	/**
 	 * @param discontinued the discontinued to set
 	 */
-	public void setDiscontinued(String discontinued) {
+	public void setDiscontinued(Timestamp discontinued) {
 		this.discontinued = discontinued;
 	}
 
@@ -90,5 +97,9 @@ public class Computer {
 		this.company = company;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "Computer [id=" + this.id + ", name=" + this.name + ", introduced=" + ((this.introduced == null) ? "NA" : this.introduced.toString())
+			+ ", discontinued=" + ((this.discontinued == null) ? "NA" : this.discontinued.toString()) + ", company=" + this.company.toString() + "]";
+	}
 }

@@ -10,6 +10,7 @@ public class Company {
 
 	@Id
 	private long id;
+
 	private String name;
 	
 	public Company() { }
@@ -42,5 +43,8 @@ public class Company {
 		this.name = name;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "Company [id=" + this.id + ", name=" + this.name + "]";
+	}
 }

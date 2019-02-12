@@ -12,7 +12,7 @@ public class CompanyManagerTest {
 
 	@Test
 	public void test() {
-		CompanyManager manager = new CompanyManager();
+		CompanyManager manager = ManagerFactory.getInstance().getCompanyManager();
 		List<Company> listCompany = manager.listCompany();
 		for(Company company : listCompany) {
 			System.out.println(company.getName());
