@@ -14,15 +14,22 @@ public class Main {
 	public static void main(String[] args) {
 		boolean isRunning = true;
 		Scanner sc = new Scanner(System.in);
+		Command command = new Command(sc);
 		while(isRunning) {
 		    try {
 		    	System.out.println("/h if you need help");
-				Command.execute(sc.nextLine());
+		    	String message = sc.nextLine();
+		    	if(message.equals("exit")) {
+		    		isRunning = false;
+		    	} else {
+		    		command.execute(message);
+		    	}
 			} catch (NotCommandeException e) {
 				System.out.println(e.getMessage());
 			}
 		    System.out.println("\n");
 		}
+		System.out.println("Goodbye");
 		sc.close();
 	}
 

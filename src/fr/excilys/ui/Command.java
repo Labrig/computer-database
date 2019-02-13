@@ -17,53 +17,58 @@ import fr.excilys.model.Computer;
  */
 public class Command {
 	
-	private static CompanyManager companyManager = ManagerFactory.getInstance().getCompanyManager();
-	private static ComputerManager computerManager = ManagerFactory.getInstance().getComputerManager();
+	private Scanner sc;
 	
+	private CompanyManager companyManager = ManagerFactory.getInstance().getCompanyManager();
+	private ComputerManager computerManager = ManagerFactory.getInstance().getComputerManager();
 	
-	public static void execute(String message) throws NotCommandeException {
+	public Command(Scanner sc) {
+		this.sc = sc;
+	}
+	
+	public void execute(String message) throws NotCommandeException {
 		Computer computer;
 		switch(message) {
 		case "/l company":
-			List<Company> companys = companyManager.listCompany();
+			List<Company> companys = this.companyManager.listCompany();
 			for(Company company : companys) {
 				System.out.println(company.toString());
 			}
 			break;
 		case "/l computer":
-			List<Computer> computers = computerManager.listComputer();
+			List<Computer> computers = this.computerManager.listComputer();
 			for(Computer comput : computers) {
 				System.out.println(comput.toString());
 			}
 			break;
 		case "/c computer":
 			String[] attributesC = {"name","intro","disco","idCompany"};
-			computer = fillComputerField(attributesC);
+			computer = this.fillComputerField(attributesC);
 			try {
-				computerManager.createComputer(computer);
+				this.computerManager.createComputer(computer);
 			} catch(Exception e) {
 				throw new NotCommandeException("Can not create this computer");
 			}
 			break;
 		case "/f computer":
 			String[] attributesR = {"id"};
-			computer = computerManager.findComputer(fillComputerField(attributesR).getId());
+			computer = this.computerManager.findComputer(this.fillComputerField(attributesR).getId());
 			System.out.println(computer == null ? "Computer not found" : computer.toString());
 			break;
 		case "/u computer":
 			String[] attributesU = {"id","name","intro","disco","idCompany"};
-			computer = fillComputerField(attributesU);
+			computer = this.fillComputerField(attributesU);
 			try {
-				computerManager.updateComputer(computer);
+				this.computerManager.updateComputer(computer);
 			} catch(Exception e) {
 				throw new NotCommandeException("Can not update this computer");
 			}
 			break;
 		case "/d computer":
 			String[] attributesD = {"id"};
-			computer = fillComputerField(attributesD);
+			computer = this.fillComputerField(attributesD);
 			try {
-				computerManager.deleteComputer(computer);
+				this.computerManager.deleteComputer(computer);
 			} catch(Exception e) {
 				throw new NotCommandeException("Can not delete this computer");
 			}
@@ -76,7 +81,7 @@ public class Command {
 		}
 	}
 
-	private static void help() {
+	private void help() {
 		System.out.println("Command :");
 		System.out.println("-> /l company (list of the company)");
 		System.out.println("-> /l computer (list of the computer)");
@@ -93,12 +98,11 @@ public class Command {
 		System.out.println("* idCompany (the id of the company that product a computer");
 	}
 	
-	public static Computer fillComputerField(String[] attributes) throws NotCommandeException {
+	public Computer fillComputerField(String[] attributes) throws NotCommandeException {
 		Computer computer = new Computer();
-		Scanner sc = new Scanner(System.in);
 		for(String attribute : attributes) {
 			System.out.print("Enter the computer "+attribute+" : ");
-			String value = sc.nextLine();
+			String value = this.sc.nextLine();
 			if(!"".equals(value)) {
 				switch(attribute) {
 				case "id":
@@ -127,7 +131,7 @@ public class Command {
 					break;
 				case "idCompany":
 					try {
-						computer.setCompany(companyManager.findCompany(Long.valueOf(value)));
+						computer.setCompany(this.companyManager.findCompany(Long.valueOf(value)));
 					} catch(NumberFormatException e) {
 						throw new NotCommandeException("id is not a number");
 					}
@@ -136,7 +140,6 @@ public class Command {
 				}
 			}
 		}
-		//sc.close();
 		return computer;
 	}
 }

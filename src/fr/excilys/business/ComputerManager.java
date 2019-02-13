@@ -47,7 +47,7 @@ public class ComputerManager extends ModelManager {
 	 */
 	public Computer updateComputer(Computer computer) {
 		this.entityManager.getTransaction().begin();
-		Computer newComputer = this.entityManager.merge(findComputer(computer.getId()));
+		Computer newComputer = this.entityManager.merge(computer);
 		this.entityManager.getTransaction().commit();
 		return newComputer;
 	}
