@@ -16,9 +16,8 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		while(isRunning) {
 		    try {
-		    	System.out.println("/h <object> if you need help");
-				String result = Commande.execute(sc.nextLine());
-				System.out.println(result);
+		    	System.out.println("/h if you need help");
+				Command.execute(sc.nextLine());
 			} catch (NotCommandeException e) {
 				System.out.println(e.getMessage());
 			}

@@ -9,7 +9,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import fr.excilys.exceptions.NotCommandeException;
-import fr.excilys.ui.Commande;
+import fr.excilys.ui.Command;
 
 @RunWith(Parameterized.class)
 public class CommandeTest {
@@ -46,7 +46,7 @@ public class CommandeTest {
 	
 	@Test(expected = NotCommandeException.class)
 	public void testException() throws NotCommandeException {
-		Commande.execute(this.command);
+		Command.execute(this.command);
 	}
 
 }
