@@ -26,19 +26,20 @@ public class Command {
 		this.sc = sc;
 	}
 	
-	public void execute(String message) throws NotCommandeException {
+	public String execute(String message) throws NotCommandeException {
+		StringBuilder sb = new StringBuilder();
 		Computer computer;
 		switch(message) {
 		case "/l company":
 			List<Company> companys = this.companyManager.listCompany();
 			for(Company company : companys) {
-				System.out.println(company.toString());
+				sb.append(company.toString()+"\n");
 			}
 			break;
 		case "/l computer":
 			List<Computer> computers = this.computerManager.listComputer();
 			for(Computer comput : computers) {
-				System.out.println(comput.toString());
+				sb.append(comput.toString()+"\n");
 			}
 			break;
 		case "/c computer":
@@ -46,6 +47,7 @@ public class Command {
 			computer = this.fillComputerField(attributesC);
 			try {
 				this.computerManager.createComputer(computer);
+				sb.append("The computer as been created");
 			} catch(Exception e) {
 				throw new NotCommandeException("Can not create this computer");
 			}
@@ -53,13 +55,14 @@ public class Command {
 		case "/f computer":
 			String[] attributesR = {"id"};
 			computer = this.computerManager.findComputer(this.fillComputerField(attributesR).getId());
-			System.out.println(computer == null ? "Computer not found" : computer.toString());
+			sb.append(computer == null ? "Computer not found" : computer.toString());
 			break;
 		case "/u computer":
 			String[] attributesU = {"id","name","intro","disco","idCompany"};
 			computer = this.fillComputerField(attributesU);
 			try {
 				this.computerManager.updateComputer(computer);
+				sb.append("Computer updated");
 			} catch(Exception e) {
 				throw new NotCommandeException("Can not update this computer");
 			}
@@ -69,33 +72,37 @@ public class Command {
 			computer = this.fillComputerField(attributesD);
 			try {
 				this.computerManager.deleteComputer(computer);
+				sb.append("The computer as been deleted");
 			} catch(Exception e) {
 				throw new NotCommandeException("Can not delete this computer");
 			}
 			break;
 		case "/h":
-			help();
+			sb.append(help());
 			break;
 		default:
 			throw new NotCommandeException("La commande n'existe pas");
 		}
+		return sb.toString();
 	}
 
-	private void help() {
-		System.out.println("Command :");
-		System.out.println("-> /l company (list of the company)");
-		System.out.println("-> /l computer (list of the computer)");
-		System.out.println("-> /f computer (find a computer computer)");
-		System.out.println("-> /c computer (create a computer)");
-		System.out.println("-> /d computer (delete a computer)");
-		System.out.println("-> /u computer (update a computer)");
-		System.out.println();
-		System.out.println("Computer options :");
-		System.out.println("* id (the id of a computer)");
-		System.out.println("* name (the name of a computer)");
-		System.out.println("* intro (the introduction date of a computer, YYYY-MM-DD format)");
-		System.out.println("* disco (the discontinued date of a computer, YYYY-MM-DD format)");
-		System.out.println("* idCompany (the id of the company that product a computer");
+	private String help() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Command :\n");
+		sb.append("-> /l company (list of the company)\n");
+		sb.append("-> /l computer (list of the computer)\n");
+		sb.append("-> /f computer (find a computer computer)\n");
+		sb.append("-> /c computer (create a computer)\n");
+		sb.append("-> /d computer (delete a computer)\n");
+		sb.append("-> /u computer (update a computer)\n");
+		sb.append("\n");
+		sb.append("Computer options :\n");
+		sb.append("* id (the id of a computer)\n");
+		sb.append("* name (the name of a computer)\n");
+		sb.append("* intro (the introduction date of a computer, YYYY-MM-DD format)\n");
+		sb.append("* disco (the discontinued date of a computer, YYYY-MM-DD format)\n");
+		sb.append("* idCompany (the id of the company that product a computer\n");
+		return sb.toString();
 	}
 	
 	public Computer fillComputerField(String[] attributes) throws NotCommandeException {
@@ -133,10 +140,11 @@ public class Command {
 					try {
 						computer.setCompany(this.companyManager.findCompany(Long.valueOf(value)));
 					} catch(NumberFormatException e) {
-						throw new NotCommandeException("id is not a number");
+						throw new NotCommandeException("idCompany is not a number");
 					}
 					break;
 				default:
+					throw new NotCommandeException(attribute + " does not exist for the computer object");
 				}
 			}
 		}

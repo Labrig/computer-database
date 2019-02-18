@@ -22,7 +22,7 @@ public class Main {
 		    	if(message.equals("exit")) {
 		    		isRunning = false;
 		    	} else {
-		    		command.execute(message);
+		    		System.out.println(command.execute(message));
 		    	}
 			} catch (NotCommandeException e) {
 				System.out.println(e.getMessage());
