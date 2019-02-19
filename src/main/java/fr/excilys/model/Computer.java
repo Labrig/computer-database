@@ -106,4 +106,62 @@ public class Computer {
 		return "Computer [id=" + this.id + ", name=" + this.name + ", introduced=" + ((this.introduced == null) ? "NA" : this.introduced.toString())
 			+ ", discontinued=" + ((this.discontinued == null) ? "NA" : this.discontinued.toString()) + ", company=" + (this.company == null ? "NA" : this.company.toString()) + "]";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((company == null) ? 0 : company.hashCode());
+		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
+		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Computer)) {
+			return false;
+		}
+		Computer other = (Computer) obj;
+		if (company == null) {
+			if (other.company != null) {
+				return false;
+			}
+		} else if (!company.equals(other.company)) {
+			return false;
+		}
+		if (discontinued == null) {
+			if (other.discontinued != null) {
+				return false;
+			}
+		} else if (!discontinued.equals(other.discontinued)) {
+			return false;
+		}
+		if (id != other.id) {
+			return false;
+		}
+		if (introduced == null) {
+			if (other.introduced != null) {
+				return false;
+			}
+		} else if (!introduced.equals(other.introduced)) {
+			return false;
+		}
+		if (name == null) {
+			if (other.name != null) {
+				return false;
+			}
+		} else if (!name.equals(other.name)) {
+			return false;
+		}
+		return true;
+	}
 }
