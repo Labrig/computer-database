@@ -1,9 +1,9 @@
 package fr.excilys.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
+import fr.excilys.dao.ComputerDAO;
 import fr.excilys.model.Computer;
 
 /**
@@ -18,7 +18,7 @@ import fr.excilys.model.Computer;
 public class ComputerService {
 
 	private static ComputerService instance = new ComputerService();
-	private static EntityManager entityManager = ServiceFactory.getInstance().getEntityManager();
+	private static ComputerDAO dao = ServiceFactory.getInstance().getDaoFactory().getComputerDAO();
 	
 	private ComputerService() { }
 	
@@ -28,48 +28,45 @@ public class ComputerService {
 	
 	/**
 	 * @return the list of all computers
+	 * @throws SQLException 
 	 */
-	public List<Computer> listComputer() {
-		return entityManager.createQuery("FROM Computer").getResultList();
+	public List<Computer> list() throws SQLException {
+		return dao.list();
 	}
 	
 	/**
 	 * @param computerId the id of the desired computer
 	 * @return the desired computer
+	 * @throws SQLException 
 	 */
-	public Computer findComputer(long computerId) {
-		return entityManager.find(Computer.class, computerId);
+	public Computer find(Long computerId) throws SQLException {
+		return dao.find(computerId);
 	}
 	
 	/**
 	 * create a new computer
 	 * @param computer
+	 * @throws SQLException 
 	 */
-	public void createComputer(Computer computer) {
-		entityManager.getTransaction().begin();
-		entityManager.persist(computer);
-		entityManager.getTransaction().commit();
-		entityManager.clear();
+	public void create(Computer computer) throws SQLException {
+		dao.insert(computer);
 	}
 	
 	/**
 	 * update a the computer in param based on his id
 	 * @param computer
 	 * @return the computer updated
+	 * @throws SQLException 
 	 */
-	public Computer updateComputer(Computer computer) {
-		entityManager.getTransaction().begin();
-		Computer newComputer = entityManager.merge(computer);
-		entityManager.getTransaction().commit();
-		return newComputer;
+	public void update(Computer computer) throws SQLException {
+		dao.update(computer);
 	}
 	
 	/**
 	 * @param computer the computer to delete
+	 * @throws SQLException 
 	 */
-	public void deleteComputer(Computer computer) {
-		entityManager.getTransaction().begin();
-		entityManager.remove(findComputer(computer.getId()));
-		entityManager.getTransaction().commit();
+	public void delete(Long computerId) throws SQLException {
+		dao.delete(computerId);
 	}
 }

@@ -1,7 +1,6 @@
 package fr.excilys.service;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Persistence;
+import fr.excilys.dao.DAOFactory;
 
 /**
  * Factory creating all the needed managers
@@ -11,11 +10,9 @@ import javax.persistence.Persistence;
 public class ServiceFactory {
 
 	private static ServiceFactory instance = new ServiceFactory();
-	private EntityManager entityManager;
+	private static DAOFactory daoFactory = DAOFactory.getInstance();
 	
-	private ServiceFactory() {
-		entityManager = Persistence.createEntityManagerFactory("computer-database").createEntityManager();
-	}
+	private ServiceFactory() { }
 	
 	/**
 	 * @return the instance of the factory
@@ -24,11 +21,15 @@ public class ServiceFactory {
 		return instance;
 	}
 	
+	public DAOFactory getDaoFactory() {
+		return daoFactory;
+	}
+
 	/**
 	 * create a new manager for the company beans
 	 * @return the new manager
 	 */
-	public static CompanyService getCompanyService() {
+	public CompanyService getCompanyService() {
 		return CompanyService.getInstance();
 	}
 	
@@ -36,11 +37,7 @@ public class ServiceFactory {
 	 * create a new manager for the computer beans
 	 * @return the new manager
 	 */
-	public static ComputerService getComputerService() {
+	public ComputerService getComputerService() {
 		return ComputerService.getInstance();
-	}
-
-	public EntityManager getEntityManager() {
-		return entityManager;
 	}
 }

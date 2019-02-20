@@ -17,7 +17,7 @@ import javax.persistence.Table;
 public class Computer {
 
 	@Id
-	private long id;
+	private Long id;
 	private String name;
 	
 	//The date of the introduction of the product
@@ -34,14 +34,14 @@ public class Computer {
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -113,7 +113,7 @@ public class Computer {
 		int result = 1;
 		result = prime * result + ((company == null) ? 0 : company.hashCode());
 		result = prime * result + ((discontinued == null) ? 0 : discontinued.hashCode());
-		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((introduced == null) ? 0 : introduced.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
@@ -145,7 +145,11 @@ public class Computer {
 		} else if (!discontinued.equals(other.discontinued)) {
 			return false;
 		}
-		if (id != other.id) {
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
 		}
 		if (introduced == null) {
@@ -164,4 +168,6 @@ public class Computer {
 		}
 		return true;
 	}
+
+	
 }

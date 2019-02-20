@@ -4,6 +4,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doCallRealMethod;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,18 +27,18 @@ public class ControllerComputerTest {
 	private CliView mockedView = mock(CliView.class);
 	
 	@Test
-	public void testListComputer() {
+	public void testListComputer() throws SQLException {
 		List<Computer> listComputer = new ArrayList<>();
 		for(int i = 1; i < 4 ; i++) {
 			Computer computer = new Computer();
-			computer.setId(i);
+			computer.setId(new Long(i));
 			computer.setName("test"+i);
 			listComputer.add(computer);
 		}
 		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
 		when(ComputerService.getInstance()).thenReturn(service);
-		when(service.listComputer()).thenReturn(listComputer);
+		when(service.list()).thenReturn(listComputer);
 		Controller controller = new Controller(new CliView());
 		try {
 			controller.executeCommand("/l computer");
@@ -49,13 +50,13 @@ public class ControllerComputerTest {
 	}
 	
 	@Test
-	public void testFindComputer() {
+	public void testFindComputer() throws SQLException {
 		Computer computer = new Computer();
-		computer.setId(1);
+		computer.setId(new Long(1));
 		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
 		when(ComputerService.getInstance()).thenReturn(service);
-		when(service.findComputer(1)).thenReturn(computer);
+		when(service.find(new Long(1))).thenReturn(computer);
 		
 		when(mockedView.requestAttribute("id")).thenReturn("1");
 		
@@ -70,13 +71,13 @@ public class ControllerComputerTest {
 	}
 	
 	@Test
-	public void testFindComputerNull() {
+	public void testFindComputerNull() throws SQLException {
 		Computer computer = new Computer();
-		computer.setId(1);
+		computer.setId(new Long(1));
 		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
 		when(ComputerService.getInstance()).thenReturn(service);
-		when(service.findComputer(1)).thenReturn(null);
+		when(service.find(new Long(1))).thenReturn(null);
 		
 		when(mockedView.requestAttribute("id")).thenReturn("1");
 		
@@ -116,7 +117,7 @@ public class ControllerComputerTest {
 	@Test
 	public void testUpdateComputer() throws NotCommandeException, ComputerFormatException {
 		Computer computer = new Computer();
-		computer.setId(1);
+		computer.setId(new Long(1));
 		computer.setName("test");
 		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
@@ -140,7 +141,7 @@ public class ControllerComputerTest {
 	@Test
 	public void testDeleteComputer() throws NotCommandeException, ComputerFormatException {
 		Computer computer = new Computer();
-		computer.setId(1);
+		computer.setId(new Long(1));
 		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
 		when(ComputerService.getInstance()).thenReturn(service);

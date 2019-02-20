@@ -1,9 +1,9 @@
 package fr.excilys.service;
 
+import java.sql.SQLException;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-
+import fr.excilys.dao.CompanyDAO;
 import fr.excilys.model.Company;
 
 /**
@@ -13,7 +13,7 @@ import fr.excilys.model.Company;
 public class CompanyService {
 	
 	private static CompanyService instance = new CompanyService();
-	private static EntityManager entityManager = ServiceFactory.getInstance().getEntityManager();
+	private static CompanyDAO dao = ServiceFactory.getInstance().getDaoFactory().getCompanyDAO();
 	
 	private CompanyService() { }
 	
@@ -23,16 +23,18 @@ public class CompanyService {
 
 	/**
 	 * @return a list of all companies
+	 * @throws SQLException 
 	 */
-	public List<Company> listCompany() {
-		return entityManager.createQuery("FROM Company").getResultList();
+	public List<Company> list() throws SQLException {
+		return dao.list();
 	}
 	
 	/**
 	 * @param companyId the id of the desired company
 	 * @return the desired company
+	 * @throws SQLException 
 	 */
-	public Company findCompany(long companyId) {
-		return entityManager.find(Company.class, companyId);
+	public Company find(Long companyId) throws SQLException {
+		return dao.find(companyId);
 	}
 }

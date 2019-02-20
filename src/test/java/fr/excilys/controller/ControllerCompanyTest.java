@@ -3,6 +3,7 @@ package fr.excilys.controller;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,18 +24,18 @@ import fr.excilys.view.CliView;
 public class ControllerCompanyTest {
 
 	@Test
-	public void testListCompany() {
+	public void testListCompany() throws SQLException {
 		List<Company> listCompany = new ArrayList<>();
 		for(int i = 1; i < 4 ; i++) {
 			Company company = new Company();
-			company.setId(i);
+			company.setId(new Long(i));
 			company.setName("test"+i);
 			listCompany.add(company);
 		}
 		PowerMockito.mockStatic(CompanyService.class);
 		CompanyService service = mock(CompanyService.class);
 		when(CompanyService.getInstance()).thenReturn(service);
-		when(service.listCompany()).thenReturn(listCompany);
+		when(service.list()).thenReturn(listCompany);
 		Controller controller = new Controller(new CliView());
 		try {
 			controller.executeCommand("/l company");

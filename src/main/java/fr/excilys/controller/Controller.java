@@ -1,5 +1,6 @@
 package fr.excilys.controller;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import fr.excilys.exceptions.ComputerFormatException;
@@ -20,8 +21,8 @@ public class Controller {
 	
 	private CliView view;
 	
-	private static CompanyService companyService = ServiceFactory.getCompanyService();
-	private static ComputerService computerService = ServiceFactory.getComputerService();
+	private static CompanyService companyService = ServiceFactory.getInstance().getCompanyService();
+	private static ComputerService computerService = ServiceFactory.getInstance().getComputerService();
 	
 	public Controller(CliView view) {
 		this.view = view;
@@ -73,11 +74,10 @@ public class Controller {
 
 	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException {
 		String[] attributesD = {"id"};
-		Computer computer = this.fillComputerField(attributesD);
 		try {
-			computerService.deleteComputer(computer);
+			computerService.delete(this.fillComputerField(attributesD).getId());
 			sb.append("Computer as been deleted");
-		} catch(Exception e) {
+		} catch(SQLException e) {
 			throw new NotCommandeException("Can not delete this computer");
 		}
 	}
@@ -86,46 +86,57 @@ public class Controller {
 		String[] attributesU = {"id","name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesU);
 		try {
-			computerService.updateComputer(computer);
+			computerService.update(computer);
 			sb.append("Computer as been updated");
-		} catch(Exception e) {
+		} catch(SQLException e) {
 			throw new NotCommandeException("Can not update this computer");
 		}
 	}
 
 	private void findComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException {
 		String[] attributesR = {"id"};
-		Computer computer = computerService.findComputer(this.fillComputerField(attributesR).getId());
-		sb.append(computer == null ? "Computer not found" : computer.toString());
+		try {
+			Computer computer = computerService.find(this.fillComputerField(attributesR).getId());
+			sb.append(computer.toString());
+		} catch(SQLException e) {
+			throw new NotCommandeException("Computer not found");
+		}
 	}
 
 	private void createComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException {
 		String[] attributesC = {"name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesC);
 		try {
-			computerService.createComputer(computer);
+			computerService.create(computer);
 			sb.append("Computer as been created");
-		} catch(Exception e) {
-			e.printStackTrace();
+		} catch(SQLException e) {
 			throw new NotCommandeException("Can not create this computer");
 		}
 	}
 
-	private void listComputer(StringBuilder sb) {
-		List<Computer> computers = computerService.listComputer();
-		for(Computer comput : computers) {
-			sb.append(comput.toString()+"\n");
+	private void listComputer(StringBuilder sb) throws NotCommandeException {
+		try {
+			List<Computer> computers = computerService.list();
+			for(Computer comput : computers) {
+				sb.append(comput.toString()+"\n");
+			}
+		} catch (SQLException e) {
+			throw new NotCommandeException("Can not list the computers");
 		}
 	}
 
-	private void listCompany(StringBuilder sb) {
-		List<Company> companys = companyService.listCompany();
-		for(Company company : companys) {
-			sb.append(company.toString()+"\n");
+	private void listCompany(StringBuilder sb) throws NotCommandeException {
+		try {
+			List<Company> companies = companyService.list();
+			for(Company company : companies) {
+				sb.append(company.toString()+"\n");
+			}
+		} catch (SQLException e) {
+			throw new NotCommandeException("Can not list the companies");
 		}
 	}
 	
-	public Computer fillComputerField(String[] attributes) throws NotCommandeException, ComputerFormatException {
+	public Computer fillComputerField(String[] attributes) throws ComputerFormatException {
 		Computer computer = new Computer();
 		for(String attribute : attributes) {
 			String value = this.view.requestAttribute(attribute);
@@ -146,14 +157,10 @@ public class Controller {
 					ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);
 					break;
 				case "idCompany":
-					try {
-						computer.setCompany(companyService.findCompany(Long.valueOf(value)));
-					} catch(NumberFormatException e) {
-						throw new NotCommandeException("id is not a number");
-					}
+					ComputerValidator.getInstance().verifyIdCompany(computer, value);
 					break;
 				default:
-					throw new NotCommandeException(attribute+" is not an attribute of computer");
+					throw new ComputerFormatException(attribute+" is not an attribute of computer");
 				}
 			}
 		}

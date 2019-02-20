@@ -16,7 +16,7 @@ public class ComputerValidatorTest {
 	public void testVerifyId() throws ComputerFormatException {
 		Computer computer = new Computer();
 		ComputerValidator.getInstance().verifyId(computer, "10");
-		assertEquals(10, computer.getId());
+		assertEquals(new Long(10), computer.getId());
 	}
 	
 	@Test(expected = ComputerFormatException.class)
@@ -41,16 +41,6 @@ public class ComputerValidatorTest {
 		ComputerValidator.getInstance().verifyIntro(new Computer(), "10-06");
 	}
 	
-//	@Test(expected = ComputerFormatException.class)
-//	public void testVerifyIntroException3() throws ComputerFormatException {
-//		ComputerValidator.getInstance().verifyIntro(new Computer(), "10-13-2016");
-//	}
-//	
-//	@Test(expected = ComputerFormatException.class)
-//	public void testVerifyIntroException4() throws ComputerFormatException {
-//		ComputerValidator.getInstance().verifyIntro(new Computer(), "00-01-2016");
-//	}
-	
 	@Test(expected = ComputerFormatException.class)
 	public void testVerifyDiscoException1() throws ComputerFormatException {
 		ComputerValidator.getInstance().verifyDisco(new Computer(), "test");
@@ -60,16 +50,6 @@ public class ComputerValidatorTest {
 	public void testVerifyDiscoException2() throws ComputerFormatException {
 		ComputerValidator.getInstance().verifyDisco(new Computer(), "10-06");
 	}
-	
-//	@Test(expected = ComputerFormatException.class)
-//	public void testVerifyDiscoException3() throws ComputerFormatException {
-//		ComputerValidator.getInstance().verifyDisco(new Computer(), "10-13-2016");
-//	}
-//	
-//	@Test(expected = ComputerFormatException.class)
-//	public void testVerifyDiscoException4() throws ComputerFormatException {
-//		ComputerValidator.getInstance().verifyDisco(new Computer(), "00-01-2016");
-//	}
 	
 	@Test(expected = ComputerFormatException.class)
 	public void verifyIntroBeforeDisco1() throws ComputerFormatException {

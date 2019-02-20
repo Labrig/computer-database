@@ -24,7 +24,7 @@ public class ControllerTest {
 		when(mockedView.requestAttribute("intro")).thenReturn("19-10-2011");
 		when(mockedView.requestAttribute("disco")).thenReturn("18-02-2019");
 		Computer computer = new Computer();
-		computer.setId(1);
+		computer.setId(new Long(1));
 		computer.setName("test");
 		computer.setIntroduced(new SimpleDateFormat("dd-MM-yyyy").parse("19-10-2011"));
 		computer.setDiscontinued(new SimpleDateFormat("dd-MM-yyyy").parse("18-02-2019"));

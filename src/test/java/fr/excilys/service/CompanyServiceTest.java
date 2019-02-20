@@ -18,7 +18,7 @@ import fr.excilys.service.ServiceFactory;
 
 public class CompanyServiceTest {
 
-	private static CompanyService manager = ServiceFactory.getCompanyService();
+	private static CompanyService manager = ServiceFactory.getInstance().getCompanyService();
 	private static Field entityManagerField;
 	
 	@BeforeClass

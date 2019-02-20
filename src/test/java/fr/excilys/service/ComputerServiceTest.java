@@ -17,7 +17,7 @@ import fr.excilys.service.ServiceFactory;
 
 public class ComputerServiceTest {
 
-	private static ComputerService manager = ServiceFactory.getComputerService();
+	private static ComputerService manager = ServiceFactory.getInstance().getComputerService();
 	private static Field entityManagerField;
 	
 	@BeforeClass

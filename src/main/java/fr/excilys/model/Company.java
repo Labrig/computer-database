@@ -13,7 +13,7 @@ import javax.persistence.Table;
 public class Company {
 
 	@Id
-	private long id;
+	private Long id;
 
 	private String name;
 	
@@ -22,14 +22,14 @@ public class Company {
 	/**
 	 * @return the id
 	 */
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -46,7 +46,7 @@ public class Company {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Company [id=" + this.id + ", name=" + this.name + "]";
@@ -56,7 +56,7 @@ public class Company {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + (int) (id ^ (id >>> 32));
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -73,7 +73,11 @@ public class Company {
 			return false;
 		}
 		Company other = (Company) obj;
-		if (id != other.id) {
+		if (id == null) {
+			if (other.id != null) {
+				return false;
+			}
+		} else if (!id.equals(other.id)) {
 			return false;
 		}
 		if (name == null) {
@@ -85,4 +89,6 @@ public class Company {
 		}
 		return true;
 	}
+	
+	
 }
