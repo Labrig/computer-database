@@ -2,21 +2,12 @@ package fr.excilys.model;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
 /**
  * Beans using JPA for persistence
  * @author Matheo
  */
-@Entity
-@Table(name="computer")
 public class Computer {
 
-	@Id
 	private Long id;
 	private String name;
 	
@@ -26,7 +17,6 @@ public class Computer {
 	//The date of the end of the production
 	private Date discontinued;
 
-	@ManyToOne(fetch=FetchType.EAGER)
 	private Company company;
 	
 	public Computer() { }

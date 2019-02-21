@@ -10,7 +10,7 @@ import fr.excilys.model.Computer;
 
 public class ComputerValidator {
 
-	private SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	private static ComputerValidator instance = new ComputerValidator();
 	
 	private ComputerValidator() { }
@@ -31,7 +31,7 @@ public class ComputerValidator {
 		try {
 			computer.setIntroduced(formatter.parse(intro));
 		} catch(ParseException e) {
-			throw new ComputerFormatException("the date is not at format dd-MM-yyyy");
+			throw new ComputerFormatException("the date is not at format yyyy-MM-dd");
 		}
 	}
 	
@@ -39,15 +39,17 @@ public class ComputerValidator {
 		try {
 			computer.setDiscontinued(formatter.parse(disco));
 		} catch(ParseException e) {
-			throw new ComputerFormatException("the date is not at format dd-MM-yyyy");
+			throw new ComputerFormatException("the date is not at format yyyy-MM-dd");
 		}
 	}
 	
 	public void verifyIdCompany(Computer computer, String idCompany) throws ComputerFormatException {
 		try {
-			Company company = new Company();
-			company.setId(Long.valueOf(idCompany));
-			computer.setCompany(company);
+			if(Long.valueOf(idCompany) != 0) {
+				Company company = new Company();
+				company.setId(Long.valueOf(idCompany));
+				computer.setCompany(company);
+			}
 		} catch(NumberFormatException e) {
 			throw new ComputerFormatException("idCompany is not a number");
 		}

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.css</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.js</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <description></description>
+    <display-name>DashboardServlet</display-name>
+    <servlet-name>DashboardServlet</servlet-name>
+    <servlet-class>fr.excilys.servlet.DashboardServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description></description>
+    <display-name>AddComputerServlet</display-name>
+    <servlet-name>AddComputerServlet</servlet-name>
+    <servlet-class>fr.excilys.servlet.AddComputerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description></description>
+    <display-name>DeleteComputerServlet</display-name>
+    <servlet-name>DeleteComputerServlet</servlet-name>
+    <servlet-class>fr.excilys.servlet.DeleteComputerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description></description>
+    <display-name>EditComputerServlet</display-name>
+    <servlet-name>EditComputerServlet</servlet-name>
+    <servlet-class>fr.excilys.servlet.EditComputerServlet</servlet-class>
+  </servlet>
+</web-app>

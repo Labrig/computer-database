@@ -71,27 +71,6 @@ public class ControllerComputerTest {
 	}
 	
 	@Test
-	public void testFindComputerNull() throws SQLException {
-		Computer computer = new Computer();
-		computer.setId(new Long(1));
-		PowerMockito.mockStatic(ComputerService.class);
-		ComputerService service = mock(ComputerService.class);
-		when(ComputerService.getInstance()).thenReturn(service);
-		when(service.find(new Long(1))).thenReturn(null);
-		
-		when(mockedView.requestAttribute("id")).thenReturn("1");
-		
-		Controller controller = new Controller(mockedView);
-		try {
-			controller.executeCommand("/f computer");
-		} catch (NotCommandeException e) {
-			e.printStackTrace();
-		} catch (ComputerFormatException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@Test
 	public void testCreateComputer() throws NotCommandeException, ComputerFormatException {
 		Computer computer = new Computer();
 		computer.setName("test");
