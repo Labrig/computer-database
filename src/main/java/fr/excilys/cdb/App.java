@@ -2,6 +2,7 @@ package fr.excilys.cdb;
 
 import fr.excilys.controller.Controller;
 import fr.excilys.exceptions.ComputerFormatException;
+import fr.excilys.exceptions.DTOException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.view.CliView;
 
@@ -23,9 +24,7 @@ public class App {
 		    	} else {
 		    		command.executeCommand(message);
 		    	}
-			} catch (NotCommandeException e) {
-				System.out.println(e.getMessage());
-			} catch (ComputerFormatException e) {
+			} catch (NotCommandeException | DTOException | ComputerFormatException e) {
 				System.out.println(e.getMessage());
 			}
 		    System.out.println("\n");

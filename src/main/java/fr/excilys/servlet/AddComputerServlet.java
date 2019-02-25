@@ -2,6 +2,8 @@ package fr.excilys.servlet;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,7 +11,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.excilys.dto.CompanyDTO;
+import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.ComputerFormatException;
+import fr.excilys.exceptions.DTOException;
+import fr.excilys.mapper.CompanyMapper;
+import fr.excilys.mapper.ComputerMapper;
+import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ServiceFactory;
 import fr.excilys.validator.ComputerValidator;
@@ -27,7 +35,10 @@ public class AddComputerServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			request.setAttribute("companies", ServiceFactory.getInstance().getCompanyService().list());
+			List<CompanyDTO> companies = new ArrayList<>();
+			for(Company company : ServiceFactory.getInstance().getCompanyService().list())
+				companies.add(CompanyMapper.getInstance().mapObjectInDTO(company));
+			request.setAttribute("companies", companies);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -39,19 +50,19 @@ public class AddComputerServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		Computer computer = new Computer();
-		computer.setName(request.getParameter("computerName"));
+		ComputerDTO dto = new ComputerDTO();
+		dto.setName(request.getParameter("computerName"));
+		dto.setIntroduced(request.getParameter("introduced"));
+		dto.setDiscontinued(request.getParameter("discontinued"));
+		dto.setCompanyId(request.getParameter("companyId"));
 		try {
-			ComputerValidator.getInstance().verifyIntro(computer, request.getParameter("introduced"));
-			ComputerValidator.getInstance().verifyDisco(computer, request.getParameter("discontinued"));
-			ComputerValidator.getInstance().verifyIdCompany(computer, request.getParameter("companyId"));
+			Computer computer = ComputerMapper.getInstance().mapDTOInObject(dto);
 			ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);
 			ServiceFactory.getInstance().getComputerService().create(computer);
-			this.getServletContext().getRequestDispatcher("/").forward(request, response);
-		} catch (ComputerFormatException | SQLException e) {
+		} catch (ComputerFormatException | SQLException | DTOException e) {
 			request.setAttribute("error", e.getMessage());
-			doGet(request, response);
 		}
+		this.getServletContext().getRequestDispatcher("/").forward(request, response);
 	}
 
 }

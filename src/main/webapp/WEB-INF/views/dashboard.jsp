@@ -83,11 +83,11 @@
 	                            <input type="checkbox" name="cb" class="cb" value="${computer.getId()}">
 	                        </td>
 	                        <td>
-	                            <a href="editComputer.html" onclick="">${computer.getName()}</a>
+	                            <a href="<c:url value="/EditComputer?idEditComputer=${computer.getId()}"/>" onclick="">${computer.getName()}</a>
 	                        </td>
 	                        <td>${computer.getIntroduced()}</td>
 	                        <td>${computer.getDiscontinued()}</td>
-	                        <td>${computer.getCompany().getName()}</td>
+	                        <td>${computer.getCompanyName()}</td>
 	
 	                    </tr>
 					</c:forEach>

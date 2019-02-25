@@ -15,6 +15,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import fr.excilys.exceptions.ComputerFormatException;
+import fr.excilys.exceptions.DTOException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
@@ -46,6 +47,8 @@ public class ControllerComputerTest {
 			e.printStackTrace();
 		} catch (ComputerFormatException e) {
 			e.printStackTrace();
+		} catch (DTOException e) {
+			e.printStackTrace();
 		}
 	}
 	
@@ -67,11 +70,13 @@ public class ControllerComputerTest {
 			e.printStackTrace();
 		} catch (ComputerFormatException e) {
 			e.printStackTrace();
+		} catch (DTOException e) {
+			e.printStackTrace();
 		}
 	}
 	
 	@Test
-	public void testCreateComputer() throws NotCommandeException, ComputerFormatException {
+	public void testCreateComputer() throws NotCommandeException, ComputerFormatException, DTOException {
 		Computer computer = new Computer();
 		computer.setName("test");
 		PowerMockito.mockStatic(ComputerService.class);
@@ -94,7 +99,7 @@ public class ControllerComputerTest {
 	}
 	
 	@Test
-	public void testUpdateComputer() throws NotCommandeException, ComputerFormatException {
+	public void testUpdateComputer() throws NotCommandeException, ComputerFormatException, DTOException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
 		computer.setName("test");
@@ -118,7 +123,7 @@ public class ControllerComputerTest {
 	}
 	
 	@Test
-	public void testDeleteComputer() throws NotCommandeException, ComputerFormatException {
+	public void testDeleteComputer() throws NotCommandeException, ComputerFormatException, DTOException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
 		PowerMockito.mockStatic(ComputerService.class);

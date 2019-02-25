@@ -14,6 +14,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import fr.excilys.exceptions.ComputerFormatException;
+import fr.excilys.exceptions.DTOException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.model.Company;
 import fr.excilys.service.CompanyService;
@@ -42,6 +43,8 @@ public class ControllerCompanyTest {
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
 		} catch (ComputerFormatException e) {
+			e.printStackTrace();
+		} catch (DTOException e) {
 			e.printStackTrace();
 		}
 	}

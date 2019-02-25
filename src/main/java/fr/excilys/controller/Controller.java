@@ -3,8 +3,11 @@ package fr.excilys.controller;
 import java.sql.SQLException;
 import java.util.List;
 
+import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.ComputerFormatException;
+import fr.excilys.exceptions.DTOException;
 import fr.excilys.exceptions.NotCommandeException;
+import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.service.CompanyService;
@@ -42,7 +45,7 @@ public class Controller {
 		this.view = view;
 	}
 
-	public void executeCommand(String message) throws NotCommandeException, ComputerFormatException {
+	public void executeCommand(String message) throws NotCommandeException, ComputerFormatException, DTOException {
 		StringBuilder sb = new StringBuilder();
 		switch(message) {
 		case "/l company":
@@ -72,7 +75,7 @@ public class Controller {
 		this.view.displayResultCommand(sb.toString());
 	}
 
-	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException {
+	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
 		String[] attributesD = {"id"};
 		try {
 			computerService.delete(this.fillComputerField(attributesD).getId());
@@ -82,7 +85,7 @@ public class Controller {
 		}
 	}
 
-	private void updateComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException {
+	private void updateComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
 		String[] attributesU = {"id","name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesU);
 		try {
@@ -93,7 +96,7 @@ public class Controller {
 		}
 	}
 
-	private void findComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException {
+	private void findComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
 		String[] attributesR = {"id"};
 		try {
 			Computer computer = computerService.find(this.fillComputerField(attributesR).getId());
@@ -103,7 +106,7 @@ public class Controller {
 		}
 	}
 
-	private void createComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException {
+	private void createComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
 		String[] attributesC = {"name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesC);
 		try {
@@ -136,34 +139,34 @@ public class Controller {
 		}
 	}
 	
-	public Computer fillComputerField(String[] attributes) throws ComputerFormatException {
-		Computer computer = new Computer();
+	public Computer fillComputerField(String[] attributes) throws ComputerFormatException, DTOException {
+		ComputerDTO dto = new ComputerDTO();
 		for(String attribute : attributes) {
 			String value = this.view.requestAttribute(attribute);
 			if(!"".equals(value)) {
 				switch(attribute) {
 				case "id":
-					ComputerValidator.getInstance().verifyId(computer, value);
+					dto.setId(value);
 					break;
 				case "name":
-					computer.setName(value);
+					dto.setName(value);
 					break;
 				case "intro":
-					ComputerValidator.getInstance().verifyIntro(computer, value);
-					ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);
+					dto.setIntroduced(value);
 					break;
 				case "disco":
-					ComputerValidator.getInstance().verifyDisco(computer, value);
-					ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);
+					dto.setDiscontinued(value);
 					break;
 				case "idCompany":
-					ComputerValidator.getInstance().verifyIdCompany(computer, value);
+					dto.setCompanyId(value);
 					break;
 				default:
 					throw new ComputerFormatException(attribute+" is not an attribute of computer");
 				}
 			}
 		}
+		Computer computer = ComputerMapper.getInstance().mapDTOInObject(dto);
+		ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);
 		return computer;
 	}
 }

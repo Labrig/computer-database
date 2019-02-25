@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fr.excilys.exceptions.ComputerFormatException;
-import fr.excilys.model.Computer;
+import fr.excilys.dto.ComputerDTO;
+import fr.excilys.exceptions.DTOException;
+import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.service.ServiceFactory;
-import fr.excilys.validator.ComputerValidator;
 
 /**
  * Servlet implementation class DeleteComputerServlet
@@ -33,12 +33,12 @@ public class DeleteComputerServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String[] computersId = request.getParameter("selection").split(",");
-		Computer computer = new Computer();
 		for(String idComputer : computersId) {
+			ComputerDTO dto = new ComputerDTO();
+			dto.setId(idComputer);
 			try {
-				ComputerValidator.getInstance().verifyId(computer, idComputer);
-				ServiceFactory.getInstance().getComputerService().delete(computer.getId());
-			} catch (ComputerFormatException | SQLException e) {
+				ServiceFactory.getInstance().getComputerService().delete(ComputerMapper.getInstance().mapDTOInObject(dto).getId());
+			} catch (SQLException | DTOException e) {
 				request.setAttribute("error", e.getMessage());
 			}
 		}

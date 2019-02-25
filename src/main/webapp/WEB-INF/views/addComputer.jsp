@@ -21,7 +21,6 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
-                    <p>${error}</p>
                     <form action="<c:url value="/AddComputer"/>" method="POST">
                         <fieldset>
                             <div class="form-group">
