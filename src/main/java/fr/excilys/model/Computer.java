@@ -3,7 +3,7 @@ package fr.excilys.model;
 import java.util.Date;
 
 /**
- * Beans using JPA for persistence
+ * The computer bean and his builder
  * @author Matheo
  */
 public class Computer {
@@ -159,5 +159,77 @@ public class Computer {
 		return true;
 	}
 
-	
+	/**
+	 * The computer builder
+	 * @author Matheo
+	 */
+	public static class ComputerBuilder {
+		
+		private Long id;
+		private String name;
+		
+		//The date of the introduction of the product
+		private Date introduced;
+		
+		//The date of the end of the production
+		private Date discontinued;
+
+		private Company company;
+		
+		public ComputerBuilder() { }
+
+		/**
+		 * @param id the id to set
+		 */
+		public ComputerBuilder setId(Long id) {
+			this.id = id;
+			return this;
+		}
+		
+		/**
+		 * @param name the name to set
+		 */
+		public ComputerBuilder setName(String name) {
+			this.name = name;
+			return this;
+		}
+
+		/**
+		 * @param introduced the introduced to set
+		 */
+		public ComputerBuilder setIntroduced(Date introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+
+		/**
+		 * @param discontinued the discontinued to set
+		 */
+		public ComputerBuilder setDiscontinued(Date discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+
+		/**
+		 * @param company the company to set
+		 */
+		public ComputerBuilder setCompany(Company company) {
+			this.company = company;
+			return this;
+		}
+		
+		/**
+		 * @return the computer built based
+		 * on the attribute gave to the builder
+		 */
+		public Computer build() {
+			Computer computer = new Computer();
+			computer.setId(this.id);
+			computer.setName(this.name);
+			computer.setIntroduced(this.introduced);
+			computer.setDiscontinued(this.discontinued);
+			computer.setCompany(this.company);
+			return computer;
+		}
+	}
 }

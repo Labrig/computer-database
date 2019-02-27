@@ -8,7 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.excilys.model.Company;
+import fr.excilys.model.Company.CompanyBuilder;
 
+/**
+ * The DAO of the company object
+ * 
+ * @author Matheo
+ */
 public class CompanyDAO implements DAO<Company> {
 
 	private static final String SELECT_COMPANY_REQUEST = "SELECT id, name FROM company WHERE id = ?";
@@ -40,15 +46,14 @@ public class CompanyDAO implements DAO<Company> {
 
 	@Override
 	public Company find(Long idCompany) throws SQLException {
-		Company company = new Company();
 		try(Connection	connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COMPANY_REQUEST);){
 			statement.setLong(1, idCompany);	
 			ResultSet result = statement.executeQuery();		
 			result.next();
-			company = mapResultSet(result);
+			Company company = mapResultSet(result);
+			return company;
 		}
-		return company;
 	}
 
 	@Override
@@ -76,10 +81,7 @@ public class CompanyDAO implements DAO<Company> {
 
 	@Override
 	public Company mapResultSet(ResultSet result) throws SQLException {
-		Company company = new Company();
-		company.setId(result.getLong("id"));
-		company.setName(result.getString("name"));
-		return company;
+		return new CompanyBuilder().setId(result.getLong("id")).setName(result.getString("name")).build();
 	}
 
 }

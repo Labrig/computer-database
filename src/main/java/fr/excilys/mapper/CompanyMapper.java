@@ -4,12 +4,21 @@ import fr.excilys.dto.CompanyDTO;
 import fr.excilys.exceptions.DTOException;
 import fr.excilys.model.Company;
 
+/**
+ * The mapper of the company objcet
+ * Implement the ObjectMapper interface
+ * 
+ * @author Matheo
+ */
 public class CompanyMapper implements ObjectMapper<Company, CompanyDTO> {
 
 	private static final CompanyMapper instance = new CompanyMapper();
 	
 	private CompanyMapper() { }
 
+	/**
+	 * @return the singleton of CompanyMapper
+	 */
 	public static CompanyMapper getInstance() {
 		return instance;
 	}

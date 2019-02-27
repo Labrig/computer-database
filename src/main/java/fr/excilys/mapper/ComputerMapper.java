@@ -16,6 +16,9 @@ public class ComputerMapper implements ObjectMapper<Computer, ComputerDTO> {
 	
 	private ComputerMapper() { }
 
+	/**
+	 * @return the singleton of ComputerMapper
+	 */
 	public static ComputerMapper getInstance() {
 		return instance;
 	}
@@ -64,18 +67,44 @@ public class ComputerMapper implements ObjectMapper<Computer, ComputerDTO> {
 		return dto;
 	}
 	
+	/**
+	 * Convert a type Date into String with the formatter yyyy-MM-dd
+	 * 
+	 * @param date with type Date
+	 * @return date with type String
+	 */
 	public String convertDateToString(Date date) {
 		return date == null ? null : formatter.format(date);
 	}
 	
+	/**
+	 * Convert a type String into Date with the formatter yyyy-MM-dd
+	 * 
+	 * @param date with type String
+	 * @return date with type Date
+	 */
 	public Date convertStringToDate(String date) throws ParseException {
 		return date == null || "".equals(date) ? null : formatter.parse(date);
 	}
 	
+	/**
+	 * Convert the Long id in a string if not null
+	 * else return null
+	 * 
+	 * @param Long id
+	 * @return String id
+	 */
 	public String convertIdToString(Long id) {
 		return id == null ? null : String.valueOf(id);
 	}
 	
+	/**
+	 * Parse the String id in a Long if not null and different of "0"
+	 * else return null
+	 * 
+	 * @param String id
+	 * @return Long id
+	 */
 	public Long convertStringToId(String id) {
 		return id == null || "0".equals(id) ? null : Long.valueOf(id);
 	}

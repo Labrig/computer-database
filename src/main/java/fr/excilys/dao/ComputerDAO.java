@@ -9,8 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.excilys.model.Computer;
+import fr.excilys.model.Computer.ComputerBuilder;
 import fr.excilys.validator.ComputerValidator;
 
+/**
+ * The DAO of the computer object
+ * 
+ * @author Matheo
+ */
 public class ComputerDAO implements DAO<Computer> {
 	
 	private static final String INSERT_COMPUTER_REQUEST = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
@@ -72,15 +78,14 @@ public class ComputerDAO implements DAO<Computer> {
 	@Override
 	public Computer find(Long idComputer) throws SQLException {
 		ComputerValidator.getInstance().attributeNotNull(idComputer);
-		Computer computer = new Computer();
 		try(Connection	connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);	
 			ResultSet result = statement.executeQuery();		
 			result.next();
-			computer = mapResultSet(result);
+			Computer computer = mapResultSet(result);
+			return computer;
 		}
-		return computer;
 	}
 
 	@Override
@@ -96,6 +101,14 @@ public class ComputerDAO implements DAO<Computer> {
 		return listComputer;
 	}
 	
+	/**
+	 * List the computer in the database by a group
+	 * 
+	 * @param start the first computer object to be listed
+	 * @param size the number of computer to list
+	 * @return the list of computer found
+	 * @throws SQLException thrown if a problem occur during the communication
+	 */
 	public List<Computer> listWithPagination(int start, int size) throws SQLException {
 		List<Computer> listComputer = new ArrayList<>();
 		try(Connection connect = DAOFactory.getConnection();
@@ -110,6 +123,13 @@ public class ComputerDAO implements DAO<Computer> {
 		return listComputer;
 	}
 	
+	/**
+	 * List the computer with the name which contain the name parameter
+	 * 
+	 * @param name the pattern of search
+	 * @return the list of computer found with the name parameter
+	 * @throws SQLException thrown if a problem occur during the communication
+	 */
 	public List<Computer> listByName(String name) throws SQLException {
 		List<Computer> listComputer = new ArrayList<>();
 		try(Connection connect = DAOFactory.getConnection();
@@ -123,6 +143,16 @@ public class ComputerDAO implements DAO<Computer> {
 		return listComputer;
 	}
 	
+	/**
+	 * List the computer with the name which contain the name parameter
+	 * and restrict them by a group
+	 * 
+	 * @param name the pattern of search
+	 * @param start the first computer object to be listed
+	 * @param size the number of computer to list
+	 * @return the list of computer found
+	 * @throws SQLException thrown if a problem occur during the communication
+	 */
 	public List<Computer> listByNameWithPagination(String name, int start, int size) throws SQLException {
 		List<Computer> listComputer = new ArrayList<>();
 		try(Connection connect = DAOFactory.getConnection();
@@ -150,14 +180,13 @@ public class ComputerDAO implements DAO<Computer> {
 	
 	@Override
 	public Computer mapResultSet(ResultSet result) throws SQLException {
-		Computer computer = new Computer();
-		computer.setId(result.getLong("id"));
-		computer.setName(result.getString("name"));
-		computer.setIntroduced(result.getTimestamp("introduced"));
-		computer.setDiscontinued(result.getTimestamp("discontinued"));
-		Long idComapny = result.getLong("company_id");
-		computer.setCompany(idComapny == 0 ? null : CompanyDAO.getInstance().find(idComapny));
-		return computer;
+		Long idCompany = result.getLong("company_id");
+		return new ComputerBuilder().setId(result.getLong("id"))
+				.setName(result.getString("name"))
+				.setIntroduced(result.getTimestamp("introduced"))
+				.setDiscontinued(result.getTimestamp("discontinued"))
+				.setCompany(idCompany == 0 ? null : CompanyDAO.getInstance().find(idCompany))
+				.build();
 	}
 
 }

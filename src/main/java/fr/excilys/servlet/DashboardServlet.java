@@ -18,6 +18,7 @@ import fr.excilys.service.ServiceFactory;
 
 /**
  * Servlet implementation class DashboardServlet
+ * @author Matheo
  */
 @WebServlet("/")
 public class DashboardServlet extends HttpServlet {

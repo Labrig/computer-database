@@ -10,12 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fr.excilys.dto.ComputerDTO;
+import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.DTOException;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.service.ServiceFactory;
 
 /**
  * Servlet implementation class DeleteComputerServlet
+ * @author Matheo
  */
 @WebServlet("/DeleteComputer")
 public class DeleteComputerServlet extends HttpServlet {
@@ -34,8 +36,7 @@ public class DeleteComputerServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String[] computersId = request.getParameter("selection").split(",");
 		for(String idComputer : computersId) {
-			ComputerDTO dto = new ComputerDTO();
-			dto.setId(idComputer);
+			ComputerDTO dto = new ComputerDTOBuilder().setId(idComputer).build();
 			try {
 				ServiceFactory.getInstance().getComputerService().delete(ComputerMapper.getInstance().mapDTOInObject(dto).getId());
 			} catch (SQLException | DTOException e) {

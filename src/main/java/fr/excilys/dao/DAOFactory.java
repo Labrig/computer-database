@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * The factory of the DAO
+ * Regraoup all the DAOs and the connection to the database
+ * 
+ * @author Matheo
+ */
 public class DAOFactory {
 	
 	private static final String URL="jdbc:mysql://localhost/computer-database-db";
@@ -21,18 +27,31 @@ public class DAOFactory {
         }
 	}
 	
+	/**
+	 * @return the DAOFactory
+	 */
 	public static DAOFactory getInstance() {
 		return instance;
 	}
 	
+	/**
+	 * @return the connection to the database
+	 * @throws SQLException thrown if a problem occur during the communication
+	 */
 	public static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(URL,USERNAME,PASSWORD);
 	}
 	
+	/**
+	 * @return the CompanyDAO
+	 */
 	public CompanyDAO getCompanyDAO() {
 		return CompanyDAO.getInstance();
 	}
 	
+	/**
+	 * @return the ComputerDAO
+	 */
 	public ComputerDAO getComputerDAO() {
 		return ComputerDAO.getInstance();
 	}

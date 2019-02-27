@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
+import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.ComputerFormatException;
 import fr.excilys.exceptions.DTOException;
 import fr.excilys.mapper.CompanyMapper;
@@ -24,6 +25,7 @@ import fr.excilys.validator.ComputerValidator;
 
 /**
  * Servlet implementation class AddComputerServlet
+ * @author Matheo
  */
 @WebServlet("/AddComputer")
 public class AddComputerServlet extends HttpServlet {
@@ -50,11 +52,10 @@ public class AddComputerServlet extends HttpServlet {
 	 */
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ComputerDTO dto = new ComputerDTO();
-		dto.setName(request.getParameter("computerName"));
-		dto.setIntroduced(request.getParameter("introduced"));
-		dto.setDiscontinued(request.getParameter("discontinued"));
-		dto.setCompanyId(request.getParameter("companyId"));
+		ComputerDTO dto = new ComputerDTOBuilder().setName(request.getParameter("computerName"))
+				.setIntroduced(request.getParameter("introduced"))
+				.setDiscontinued(request.getParameter("discontinued"))
+				.setCompanyId(request.getParameter("companyId")).build();
 		try {
 			Computer computer = ComputerMapper.getInstance().mapDTOInObject(dto);
 			ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);

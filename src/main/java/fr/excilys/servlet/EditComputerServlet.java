@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
+import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.ComputerFormatException;
 import fr.excilys.exceptions.DTOException;
 import fr.excilys.mapper.CompanyMapper;
@@ -25,6 +26,7 @@ import fr.excilys.validator.ComputerValidator;
 
 /**
  * Servlet implementation class EditComputerServlet
+ * @author Matheo
  */
 @WebServlet("/EditComputer")
 public class EditComputerServlet extends HttpServlet {
@@ -34,8 +36,7 @@ public class EditComputerServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ComputerDTO dto = new ComputerDTO();
-		dto.setId(request.getParameter("idEditComputer"));
+		ComputerDTO dto = new ComputerDTOBuilder().setId(request.getParameter("idEditComputer")).build();
 		try {
 			dto = ComputerMapper.getInstance().mapObjectInDTO(ComputerService.getInstance().find(ComputerMapper.getInstance().mapDTOInObject(dto).getId()));
 			List<CompanyDTO> companies = new ArrayList<>();
@@ -53,12 +54,11 @@ public class EditComputerServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ComputerDTO dto = new ComputerDTO();
-		dto.setId(request.getParameter("computerId"));
-		dto.setName(request.getParameter("computerName"));
-		dto.setIntroduced(request.getParameter("introduced"));
-		dto.setDiscontinued(request.getParameter("discontinued"));
-		dto.setCompanyId(request.getParameter("companyId"));
+		ComputerDTO dto = new ComputerDTOBuilder().setId(request.getParameter("computerId"))
+				.setName(request.getParameter("computerName"))
+				.setIntroduced(request.getParameter("introduced"))
+				.setDiscontinued(request.getParameter("discontinued"))
+				.setCompanyId(request.getParameter("companyId")).build();
 		try {
 			Computer computer = ComputerMapper.getInstance().mapDTOInObject(dto);
 			ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);

@@ -45,6 +45,12 @@ public class Controller {
 		this.view = view;
 	}
 
+	/**
+	 * @param message the command to threat
+	 * @throws NotCommandeException
+	 * @throws ComputerFormatException
+	 * @throws DTOException
+	 */
 	public void executeCommand(String message) throws NotCommandeException, ComputerFormatException, DTOException {
 		StringBuilder sb = new StringBuilder();
 		switch(message) {
@@ -75,6 +81,12 @@ public class Controller {
 		this.view.displayResultCommand(sb.toString());
 	}
 
+	/**
+	 * @param sb the StringBuilder need to construct the answer
+	 * @throws NotCommandeException
+	 * @throws ComputerFormatException
+	 * @throws DTOException
+	 */
 	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
 		String[] attributesD = {"id"};
 		try {
@@ -85,6 +97,12 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * @param sb the StringBuilder need to construct the answer
+	 * @throws NotCommandeException
+	 * @throws ComputerFormatException
+	 * @throws DTOException
+	 */
 	private void updateComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
 		String[] attributesU = {"id","name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesU);
@@ -96,6 +114,12 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * @param sb the StringBuilder need to construct the answer
+	 * @throws NotCommandeException
+	 * @throws ComputerFormatException
+	 * @throws DTOException
+	 */
 	private void findComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
 		String[] attributesR = {"id"};
 		try {
@@ -106,6 +130,12 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * @param sb the StringBuilder need to construct the answer
+	 * @throws NotCommandeException
+	 * @throws ComputerFormatException
+	 * @throws DTOException
+	 */
 	private void createComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
 		String[] attributesC = {"name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesC);
@@ -117,6 +147,10 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * @param sb the StringBuilder need to construct the answer
+	 * @throws NotCommandeException
+	 */
 	private void listComputer(StringBuilder sb) throws NotCommandeException {
 		try {
 			List<Computer> computers = computerService.list();
@@ -128,6 +162,10 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * @param sb the StringBuilder need to construct the answer
+	 * @throws NotCommandeException
+	 */
 	private void listCompany(StringBuilder sb) throws NotCommandeException {
 		try {
 			List<Company> companies = companyService.list();
@@ -139,6 +177,14 @@ public class Controller {
 		}
 	}
 	
+	/**
+	 * Request the user to fill the computer attribute to complete his command
+	 * 
+	 * @param attributes the attributes to fill in computer
+	 * @return the computer fill with the user answer
+	 * @throws ComputerFormatException
+	 * @throws DTOException
+	 */
 	public Computer fillComputerField(String[] attributes) throws ComputerFormatException, DTOException {
 		ComputerDTO dto = new ComputerDTO();
 		for(String attribute : attributes) {

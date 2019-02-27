@@ -1,7 +1,7 @@
 package fr.excilys.model;
 
 /**
- * Beans using JPA for persistence
+ * The company bean and his builder
  * @author Matheo
  */
 public class Company {
@@ -83,5 +83,43 @@ public class Company {
 		return true;
 	}
 	
-	
+	/**
+	 * The company builder
+	 * @author Matheo
+	 */
+	public static class CompanyBuilder {
+		
+		private Long id;
+		private String name;
+		
+		public CompanyBuilder() { }
+
+		/**
+		 * @param id the id to set
+		 */
+		public CompanyBuilder setId(Long id) {
+			this.id = id;
+			return this;
+		}
+
+		/**
+		 * @param name the name to set
+		 */
+		public CompanyBuilder setName(String name) {
+			this.name = name;
+			return this;
+		}
+		
+		/**
+		 * @return the company built based
+		 * on the attribute gave to the builder
+		 */
+		public Company build() {
+			Company company = new Company();
+			company.setId(this.id);
+			company.setName(this.name);
+			return company;
+		}
+		
+	}
 }

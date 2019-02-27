@@ -70,18 +70,49 @@ public class ComputerService {
 		dao.delete(computerId);
 	}
 	
+	/**
+	 * List the computer with the name which contain the name parameter
+	 * 
+	 * @param name the pattern of search
+	 * @return the list of computer found with the name parameter
+	 * @throws SQLException thrown if a problem occur during the communication
+	 */
 	public List<Computer> listByName(String name) throws SQLException{
 		return dao.listByName(name);
 	}
 	
+	/**
+	 * List the computer in the database by a group
+	 * 
+	 * @param start the first computer object to be listed
+	 * @param size the number of computer to list
+	 * @return the list of computer found
+	 * @throws SQLException thrown if a problem occur during the communication
+	 */
 	public List<Computer> listWithPagination(int start, int size) throws SQLException{
 		return dao.listWithPagination(start, size);
 	}
 	
+	/**
+	 * List the computer with the name which contain the name parameter
+	 * and restrict them by a group
+	 * 
+	 * @param name the pattern of search
+	 * @param start the first computer object to be listed
+	 * @param size the number of computer to list
+	 * @return the list of computer found
+	 * @throws SQLException thrown if a problem occur during the communication
+	 */
 	public List<Computer> listByNameWithPagination(String name, int start, int size) throws SQLException{
 		return dao.listByNameWithPagination(name, start, size);
 	}
 	
+	/**
+	 * Count the number of object in the database
+	 * 
+	 * @return the number of object in database
+	 * @throws SQLException thrown if a problem occur during the communication
+	 */
 	public int count() throws SQLException {
 		return dao.count();
 	}

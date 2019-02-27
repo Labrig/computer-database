@@ -18,6 +18,7 @@ import fr.excilys.service.ServiceFactory;
 
 /**
  * Servlet implementation class FindComputerByNameServlet
+ * @author Matheo
  */
 @WebServlet("/FindComputerByName")
 public class FindComputerByNameServlet extends HttpServlet {
