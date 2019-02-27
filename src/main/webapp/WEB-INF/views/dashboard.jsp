@@ -6,26 +6,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="<c:url value="/css/bootstrap.min.css"/>" rel="stylesheet" type="text/css" media="screen">
-<link href="<c:url value="/css/font-awesome.css"/>" rel="stylesheet" type="text/css" media="screen">
-<link href="<c:url value="/css/main.css"/>" rel="stylesheet" type="text/css" media="screen">
+<link href="<c:url value="/css/bootstrap.min.css"/>" rel="stylesheet" media="screen">
+<link href="<c:url value="/css/font-awesome.css"/>" rel="stylesheet" media="screen">
+<link href="<c:url value="/css/main.css"/>" rel="stylesheet" media="screen">
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.jsp"> Application - Computer Database </a>
+            <a class="navbar-brand" href="<c:url value="/"/>"> Application - Computer Database </a>
         </div>
     </header>
-
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                ${computers.size()} Computers found
+                ${totalComputer} Computers found
             </h1>
             <p>${error}</p>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="#" method="GET" class="form-inline">
+                    <form id="searchForm" action="<c:url value="/FindComputerByName"/>" method="GET" class="form-inline">
 
                         <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" />
                         <input type="submit" id="searchsubmit" value="Filter by name"
@@ -100,30 +99,53 @@
         <div class="container text-center">
             <ul class="pagination">
                 <li>
-                    <a href="#" aria-label="Previous">
+                    <a href="<c:url value="/?pageNumber=${pageNumber-1}"/>" aria-label="Previous">
                       <span aria-hidden="true">&laquo;</span>
                   </a>
               </li>
-              <li><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
+              <c:choose>
+         
+		         <c:when test = "${pageNumber < 3}">
+			          <li><a href="<c:url value="/?pageNumber=1"/>">1</a></li>
+		              <li><a href="<c:url value="/?pageNumber=2"/>">2</a></li>
+		              <li><a href="<c:url value="/?pageNumber=3"/>">3</a></li>
+		              <li><a href="<c:url value="/?pageNumber=4"/>">4</a></li>
+		              <li><a href="<c:url value="/?pageNumber=5"/>">5</a></li>
+		         </c:when>
+		         
+		         <c:when test = "${pageNumber > (totalComputer/pageSize)-3}">
+		         	  <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)-4}"/>">${(totalComputer/pageSize)-4}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)-3}"/>">${(totalComputer/pageSize)-3}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)-2}"/>">${(totalComputer/pageSize)-2}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)-1}"/>">${(totalComputer/pageSize)-1}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)}"/>">${(totalComputer/pageSize)}</a></li>
+		         </c:when>
+		         
+		         <c:otherwise>
+			          <li><a href="<c:url value="/?pageNumber=${pageNumber-2}"/>">${pageNumber-2}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageNumber-1}"/>">${pageNumber-1}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageNumber}"/>">${pageNumber}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageNumber+1}"/>">${pageNumber+1}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageNumber+2}"/>">${pageNumber+2}</a></li>
+		         </c:otherwise>
+		      </c:choose>
               <li>
-                <a href="#" aria-label="Next">
+                <a href="<c:url value="/?pageNumber=${pageNumber+1}"/>" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
               </li>
            </ul>
-        </div>
 
         <div class="btn-group btn-group-sm pull-right" role="group" >
-            <button type="button" class="btn btn-default">10</button>
-            <button type="button" class="btn btn-default">50</button>
-            <button type="button" class="btn btn-default">100</button>
+	        <form>
+	            <a href="<c:url value="/?pageSize=10"/>"><button type="button" class="btn btn-default">10</button></a>
+	            <a href="<c:url value="/?pageSize=50"/>"><button type="button" class="btn btn-default">50</button></a>
+	            <a href="<c:url value="/?pageSize=100"/>"><button type="button" class="btn btn-default">100</button></a>
+            </form>
         </div>
+     </div>
 
-    </footer>
+   </footer>
 <script src="<c:url value="/js/jquery.min.js"/>"></script>
 <script src="<c:url value="/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/js/dashboard.js"/>"></script>

@@ -13,6 +13,7 @@ public class CompanyDAO implements DAO<Company> {
 
 	private static final String SELECT_COMPANY_REQUEST = "SELECT id, name FROM company WHERE id = ?";
 	private static final String LIST_COMPANY_REQUEST = "SELECT id, name FROM company";
+	private static final String COUNT_COMPANY_REQUEST = "SELECT COUNT(id) AS count FROM company";
 	
 	private static CompanyDAO instance = new CompanyDAO();
 	
@@ -61,6 +62,16 @@ public class CompanyDAO implements DAO<Company> {
 			}
 		}
 		return listCompany;
+	}
+	
+	@Override
+	public int count() throws SQLException {
+		try(Connection	connect = DAOFactory.getConnection();
+				PreparedStatement statement = connect.prepareStatement(COUNT_COMPANY_REQUEST);){
+			ResultSet result = statement.executeQuery();		
+			result.next();
+			return result.getInt("count");
+		}
 	}
 
 	@Override

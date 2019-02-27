@@ -69,4 +69,20 @@ public class ComputerService {
 	public void delete(Long computerId) throws SQLException {
 		dao.delete(computerId);
 	}
+	
+	public List<Computer> listByName(String name) throws SQLException{
+		return dao.listByName(name);
+	}
+	
+	public List<Computer> listWithPagination(int start, int size) throws SQLException{
+		return dao.listWithPagination(start, size);
+	}
+	
+	public List<Computer> listByNameWithPagination(String name, int start, int size) throws SQLException{
+		return dao.listByNameWithPagination(name, start, size);
+	}
+	
+	public int count() throws SQLException {
+		return dao.count();
+	}
 }

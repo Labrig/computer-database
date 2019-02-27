@@ -17,35 +17,21 @@ import fr.excilys.model.Computer;
 import fr.excilys.service.ServiceFactory;
 
 /**
- * Servlet implementation class DashboardServlet
+ * Servlet implementation class FindComputerByNameServlet
  */
-@WebServlet("/")
-public class DashboardServlet extends HttpServlet {
+@WebServlet("/FindComputerByName")
+public class FindComputerByNameServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String pageNumber = request.getParameter("pageNumber");
-		String pageSize = request.getParameter("pageSize");
-		if (pageNumber != null) {
-			request.getSession().setAttribute("pageNumber", pageNumber);
-		} else if (pageSize != null) {
-			request.getSession().setAttribute("pageSize", pageSize);
-		} else {
-			request.getSession().setAttribute("pageNumber", "1");
-			request.getSession().setAttribute("pageSize", "50");
-		}
-		pageNumber = (String)request.getSession().getAttribute("pageNumber");
-		pageSize = (String)request.getSession().getAttribute("pageSize");
 		try {
 			List<ComputerDTO> computers = new ArrayList<>();
-			for(Computer computer : ServiceFactory.getInstance().getComputerService().listWithPagination((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize)))
+			for(Computer computer : ServiceFactory.getInstance().getComputerService().listByName(request.getParameter("search")))
 				computers.add(ComputerMapper.getInstance().mapObjectInDTO(computer));
 			request.setAttribute("computers", computers);
-			request.setAttribute("totalComputer", ServiceFactory.getInstance().getComputerService().count());
-			request.setAttribute("pageNumber", pageNumber);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -56,7 +42,6 @@ public class DashboardServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}

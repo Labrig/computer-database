@@ -8,6 +8,30 @@
     <servlet-name>default</servlet-name>
     <url-pattern>*.js</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.map</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.eot</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.svg</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.ttf</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.woff</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.otf</url-pattern>
+  </servlet-mapping>
   <servlet>
     <description></description>
     <display-name>DashboardServlet</display-name>
@@ -31,5 +55,11 @@
     <display-name>EditComputerServlet</display-name>
     <servlet-name>EditComputerServlet</servlet-name>
     <servlet-class>fr.excilys.servlet.EditComputerServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <description></description>
+    <display-name>FindComputerByNameServlet</display-name>
+    <servlet-name>FindComputerByNameServlet</servlet-name>
+    <servlet-class>fr.excilys.servlet.FindComputerByNameServlet</servlet-class>
   </servlet>
 </web-app>

@@ -18,7 +18,10 @@ public class ComputerDAO implements DAO<Computer> {
 	private static final String DELETE_COMPUTER_REQUEST = "DELETE FROM computer WHERE id = ?";
 	private static final String SELECT_COMPUTER_REQUEST = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE id = ?";
 	private static final String LIST_COMPUTER_REQUEST = "SELECT id, name, introduced, discontinued, company_id FROM computer";
-
+	private static final String LIST_COMPUTER_BY_NAME_REQUEST = "SELECT id, name, introduced, discontinued, company_id FROM computer WHERE name LIKE ?";
+	private static final String LIMIT_COMPUTER = " LIMIT ?, ?";
+	private static final String COUNT_COMPUTER_REQUEST = "SELECT COUNT(id) AS count FROM computer";
+	
 	private static ComputerDAO instance = new ComputerDAO();
 	
 	private ComputerDAO() { }
@@ -91,6 +94,58 @@ public class ComputerDAO implements DAO<Computer> {
 			}
 		}
 		return listComputer;
+	}
+	
+	public List<Computer> listWithPagination(int start, int size) throws SQLException {
+		List<Computer> listComputer = new ArrayList<>();
+		try(Connection connect = DAOFactory.getConnection();
+				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST+LIMIT_COMPUTER);){
+			statement.setInt(1, start);
+			statement.setInt(2, size);
+			ResultSet result = statement.executeQuery();
+			while(result.next()) {
+				listComputer.add(mapResultSet(result));		
+			}
+		}
+		return listComputer;
+	}
+	
+	public List<Computer> listByName(String name) throws SQLException {
+		List<Computer> listComputer = new ArrayList<>();
+		try(Connection connect = DAOFactory.getConnection();
+				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_BY_NAME_REQUEST);){
+			statement.setString(1, "%"+name+"%");
+			ResultSet result = statement.executeQuery();
+			while(result.next()) {
+				listComputer.add(mapResultSet(result));		
+			}
+		}
+		return listComputer;
+	}
+	
+	public List<Computer> listByNameWithPagination(String name, int start, int size) throws SQLException {
+		List<Computer> listComputer = new ArrayList<>();
+		try(Connection connect = DAOFactory.getConnection();
+				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_BY_NAME_REQUEST+LIMIT_COMPUTER);){
+			statement.setString(1, "%"+name+"%");
+			statement.setInt(2, start);
+			statement.setInt(3, size);
+			ResultSet result = statement.executeQuery();
+			while(result.next()) {
+				listComputer.add(mapResultSet(result));		
+			}
+		}
+		return listComputer;
+	}
+	
+	@Override
+	public int count() throws SQLException {
+		try(Connection	connect = DAOFactory.getConnection();
+				PreparedStatement statement = connect.prepareStatement(COUNT_COMPUTER_REQUEST);){
+			ResultSet result = statement.executeQuery();		
+			result.next();
+			return result.getInt("count");
+		}
 	}
 	
 	@Override

@@ -15,6 +15,7 @@ public interface DAO<T> {
 	public void delete(Long id) throws SQLException;
 	public T find(Long id) throws SQLException;
 	public List<T> list() throws SQLException;
+	public int count() throws SQLException;
 	public T mapResultSet(ResultSet result) throws SQLException;
 	
 }
