@@ -8,6 +8,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.exceptions.ValidationException;
 import fr.excilys.model.Computer;
@@ -33,6 +36,7 @@ public class ComputerDAO implements DAO<Computer> {
 	private static ComputerDAO instance = new ComputerDAO();
 	
 	private static ComputerValidator validator = ComputerValidator.getInstance();
+	private Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
 	
 	private ComputerDAO() { }
 	
@@ -51,7 +55,9 @@ public class ComputerDAO implements DAO<Computer> {
 			statement.setTimestamp(3, computer.getDiscontinued() == null ? null : new Timestamp(computer.getDiscontinued().getTime()));
 			statement.setObject(4, computer.getCompany() == null ? null : computer.getCompany().getId());
 			statement.execute();
+			logger.info("The statement "+statement+" has been executed." );
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not insert the computer "+computer.toString());
 		}
 	}
@@ -69,7 +75,9 @@ public class ComputerDAO implements DAO<Computer> {
 			statement.setObject(4, computer.getCompany() == null ? null : computer.getCompany().getId());
 			statement.setLong(5, computer.getId());
 			statement.execute();
+			logger.info("The statement "+statement+" has been executed." );
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not update the computer "+computer.toString());
 		}
 	}
@@ -81,7 +89,9 @@ public class ComputerDAO implements DAO<Computer> {
 				PreparedStatement statement = connect.prepareStatement(DELETE_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);
 			statement.execute();
+			logger.info("The statement "+statement+" has been executed." );
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not delete the computer with the id "+idComputer);
 		}
 	}
@@ -92,11 +102,13 @@ public class ComputerDAO implements DAO<Computer> {
 		try(Connection	connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);	
-			ResultSet result = statement.executeQuery();		
+			ResultSet result = statement.executeQuery();
+			logger.info("The statement "+statement+" has been executed." );
 			result.next();
 			Computer computer = mapResultSet(result);
 			return computer;
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not find the computer with the id "+idComputer);
 		}
 	}
@@ -108,11 +120,13 @@ public class ComputerDAO implements DAO<Computer> {
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST);){
 			List<Computer> listComputer = new ArrayList<>();
 			ResultSet result = statement.executeQuery();
+			logger.info("The statement "+statement+" has been executed." );
 			while(result.next()) {
 				listComputer.add(mapResultSet(result));		
 			}
 			return listComputer;
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not list the computers");
 		}
 		
@@ -134,11 +148,13 @@ public class ComputerDAO implements DAO<Computer> {
 			statement.setInt(1, start);
 			statement.setInt(2, size);
 			ResultSet result = statement.executeQuery();
+			logger.info("The statement "+statement+" has been executed." );
 			while(result.next()) {
 				listComputer.add(mapResultSet(result));		
 			}
 			return listComputer;
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not list the computers between "+start+" and "+(start+size));
 		}
 	}
@@ -157,11 +173,13 @@ public class ComputerDAO implements DAO<Computer> {
 			List<Computer> listComputer = new ArrayList<>();
 			statement.setString(1, "%"+name+"%");
 			ResultSet result = statement.executeQuery();
+			logger.info("The statement "+statement+" has been executed." );
 			while(result.next()) {
 				listComputer.add(mapResultSet(result));		
 			}
 			return listComputer;
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not list the computers with the name "+name);
 		}
 	}
@@ -185,11 +203,13 @@ public class ComputerDAO implements DAO<Computer> {
 			statement.setInt(2, start);
 			statement.setInt(3, size);
 			ResultSet result = statement.executeQuery();
+			logger.info("The statement "+statement+" has been executed." );
 			while(result.next()) {
 				listComputer.add(mapResultSet(result));		
 			}
 			return listComputer;
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not list the computers with the name "+name+" between "+start+" and "+(start+size));
 		}
 	}
@@ -198,10 +218,12 @@ public class ComputerDAO implements DAO<Computer> {
 	public int count() throws DAOException {
 		try(Connection	connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(COUNT_COMPUTER_REQUEST);){
-			ResultSet result = statement.executeQuery();		
+			ResultSet result = statement.executeQuery();
+			logger.info("The statement "+statement+" has been executed." );
 			result.next();
 			return result.getInt("count");
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not count the computers");
 		}
 	}
@@ -217,6 +239,7 @@ public class ComputerDAO implements DAO<Computer> {
 					.setCompany(idCompany == 0 ? null : CompanyDAO.getInstance().find(idCompany))
 					.build();
 		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not build the computer with the gave ResultSet");
 		}
 	}

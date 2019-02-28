@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The factory of the DAO
  * Regraoup all the DAOs and the connection to the database
@@ -18,12 +21,14 @@ public class DAOFactory {
 	private static final String DRIVER="com.mysql.cj.jdbc.Driver";
 	
 	private static DAOFactory instance = new DAOFactory();
+	
+	private Logger logger = LoggerFactory.getLogger(DAOFactory.class);
 
 	private DAOFactory(){
 		try {
             Class.forName(DRIVER);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        	logger.error(e.getMessage(), e);
         }
 	}
 	

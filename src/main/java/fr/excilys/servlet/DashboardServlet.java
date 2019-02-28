@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.mapper.MapperFactory;
@@ -25,6 +28,8 @@ public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private static ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	
+	private Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
 	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -49,9 +54,10 @@ public class DashboardServlet extends HttpServlet {
 			request.setAttribute("computers", computers);
 			request.setAttribute("totalComputer", serviceFactory.getComputerService().count());
 			request.setAttribute("pageNumber", pageNumber);
-		} catch (NumberFormatException | DAOException e) {
-			e.printStackTrace();
+		} catch (DAOException e) {
+			logger.warn(e.getMessage(), e);
 		}
+		logger.info("Redirect to dashboard.jsp");
 		this.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
 	}
 
@@ -59,8 +65,6 @@ public class DashboardServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
 

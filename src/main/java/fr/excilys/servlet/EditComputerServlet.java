@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
@@ -33,6 +36,8 @@ public class EditComputerServlet extends HttpServlet {
 	private static ServiceFactory serviceFactory = ServiceFactory.getInstance();
 	private static MapperFactory mapperFactory = MapperFactory.getInstance();
 	
+	private Logger logger = LoggerFactory.getLogger(EditComputerServlet.class);
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -45,9 +50,10 @@ public class EditComputerServlet extends HttpServlet {
 				companies.add(mapperFactory.getCompanyMapper().mapObjectInDTO(company));
 			request.setAttribute("companies", companies);
 		} catch (MappingException | DAOException | ValidationException e) {
-			System.out.println(e.getMessage());
+			logger.warn(e.getMessage(), e);
 		}
 		request.setAttribute("editComputer", dto);
+		logger.info("Redirect to editComputer.jsp");
 		this.getServletContext().getRequestDispatcher("/WEB-INF/views/editComputer.jsp").forward(request, response);
 	}
 
@@ -64,9 +70,12 @@ public class EditComputerServlet extends HttpServlet {
 			Computer computer = mapperFactory.getComputerMapper().mapDTOInObject(dto);
 			ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);
 			serviceFactory.getComputerService().update(computer);
+			logger.info("The computer "+computer+" has been created");
 		} catch (ValidationException | MappingException | DAOException e) {
+			logger.error(e.getMessage(), e);
 			request.setAttribute("error", e.getMessage());
 		}
+		logger.info("Redirect to dashboard.jsp");
 		this.getServletContext().getRequestDispatcher("/").forward(request, response);
 	}
 

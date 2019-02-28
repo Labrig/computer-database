@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.DAOException;
@@ -23,11 +26,14 @@ import fr.excilys.service.ServiceFactory;
 @WebServlet("/DeleteComputer")
 public class DeleteComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
+	private Logger logger = LoggerFactory.getLogger(DeleteComputerServlet.class);
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		logger.info("Redirect to dashboard.jsp");
 		this.getServletContext().getRequestDispatcher("/").forward(request, response);
 	}
 
@@ -40,7 +46,9 @@ public class DeleteComputerServlet extends HttpServlet {
 			ComputerDTO dto = new ComputerDTOBuilder().setId(idComputer).build();
 			try {
 				ServiceFactory.getInstance().getComputerService().delete(MapperFactory.getInstance().getComputerMapper().mapDTOInObject(dto).getId());
+				logger.info("The computer with the id "+idComputer+" has been deleted");
 			} catch (MappingException | ValidationException | DAOException e) {
+				logger.error(e.getMessage(), e);
 				request.setAttribute("error", e.getMessage());
 			}
 		}

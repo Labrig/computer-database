@@ -4,6 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.MappingException;
 import fr.excilys.model.Company;
@@ -13,6 +16,8 @@ public class ComputerMapper implements ObjectMapper<Computer, ComputerDTO> {
 
 	private static final ComputerMapper instance = new ComputerMapper();
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+	
+	private Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 	
 	private ComputerMapper() { }
 
@@ -29,27 +34,32 @@ public class ComputerMapper implements ObjectMapper<Computer, ComputerDTO> {
 		try {
 			computer.setId(this.convertStringToId(dto.getId()));
 		} catch(NumberFormatException e) {
+			logger.error(e.getMessage(), e);
 			throw new MappingException("the computer id is not a long");
 		}
 		computer.setName(dto.getName());
 		try {
 			computer.setIntroduced(this.convertStringToDate(dto.getIntroduced()));
 		} catch(ParseException e) {
+			logger.error(e.getMessage(), e);
 			throw new MappingException("the introducted date is not good format");
 		}
 		try {
 			computer.setDiscontinued(this.convertStringToDate(dto.getDiscontinued()));
 		} catch(ParseException e) {
+			logger.error(e.getMessage(), e);
 			throw new MappingException("the discontinued date is not good format");
 		}
 		Company company = new Company();
 		try {
 			company.setId(this.convertStringToId(dto.getCompanyId()));
 		} catch(NumberFormatException e) {
+			logger.error(e.getMessage(), e);
 			throw new MappingException("the company id is not a long");
 		}
 		company.setName(dto.getCompanyName());
 		computer.setCompany(company);
+		logger.info("the dto has been converted into computer");
 		return computer;
 	}
 
@@ -64,6 +74,7 @@ public class ComputerMapper implements ObjectMapper<Computer, ComputerDTO> {
 			dto.setCompanyId(this.convertIdToString(computer.getCompany().getId()));
 			dto.setCompanyName(computer.getCompany().getName());
 		}
+		logger.info("the computer has been converted into dto");
 		return dto;
 	}
 	
