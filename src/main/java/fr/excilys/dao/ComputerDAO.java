@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.excilys.exceptions.DAOException;
+import fr.excilys.exceptions.ValidationException;
 import fr.excilys.model.Computer;
 import fr.excilys.model.Computer.ComputerBuilder;
 import fr.excilys.validator.ComputerValidator;
@@ -30,6 +32,8 @@ public class ComputerDAO implements DAO<Computer> {
 	
 	private static ComputerDAO instance = new ComputerDAO();
 	
+	private static ComputerValidator validator = ComputerValidator.getInstance();
+	
 	private ComputerDAO() { }
 	
 	public static ComputerDAO getInstance() {
@@ -37,9 +41,9 @@ public class ComputerDAO implements DAO<Computer> {
 	}
 
 	@Override
-	public void insert(Computer computer) throws SQLException {
-		ComputerValidator.getInstance().attributeNotNull(computer);
-		ComputerValidator.getInstance().attributeNotNull(computer.getName());
+	public void insert(Computer computer) throws ValidationException, DAOException {
+		validator.verifyComputerNotNull(computer);
+		validator.verifyName(computer.getName());
 		try(Connection connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(INSERT_COMPUTER_REQUEST);){
 			statement.setString(1, computer.getName());
@@ -47,13 +51,16 @@ public class ComputerDAO implements DAO<Computer> {
 			statement.setTimestamp(3, computer.getDiscontinued() == null ? null : new Timestamp(computer.getDiscontinued().getTime()));
 			statement.setObject(4, computer.getCompany() == null ? null : computer.getCompany().getId());
 			statement.execute();
+		} catch (SQLException e) {
+			throw new DAOException("can not insert the computer "+computer.toString());
 		}
 	}
 
 	@Override
-	public void update(Computer computer) throws SQLException {
-		ComputerValidator.getInstance().attributeNotNull(computer);
-		ComputerValidator.getInstance().attributeNotNull(computer.getId());
+	public void update(Computer computer) throws ValidationException, DAOException {
+		validator.verifyComputerNotNull(computer);
+		validator.verifyIdNotNull(computer.getId());
+		validator.verifyName(computer.getName());
 		try(Connection	connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(UPDATE_COMPUTER_REQUEST);){
 			statement.setString(1, computer.getName());
@@ -62,22 +69,26 @@ public class ComputerDAO implements DAO<Computer> {
 			statement.setObject(4, computer.getCompany() == null ? null : computer.getCompany().getId());
 			statement.setLong(5, computer.getId());
 			statement.execute();
+		} catch (SQLException e) {
+			throw new DAOException("can not update the computer "+computer.toString());
 		}
 	}
 
 	@Override
-	public void delete(Long idComputer) throws SQLException {
-		ComputerValidator.getInstance().attributeNotNull(idComputer);
+	public void delete(Long idComputer) throws ValidationException, DAOException {
+		validator.verifyIdNotNull(idComputer);
 		try(Connection connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(DELETE_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);
 			statement.execute();
+		} catch (SQLException e) {
+			throw new DAOException("can not delete the computer with the id "+idComputer);
 		}
 	}
 
 	@Override
-	public Computer find(Long idComputer) throws SQLException {
-		ComputerValidator.getInstance().attributeNotNull(idComputer);
+	public Computer find(Long idComputer) throws ValidationException, DAOException {
+		validator.verifyIdNotNull(idComputer);
 		try(Connection	connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);	
@@ -85,20 +96,26 @@ public class ComputerDAO implements DAO<Computer> {
 			result.next();
 			Computer computer = mapResultSet(result);
 			return computer;
+		} catch (SQLException e) {
+			throw new DAOException("can not find the computer with the id "+idComputer);
 		}
 	}
 
 	@Override
-	public List<Computer> list() throws SQLException {
-		List<Computer> listComputer = new ArrayList<>();
+	public List<Computer> list() throws DAOException {
+		
 		try(Connection connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST);){
+			List<Computer> listComputer = new ArrayList<>();
 			ResultSet result = statement.executeQuery();
 			while(result.next()) {
 				listComputer.add(mapResultSet(result));		
 			}
+			return listComputer;
+		} catch (SQLException e) {
+			throw new DAOException("can not list the computers");
 		}
-		return listComputer;
+		
 	}
 	
 	/**
@@ -108,19 +125,22 @@ public class ComputerDAO implements DAO<Computer> {
 	 * @param size the number of computer to list
 	 * @return the list of computer found
 	 * @throws SQLException thrown if a problem occur during the communication
+	 * @throws DAOException 
 	 */
-	public List<Computer> listWithPagination(int start, int size) throws SQLException {
-		List<Computer> listComputer = new ArrayList<>();
+	public List<Computer> listWithPagination(int start, int size) throws DAOException {
 		try(Connection connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST+LIMIT_COMPUTER);){
+			List<Computer> listComputer = new ArrayList<>();
 			statement.setInt(1, start);
 			statement.setInt(2, size);
 			ResultSet result = statement.executeQuery();
 			while(result.next()) {
 				listComputer.add(mapResultSet(result));		
 			}
+			return listComputer;
+		} catch (SQLException e) {
+			throw new DAOException("can not list the computers between "+start+" and "+(start+size));
 		}
-		return listComputer;
 	}
 	
 	/**
@@ -129,18 +149,21 @@ public class ComputerDAO implements DAO<Computer> {
 	 * @param name the pattern of search
 	 * @return the list of computer found with the name parameter
 	 * @throws SQLException thrown if a problem occur during the communication
+	 * @throws DAOException 
 	 */
-	public List<Computer> listByName(String name) throws SQLException {
-		List<Computer> listComputer = new ArrayList<>();
+	public List<Computer> listByName(String name) throws DAOException {
 		try(Connection connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_BY_NAME_REQUEST);){
+			List<Computer> listComputer = new ArrayList<>();
 			statement.setString(1, "%"+name+"%");
 			ResultSet result = statement.executeQuery();
 			while(result.next()) {
 				listComputer.add(mapResultSet(result));		
 			}
+			return listComputer;
+		} catch (SQLException e) {
+			throw new DAOException("can not list the computers with the name "+name);
 		}
-		return listComputer;
 	}
 	
 	/**
@@ -152,11 +175,12 @@ public class ComputerDAO implements DAO<Computer> {
 	 * @param size the number of computer to list
 	 * @return the list of computer found
 	 * @throws SQLException thrown if a problem occur during the communication
+	 * @throws DAOException 
 	 */
-	public List<Computer> listByNameWithPagination(String name, int start, int size) throws SQLException {
-		List<Computer> listComputer = new ArrayList<>();
+	public List<Computer> listByNameWithPagination(String name, int start, int size) throws DAOException {
 		try(Connection connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_BY_NAME_REQUEST+LIMIT_COMPUTER);){
+			List<Computer> listComputer = new ArrayList<>();
 			statement.setString(1, "%"+name+"%");
 			statement.setInt(2, start);
 			statement.setInt(3, size);
@@ -164,29 +188,37 @@ public class ComputerDAO implements DAO<Computer> {
 			while(result.next()) {
 				listComputer.add(mapResultSet(result));		
 			}
+			return listComputer;
+		} catch (SQLException e) {
+			throw new DAOException("can not list the computers with the name "+name+" between "+start+" and "+(start+size));
 		}
-		return listComputer;
 	}
 	
 	@Override
-	public int count() throws SQLException {
+	public int count() throws DAOException {
 		try(Connection	connect = DAOFactory.getConnection();
 				PreparedStatement statement = connect.prepareStatement(COUNT_COMPUTER_REQUEST);){
 			ResultSet result = statement.executeQuery();		
 			result.next();
 			return result.getInt("count");
+		} catch (SQLException e) {
+			throw new DAOException("can not count the computers");
 		}
 	}
 	
 	@Override
-	public Computer mapResultSet(ResultSet result) throws SQLException {
-		Long idCompany = result.getLong("company_id");
-		return new ComputerBuilder().setId(result.getLong("id"))
-				.setName(result.getString("name"))
-				.setIntroduced(result.getTimestamp("introduced"))
-				.setDiscontinued(result.getTimestamp("discontinued"))
-				.setCompany(idCompany == 0 ? null : CompanyDAO.getInstance().find(idCompany))
-				.build();
+	public Computer mapResultSet(ResultSet result) throws DAOException {
+		try {
+			Long idCompany = result.getLong("company_id");
+			return new ComputerBuilder().setId(result.getLong("id"))
+					.setName(result.getString("name"))
+					.setIntroduced(result.getTimestamp("introduced"))
+					.setDiscontinued(result.getTimestamp("discontinued"))
+					.setCompany(idCompany == 0 ? null : CompanyDAO.getInstance().find(idCompany))
+					.build();
+		} catch (SQLException e) {
+			throw new DAOException("can not build the computer with the gave ResultSet");
+		}
 	}
 
 }

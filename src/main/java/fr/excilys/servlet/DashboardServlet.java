@@ -1,7 +1,6 @@
 package fr.excilys.servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.mapper.ComputerMapper;
+import fr.excilys.exceptions.DAOException;
+import fr.excilys.mapper.MapperFactory;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ServiceFactory;
 
@@ -24,6 +24,8 @@ import fr.excilys.service.ServiceFactory;
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
+	private static ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -42,12 +44,12 @@ public class DashboardServlet extends HttpServlet {
 		pageSize = (String)request.getSession().getAttribute("pageSize");
 		try {
 			List<ComputerDTO> computers = new ArrayList<>();
-			for(Computer computer : ServiceFactory.getInstance().getComputerService().listWithPagination((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize)))
-				computers.add(ComputerMapper.getInstance().mapObjectInDTO(computer));
+			for(Computer computer : serviceFactory.getComputerService().listWithPagination((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize)))
+				computers.add(MapperFactory.getInstance().getComputerMapper().mapObjectInDTO(computer));
 			request.setAttribute("computers", computers);
-			request.setAttribute("totalComputer", ServiceFactory.getInstance().getComputerService().count());
+			request.setAttribute("totalComputer", serviceFactory.getComputerService().count());
 			request.setAttribute("pageNumber", pageNumber);
-		} catch (SQLException e) {
+		} catch (NumberFormatException | DAOException e) {
 			e.printStackTrace();
 		}
 		this.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);

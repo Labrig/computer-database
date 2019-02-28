@@ -1,6 +1,6 @@
 package fr.excilys.mapper;
 
-import fr.excilys.exceptions.DTOException;
+import fr.excilys.exceptions.MappingException;
 
 /**
  * Interface use to create a mapper between
@@ -17,9 +17,9 @@ public interface ObjectMapper<O, D> {
 	 * 
 	 * @param dto the DTO object
 	 * @return the business object
-	 * @throws DTOException 
+	 * @throws MappingException 
 	 */
-	public O mapDTOInObject(D dto) throws DTOException;
+	public O mapDTOInObject(D dto) throws MappingException;
 	
 	/**
 	 * Transform the business object into DTO object

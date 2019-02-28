@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.exceptions.DTOException;
+import fr.excilys.exceptions.MappingException;
 import fr.excilys.model.Computer;
 
 public class ComputerMapperTest {
@@ -22,7 +22,7 @@ public class ComputerMapperTest {
 	}
 	
 	@Test
-	public void testMapDTOInObject() throws DTOException {
+	public void testMapDTOInObject() throws MappingException {
 		Computer computer = ComputerMapper.getInstance().mapDTOInObject(new ComputerDTO());
 		assertNull(computer.getId());
 		assertNull(computer.getName());

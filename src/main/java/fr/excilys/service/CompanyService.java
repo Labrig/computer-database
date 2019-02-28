@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import fr.excilys.dao.CompanyDAO;
+import fr.excilys.exceptions.DAOException;
 import fr.excilys.model.Company;
 
 /**
@@ -23,18 +24,20 @@ public class CompanyService {
 
 	/**
 	 * @return a list of all companies
+	 * @throws DAOException 
 	 * @throws SQLException 
 	 */
-	public List<Company> list() throws SQLException {
+	public List<Company> list() throws DAOException {
 		return dao.list();
 	}
 	
 	/**
 	 * @param companyId the id of the desired company
 	 * @return the desired company
+	 * @throws DAOException 
 	 * @throws SQLException 
 	 */
-	public Company find(Long companyId) throws SQLException {
+	public Company find(Long companyId) throws DAOException {
 		return dao.find(companyId);
 	}
 }

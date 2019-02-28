@@ -1,11 +1,11 @@
 package fr.excilys.controller;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.exceptions.ComputerFormatException;
-import fr.excilys.exceptions.DTOException;
+import fr.excilys.exceptions.ValidationException;
+import fr.excilys.exceptions.DAOException;
+import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.model.Company;
@@ -48,10 +48,10 @@ public class Controller {
 	/**
 	 * @param message the command to threat
 	 * @throws NotCommandeException
-	 * @throws ComputerFormatException
-	 * @throws DTOException
+	 * @throws ValidationException
+	 * @throws MappingException
 	 */
-	public void executeCommand(String message) throws NotCommandeException, ComputerFormatException, DTOException {
+	public void executeCommand(String message) throws NotCommandeException, ValidationException, MappingException {
 		StringBuilder sb = new StringBuilder();
 		switch(message) {
 		case "/l company":
@@ -84,15 +84,15 @@ public class Controller {
 	/**
 	 * @param sb the StringBuilder need to construct the answer
 	 * @throws NotCommandeException
-	 * @throws ComputerFormatException
-	 * @throws DTOException
+	 * @throws ValidationException
+	 * @throws MappingException
 	 */
-	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
+	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
 		String[] attributesD = {"id"};
 		try {
 			computerService.delete(this.fillComputerField(attributesD).getId());
 			sb.append("Computer as been deleted");
-		} catch(SQLException e) {
+		} catch(DAOException e) {
 			throw new NotCommandeException("Can not delete this computer");
 		}
 	}
@@ -100,16 +100,16 @@ public class Controller {
 	/**
 	 * @param sb the StringBuilder need to construct the answer
 	 * @throws NotCommandeException
-	 * @throws ComputerFormatException
-	 * @throws DTOException
+	 * @throws ValidationException
+	 * @throws MappingException
 	 */
-	private void updateComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
+	private void updateComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
 		String[] attributesU = {"id","name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesU);
 		try {
 			computerService.update(computer);
 			sb.append("Computer as been updated");
-		} catch(SQLException e) {
+		} catch(DAOException e) {
 			throw new NotCommandeException("Can not update this computer");
 		}
 	}
@@ -117,15 +117,15 @@ public class Controller {
 	/**
 	 * @param sb the StringBuilder need to construct the answer
 	 * @throws NotCommandeException
-	 * @throws ComputerFormatException
-	 * @throws DTOException
+	 * @throws ValidationException
+	 * @throws MappingException
 	 */
-	private void findComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
+	private void findComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
 		String[] attributesR = {"id"};
 		try {
 			Computer computer = computerService.find(this.fillComputerField(attributesR).getId());
 			sb.append(computer.toString());
-		} catch(SQLException e) {
+		} catch(DAOException e) {
 			throw new NotCommandeException("Computer not found");
 		}
 	}
@@ -133,16 +133,16 @@ public class Controller {
 	/**
 	 * @param sb the StringBuilder need to construct the answer
 	 * @throws NotCommandeException
-	 * @throws ComputerFormatException
-	 * @throws DTOException
+	 * @throws ValidationException
+	 * @throws MappingException
 	 */
-	private void createComputer(StringBuilder sb) throws NotCommandeException, ComputerFormatException, DTOException {
+	private void createComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
 		String[] attributesC = {"name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesC);
 		try {
 			computerService.create(computer);
 			sb.append("Computer as been created");
-		} catch(SQLException e) {
+		} catch(DAOException e) {
 			throw new NotCommandeException("Can not create this computer");
 		}
 	}
@@ -157,7 +157,7 @@ public class Controller {
 			for(Computer comput : computers) {
 				sb.append(comput.toString()+"\n");
 			}
-		} catch (SQLException e) {
+		} catch (DAOException e) {
 			throw new NotCommandeException("Can not list the computers");
 		}
 	}
@@ -172,7 +172,7 @@ public class Controller {
 			for(Company company : companies) {
 				sb.append(company.toString()+"\n");
 			}
-		} catch (SQLException e) {
+		} catch (DAOException e) {
 			throw new NotCommandeException("Can not list the companies");
 		}
 	}
@@ -182,10 +182,10 @@ public class Controller {
 	 * 
 	 * @param attributes the attributes to fill in computer
 	 * @return the computer fill with the user answer
-	 * @throws ComputerFormatException
-	 * @throws DTOException
+	 * @throws ValidationException
+	 * @throws MappingException
 	 */
-	public Computer fillComputerField(String[] attributes) throws ComputerFormatException, DTOException {
+	public Computer fillComputerField(String[] attributes) throws MappingException, ValidationException {
 		ComputerDTO dto = new ComputerDTO();
 		for(String attribute : attributes) {
 			String value = this.view.requestAttribute(attribute);
@@ -207,7 +207,7 @@ public class Controller {
 					dto.setCompanyId(value);
 					break;
 				default:
-					throw new ComputerFormatException(attribute+" is not an attribute of computer");
+					throw new MappingException(attribute+" is not an attribute of computer");
 				}
 			}
 		}

@@ -8,8 +8,8 @@ import java.text.SimpleDateFormat;
 
 import org.junit.Test;
 
-import fr.excilys.exceptions.ComputerFormatException;
-import fr.excilys.exceptions.DTOException;
+import fr.excilys.exceptions.ValidationException;
+import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.model.Computer;
 import fr.excilys.view.CliView;
@@ -19,7 +19,7 @@ public class ControllerTest {
 	private CliView mockedView = mock(CliView.class);
 
 	@Test
-	public void testFillComputerFieldFull() throws ParseException, NotCommandeException, ComputerFormatException, DTOException {
+	public void testFillComputerFieldFull() throws ParseException, NotCommandeException, ValidationException, MappingException {
 		when(mockedView.requestAttribute("id")).thenReturn("1");
 		when(mockedView.requestAttribute("name")).thenReturn("test");
 		when(mockedView.requestAttribute("intro")).thenReturn("19-10-2011");

@@ -1,7 +1,6 @@
 package fr.excilys.servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,8 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
-import fr.excilys.exceptions.DTOException;
-import fr.excilys.mapper.ComputerMapper;
+import fr.excilys.exceptions.DAOException;
+import fr.excilys.exceptions.MappingException;
+import fr.excilys.exceptions.ValidationException;
+import fr.excilys.mapper.MapperFactory;
 import fr.excilys.service.ServiceFactory;
 
 /**
@@ -38,8 +39,8 @@ public class DeleteComputerServlet extends HttpServlet {
 		for(String idComputer : computersId) {
 			ComputerDTO dto = new ComputerDTOBuilder().setId(idComputer).build();
 			try {
-				ServiceFactory.getInstance().getComputerService().delete(ComputerMapper.getInstance().mapDTOInObject(dto).getId());
-			} catch (SQLException | DTOException e) {
+				ServiceFactory.getInstance().getComputerService().delete(MapperFactory.getInstance().getComputerMapper().mapDTOInObject(dto).getId());
+			} catch (MappingException | ValidationException | DAOException e) {
 				request.setAttribute("error", e.getMessage());
 			}
 		}

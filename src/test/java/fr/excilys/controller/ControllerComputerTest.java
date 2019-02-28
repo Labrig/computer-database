@@ -4,7 +4,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doCallRealMethod;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,8 +13,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import fr.excilys.exceptions.ComputerFormatException;
-import fr.excilys.exceptions.DTOException;
+import fr.excilys.exceptions.ValidationException;
+import fr.excilys.exceptions.DAOException;
+import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
@@ -28,7 +28,7 @@ public class ControllerComputerTest {
 	private CliView mockedView = mock(CliView.class);
 	
 	@Test
-	public void testListComputer() throws SQLException {
+	public void testListComputer() throws DAOException {
 		List<Computer> listComputer = new ArrayList<>();
 		for(int i = 1; i < 4 ; i++) {
 			Computer computer = new Computer();
@@ -45,15 +45,15 @@ public class ControllerComputerTest {
 			controller.executeCommand("/l computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ComputerFormatException e) {
+		} catch (ValidationException e) {
 			e.printStackTrace();
-		} catch (DTOException e) {
+		} catch (MappingException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Test
-	public void testFindComputer() throws SQLException {
+	public void testFindComputer() throws ValidationException, DAOException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
 		PowerMockito.mockStatic(ComputerService.class);
@@ -68,15 +68,15 @@ public class ControllerComputerTest {
 			controller.executeCommand("/f computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ComputerFormatException e) {
+		} catch (ValidationException e) {
 			e.printStackTrace();
-		} catch (DTOException e) {
+		} catch (MappingException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Test
-	public void testCreateComputer() throws NotCommandeException, ComputerFormatException, DTOException {
+	public void testCreateComputer() throws NotCommandeException, ValidationException, MappingException {
 		Computer computer = new Computer();
 		computer.setName("test");
 		PowerMockito.mockStatic(ComputerService.class);
@@ -93,13 +93,13 @@ public class ControllerComputerTest {
 			controllerMock.executeCommand("/c computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ComputerFormatException e) {
+		} catch (ValidationException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Test
-	public void testUpdateComputer() throws NotCommandeException, ComputerFormatException, DTOException {
+	public void testUpdateComputer() throws NotCommandeException, ValidationException, MappingException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
 		computer.setName("test");
@@ -117,13 +117,13 @@ public class ControllerComputerTest {
 			controllerMock.executeCommand("/u computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ComputerFormatException e) {
+		} catch (ValidationException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Test
-	public void testDeleteComputer() throws NotCommandeException, ComputerFormatException, DTOException {
+	public void testDeleteComputer() throws NotCommandeException, ValidationException, MappingException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
 		PowerMockito.mockStatic(ComputerService.class);
@@ -140,7 +140,7 @@ public class ControllerComputerTest {
 			controllerMock.executeCommand("/d computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ComputerFormatException e) {
+		} catch (ValidationException e) {
 			e.printStackTrace();
 		}
 	}

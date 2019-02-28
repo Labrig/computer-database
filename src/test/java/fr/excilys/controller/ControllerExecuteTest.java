@@ -9,8 +9,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import fr.excilys.controller.Controller;
-import fr.excilys.exceptions.ComputerFormatException;
-import fr.excilys.exceptions.DTOException;
+import fr.excilys.exceptions.ValidationException;
+import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.view.CliView;
 
@@ -53,7 +53,7 @@ public class ControllerExecuteTest {
     }
 	
     @Test(expected = NotCommandeException.class)
-	public void testExecuteException() throws NotCommandeException, ComputerFormatException, DTOException {
+	public void testExecuteException() throws NotCommandeException, ValidationException, MappingException {
 		this.command.executeCommand(this.message);
 	}
 

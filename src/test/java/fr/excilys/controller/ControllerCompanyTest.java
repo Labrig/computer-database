@@ -3,7 +3,6 @@ package fr.excilys.controller;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +12,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import fr.excilys.exceptions.ComputerFormatException;
-import fr.excilys.exceptions.DTOException;
+import fr.excilys.exceptions.ValidationException;
+import fr.excilys.exceptions.DAOException;
+import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.model.Company;
 import fr.excilys.service.CompanyService;
@@ -25,7 +25,7 @@ import fr.excilys.view.CliView;
 public class ControllerCompanyTest {
 
 	@Test
-	public void testListCompany() throws SQLException {
+	public void testListCompany() throws DAOException {
 		List<Company> listCompany = new ArrayList<>();
 		for(int i = 1; i < 4 ; i++) {
 			Company company = new Company();
@@ -42,9 +42,9 @@ public class ControllerCompanyTest {
 			controller.executeCommand("/l company");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ComputerFormatException e) {
+		} catch (ValidationException e) {
 			e.printStackTrace();
-		} catch (DTOException e) {
+		} catch (MappingException e) {
 			e.printStackTrace();
 		}
 	}

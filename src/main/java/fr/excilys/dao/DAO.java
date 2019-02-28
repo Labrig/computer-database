@@ -4,6 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import fr.excilys.exceptions.DAOException;
+import fr.excilys.exceptions.ValidationException;
+
 /**
  * Interface of the DAO of an object
  * 
@@ -19,7 +22,7 @@ public interface DAO<T> {
 	 * @param object the object to insert
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public void insert(T object) throws SQLException;
+	public void insert(T object) throws DAOException, ValidationException;
 	
 	/**
 	 * Update an object in the database
@@ -27,7 +30,7 @@ public interface DAO<T> {
 	 * @param object the object to update
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public void update(T object) throws SQLException;
+	public void update(T object) throws DAOException, ValidationException;
 	
 	/**
 	 * Delete an object in the database with the specified id
@@ -35,7 +38,7 @@ public interface DAO<T> {
 	 * @param id the object id to delete
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public void delete(Long id) throws SQLException;
+	public void delete(Long id) throws DAOException, ValidationException;
 	
 	/**
 	 * Find an object in database with the id
@@ -44,7 +47,7 @@ public interface DAO<T> {
 	 * @return the object find or empty object if not found
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public T find(Long id) throws SQLException;
+	public T find(Long id) throws DAOException, ValidationException;
 	
 	/**
 	 * List all object in database
@@ -52,7 +55,7 @@ public interface DAO<T> {
 	 * @return the list of objects
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public List<T> list() throws SQLException;
+	public List<T> list() throws DAOException;
 	
 	/**
 	 * Count the number of object in the database
@@ -60,7 +63,7 @@ public interface DAO<T> {
 	 * @return the number of object in database
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public int count() throws SQLException;
+	public int count() throws DAOException;
 	
 	/**
 	 * Convert the result of the query in business object
@@ -68,7 +71,8 @@ public interface DAO<T> {
 	 * @param result the result of the query
 	 * @return the object build with the result
 	 * @throws SQLException thrown if a problem occur during the communication
+	 * @throws DAOException 
 	 */
-	public T mapResultSet(ResultSet result) throws SQLException;
+	public T mapResultSet(ResultSet result) throws DAOException;
 	
 }

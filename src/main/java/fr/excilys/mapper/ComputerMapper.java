@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.exceptions.DTOException;
+import fr.excilys.exceptions.MappingException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 
@@ -24,29 +24,29 @@ public class ComputerMapper implements ObjectMapper<Computer, ComputerDTO> {
 	}
 
 	@Override
-	public Computer mapDTOInObject(ComputerDTO dto) throws DTOException {
+	public Computer mapDTOInObject(ComputerDTO dto) throws MappingException {
 		Computer computer = new Computer();
 		try {
 			computer.setId(this.convertStringToId(dto.getId()));
 		} catch(NumberFormatException e) {
-			throw new DTOException("the computer id is not a long");
+			throw new MappingException("the computer id is not a long");
 		}
 		computer.setName(dto.getName());
 		try {
 			computer.setIntroduced(this.convertStringToDate(dto.getIntroduced()));
 		} catch(ParseException e) {
-			throw new DTOException("the introducted date is not good format");
+			throw new MappingException("the introducted date is not good format");
 		}
 		try {
 			computer.setDiscontinued(this.convertStringToDate(dto.getDiscontinued()));
 		} catch(ParseException e) {
-			throw new DTOException("the discontinued date is not good format");
+			throw new MappingException("the discontinued date is not good format");
 		}
 		Company company = new Company();
 		try {
 			company.setId(this.convertStringToId(dto.getCompanyId()));
 		} catch(NumberFormatException e) {
-			throw new DTOException("the company id is not a long");
+			throw new MappingException("the company id is not a long");
 		}
 		company.setName(dto.getCompanyName());
 		computer.setCompany(company);
@@ -95,7 +95,7 @@ public class ComputerMapper implements ObjectMapper<Computer, ComputerDTO> {
 	 * @return String id
 	 */
 	public String convertIdToString(Long id) {
-		return id == null ? null : String.valueOf(id);
+		return id == null || id == 0 ? null : String.valueOf(id);
 	}
 	
 	/**
