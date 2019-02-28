@@ -99,38 +99,38 @@
         <div class="container text-center">
             <ul class="pagination">
                 <li>
-                    <a href="<c:url value="/?pageNumber=${pageNumber-1}"/>" aria-label="Previous">
+                    <a href="<c:url value="/?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>" aria-label="Previous">
                       <span aria-hidden="true">&laquo;</span>
                   </a>
               </li>
               <c:choose>
          
 		         <c:when test = "${pageNumber < 3}">
-			          <li><a href="<c:url value="/?pageNumber=1"/>">1</a></li>
-		              <li><a href="<c:url value="/?pageNumber=2"/>">2</a></li>
-		              <li><a href="<c:url value="/?pageNumber=3"/>">3</a></li>
-		              <li><a href="<c:url value="/?pageNumber=4"/>">4</a></li>
-		              <li><a href="<c:url value="/?pageNumber=5"/>">5</a></li>
+			          <li><a href="<c:url value="/?pageNumber=1&pageSize=${pageSize}"/>">1</a></li>
+		              <li><a href="<c:url value="/?pageNumber=2&pageSize=${pageSize}"/>">2</a></li>
+		              <li><a href="<c:url value="/?pageNumber=3&pageSize=${pageSize}"/>">3</a></li>
+		              <li><a href="<c:url value="/?pageNumber=4&pageSize=${pageSize}"/>">4</a></li>
+		              <li><a href="<c:url value="/?pageNumber=5&pageSize=${pageSize}"/>">5</a></li>
 		         </c:when>
 		         
-		         <c:when test = "${pageNumber > (totalComputer/pageSize)-3}">
-		         	  <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)-4}"/>">${(totalComputer/pageSize)-4}</a></li>
-		              <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)-3}"/>">${(totalComputer/pageSize)-3}</a></li>
-		              <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)-2}"/>">${(totalComputer/pageSize)-2}</a></li>
-		              <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)-1}"/>">${(totalComputer/pageSize)-1}</a></li>
-		              <li><a href="<c:url value="/?pageNumber=${(totalComputer/pageSize)}"/>">${(totalComputer/pageSize)}</a></li>
+		         <c:when test = "${pageNumber > pageTotal-3}">
+		         	  <li><a href="<c:url value="/?pageNumber=${pageTotal-4}&pageSize=${pageSize}"/>">${pageTotal-4}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageTotal-3}&pageSize=${pageSize}"/>">${pageTotal-3}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageTotal-2}&pageSize=${pageSize}"/>">${pageTotal-2}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageTotal-1}&pageSize=${pageSize}"/>">${pageTotal-1}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageTotal}&pageSize=${pageSize}"/>">${pageTotal}</a></li>
 		         </c:when>
 		         
 		         <c:otherwise>
-			          <li><a href="<c:url value="/?pageNumber=${pageNumber-2}"/>">${pageNumber-2}</a></li>
-		              <li><a href="<c:url value="/?pageNumber=${pageNumber-1}"/>">${pageNumber-1}</a></li>
-		              <li><a href="<c:url value="/?pageNumber=${pageNumber}"/>">${pageNumber}</a></li>
-		              <li><a href="<c:url value="/?pageNumber=${pageNumber+1}"/>">${pageNumber+1}</a></li>
-		              <li><a href="<c:url value="/?pageNumber=${pageNumber+2}"/>">${pageNumber+2}</a></li>
+			          <li><a href="<c:url value="/?pageNumber=${pageNumber-2}&pageSize=${pageSize}"/>">${pageNumber-2}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>">${pageNumber-1}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageNumber}&pageSize=${pageSize}"/>">${pageNumber}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageNumber+1}&pageSize=${pageSize}"/>">${pageNumber+1}</a></li>
+		              <li><a href="<c:url value="/?pageNumber=${pageNumber+2}&pageSize=${pageSize}"/>">${pageNumber+2}</a></li>
 		         </c:otherwise>
 		      </c:choose>
               <li>
-                <a href="<c:url value="/?pageNumber=${pageNumber+1}"/>" aria-label="Next">
+                <a href="<c:url value="/?pageNumber=${pageNumber+1}&pageSize=${pageSize}"/>" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
               </li>
@@ -138,9 +138,9 @@
 
         <div class="btn-group btn-group-sm pull-right" role="group" >
 	        <form>
-	            <a href="<c:url value="/?pageSize=10"/>"><button type="button" class="btn btn-default">10</button></a>
-	            <a href="<c:url value="/?pageSize=50"/>"><button type="button" class="btn btn-default">50</button></a>
-	            <a href="<c:url value="/?pageSize=100"/>"><button type="button" class="btn btn-default">100</button></a>
+	            <a href="<c:url value="/?pageNumber=1&pageSize=10"/>"><button type="button" class="btn btn-default">10</button></a>
+	            <a href="<c:url value="/?pageNumber=1&pageSize=50"/>"><button type="button" class="btn btn-default">50</button></a>
+	            <a href="<c:url value="/?pageNumber=1&pageSize=100"/>"><button type="button" class="btn btn-default">100</button></a>
             </form>
         </div>
      </div>

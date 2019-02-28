@@ -37,23 +37,21 @@ public class DashboardServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String pageNumber = request.getParameter("pageNumber");
 		String pageSize = request.getParameter("pageSize");
-		if (pageNumber != null) {
-			request.getSession().setAttribute("pageNumber", pageNumber);
-		} else if (pageSize != null) {
-			request.getSession().setAttribute("pageSize", pageSize);
-		} else {
-			request.getSession().setAttribute("pageNumber", "1");
-			request.getSession().setAttribute("pageSize", "50");
+		if (pageNumber == null || pageSize == null) {
+			pageNumber = "1";
+			pageSize = "50";
 		}
-		pageNumber = (String)request.getSession().getAttribute("pageNumber");
-		pageSize = (String)request.getSession().getAttribute("pageSize");
 		try {
 			List<ComputerDTO> computers = new ArrayList<>();
 			for(Computer computer : serviceFactory.getComputerService().listWithPagination((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize)))
 				computers.add(MapperFactory.getInstance().getComputerMapper().mapObjectInDTO(computer));
 			request.setAttribute("computers", computers);
-			request.setAttribute("totalComputer", serviceFactory.getComputerService().count());
+			int totalComputer = serviceFactory.getComputerService().count();
+			int pageTotal = totalComputer/Integer.valueOf(pageSize) + (totalComputer%Integer.valueOf(pageSize) != 0 ? 1 : 0);
+			request.setAttribute("pageSize", pageSize);
 			request.setAttribute("pageNumber", pageNumber);
+			request.setAttribute("totalComputer", totalComputer);
+			request.setAttribute("pageTotal", pageTotal);
 		} catch (DAOException e) {
 			logger.warn(e.getMessage(), e);
 		}

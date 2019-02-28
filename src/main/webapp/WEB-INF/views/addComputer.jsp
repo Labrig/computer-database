@@ -33,7 +33,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date">
+                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date" disabled>
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>
@@ -55,5 +55,7 @@
             </div>
         </div>
     </section>
+<script src="<c:url value="/js/jquery.min.js"/>"></script>
+<script src="<c:url value="/js/validatorComputer.js"/>"></script>
 </body>
 </html>
