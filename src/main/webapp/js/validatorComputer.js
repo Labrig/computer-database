@@ -1,18 +1,16 @@
 (function ( ) {
-	console.log("salut");
-	if($("#introduced").data("min")) {
-
-		$("#discontinued").setAttribute("min", this.value);
+	if($( "#introduced" ).val() == ""){
+		$( "#discontinued" ).attr("disabled", true);
 	}
+	$( "#discontinued" ).attr("min", $( "#introduced" ).val());
+	$( "#introduced" ).attr("max", $( "#discontinued" ).val());
 }( jQuery ));
 
-//document.getElementById("introduced").onchange = function () {
-//    var input = document.getElementById("discontinued");
-//    input.disabled = false;
-//    input.setAttribute("min", this.value);
-//}
-//
-//document.getElementById("discontinued").onchange = function () {
-//    var input = document.getElementById("introduced");
-//    input.setAttribute("max", this.value);
-//}
+$( "#introduced" ).change(function(){
+	$( "#discontinued" ).attr("disabled", false);
+	$( "#discontinued" ).attr("min", $( "#introduced" ).val());
+});
+
+$( "#discontinued" ).change(function(){
+	$( "#introduced" ).attr("max", $( "#discontinued" ).val());
+});
