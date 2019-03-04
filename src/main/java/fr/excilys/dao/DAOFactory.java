@@ -1,11 +1,15 @@
 package fr.excilys.dao;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * The factory of the DAO
@@ -15,21 +19,23 @@ import org.slf4j.LoggerFactory;
  */
 public class DAOFactory {
 	
-	private static final String URL="jdbc:mysql://localhost/computer-database-db";
-	private static final String USERNAME="admincdb";
-	private static final String PASSWORD="qwerty1234";
-	private static final String DRIVER="com.mysql.cj.jdbc.Driver";
+	private static HikariDataSource dataSource = new HikariDataSource();
 	
 	private static DAOFactory instance = new DAOFactory();
 	
 	private Logger logger = LoggerFactory.getLogger(DAOFactory.class);
 
 	private DAOFactory(){
+		Properties connectionProps = new Properties();
 		try {
-            Class.forName(DRIVER);
-        } catch (ClassNotFoundException e) {
-        	logger.error(e.getMessage(), e);
-        }
+			connectionProps.load(new FileInputStream(Thread.currentThread().getContextClassLoader().getResource("").getPath()+"configuration.properties"));
+			dataSource.setJdbcUrl(connectionProps.getProperty("URL"));
+			dataSource.setUsername(connectionProps.getProperty("USERNAME"));
+			dataSource.setPassword(connectionProps.getProperty("PASSWORD"));
+			dataSource.setDriverClassName(connectionProps.getProperty("DRIVER"));
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		}
 	}
 	
 	/**
@@ -44,7 +50,7 @@ public class DAOFactory {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public static Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(URL,USERNAME,PASSWORD);
+		return dataSource.getConnection();
 	}
 	
 	/**
