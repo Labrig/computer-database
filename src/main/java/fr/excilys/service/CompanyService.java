@@ -1,6 +1,5 @@
 package fr.excilys.service;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import fr.excilys.dao.CompanyDAO;
@@ -24,8 +23,7 @@ public class CompanyService {
 
 	/**
 	 * @return a list of all companies
-	 * @throws DAOException 
-	 * @throws SQLException 
+	 * @throws DAOException
 	 */
 	public List<Company> list() throws DAOException {
 		return dao.list();
@@ -34,10 +32,17 @@ public class CompanyService {
 	/**
 	 * @param companyId the id of the desired company
 	 * @return the desired company
-	 * @throws DAOException 
-	 * @throws SQLException 
+	 * @throws DAOException
 	 */
 	public Company find(Long companyId) throws DAOException {
 		return dao.find(companyId);
+	}
+	
+	/**
+	 * @param companyId
+	 * @throws DAOException
+	 */
+	public void delete(Long companyId) throws DAOException {
+		dao.delete(companyId);
 	}
 }

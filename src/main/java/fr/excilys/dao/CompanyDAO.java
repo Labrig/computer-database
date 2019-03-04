@@ -24,6 +24,8 @@ public class CompanyDAO implements DAO<Company> {
 	private static final String SELECT_COMPANY_REQUEST = "SELECT id, name FROM company WHERE id = ?";
 	private static final String LIST_COMPANY_REQUEST = "SELECT id, name FROM company";
 	private static final String COUNT_COMPANY_REQUEST = "SELECT COUNT(id) AS count FROM company";
+	private static final String DELETE_COMPANY_REQUEST = "DELETE FROM company WHERE id = ?";
+	private static final String DELETE_COMPUTER_OF_COMPANY_REQUEST = "DELETE FROM computer WHERE company_id = ?";
 	
 	private static CompanyDAO instance = new CompanyDAO();
 	
@@ -47,7 +49,26 @@ public class CompanyDAO implements DAO<Company> {
 
 	@Override
 	public void delete(Long idCompany) throws DAOException {
-		throw new DAOException("delete company not yet implemented");
+		try(Connection connect = DAOFactory.getConnection();
+				PreparedStatement statementComputers = connect.prepareStatement(DELETE_COMPUTER_OF_COMPANY_REQUEST);
+				PreparedStatement statementCompany = connect.prepareStatement(DELETE_COMPANY_REQUEST);) {
+			try {
+				connect.setAutoCommit(false);
+				statementComputers.setLong(1, idCompany);
+				statementComputers.execute();
+				logger.info("The statement "+statementComputers+" has been executed." );
+				statementCompany.setLong(1, idCompany);
+				statementCompany.execute();
+				logger.info("The statement "+statementCompany+" has been executed." );
+				connect.commit();
+			} catch (SQLException e) {
+				logger.error(e.getMessage(), e);
+				connect.rollback();
+				throw new DAOException("can not company the computer with the id "+idCompany);
+			}
+		} catch (SQLException e) {
+			logger.warn(e.getMessage(), e);
+		}
 	}
 
 	@Override

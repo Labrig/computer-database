@@ -2,11 +2,13 @@ package fr.excilys.controller;
 
 import java.util.List;
 
+import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.ValidationException;
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
+import fr.excilys.mapper.CompanyMapper;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
@@ -57,6 +59,9 @@ public class Controller {
 		case "/l company":
 			listCompany(sb);
 			break;
+		case "/d company":
+			deleteCompany(sb);
+			break;
 		case "/l computer":
 			listComputer(sb);
 			break;
@@ -79,6 +84,16 @@ public class Controller {
 			throw new NotCommandeException("La commande n'existe pas");
 		}
 		this.view.displayResultCommand(sb.toString());
+	}
+	
+	private void deleteCompany(StringBuilder sb) throws MappingException, ValidationException, NotCommandeException {
+		String[] attributesD = {"id"};
+		try {
+			companyService.delete(this.fillCompanyField(attributesD).getId());
+			sb.append("Company as been deleted");
+		} catch(DAOException e) {
+			throw new NotCommandeException("Can not delete this company");
+		}
 	}
 
 	/**
@@ -214,5 +229,34 @@ public class Controller {
 		Computer computer = ComputerMapper.getInstance().mapDTOInObject(dto);
 		ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);
 		return computer;
+	}
+	
+	/**
+	 * Request the user to fill the company attribute to complete his command
+	 * 
+	 * @param attributes the attributes to fill in company
+	 * @return the company fill with the user answer
+	 * @throws MappingException
+	 * @throws ValidationException
+	 */
+	public Company fillCompanyField(String[] attributes) throws MappingException, ValidationException {
+		CompanyDTO dto = new CompanyDTO();
+		for(String attribute : attributes) {
+			String value = this.view.requestAttribute(attribute);
+			if(!"".equals(value)) {
+				switch(attribute) {
+				case "id":
+					dto.setId(value);
+					break;
+				case "name":
+					dto.setName(value);
+					break;
+				default:
+					throw new MappingException(attribute+" is not an attribute of company");
+				}
+			}
+		}
+		Company company = CompanyMapper.getInstance().mapDTOInObject(dto);
+		return company;
 	}
 }
