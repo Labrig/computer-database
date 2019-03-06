@@ -1,36 +1,30 @@
 package fr.excilys.service;
 
-import fr.excilys.dao.DAOFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 /**
  * Factory creating all the needed managers
  * (implementing as a singleton)
  * @author Matheo
  */
+@Service
 public class ServiceFactory {
 
-	private static ServiceFactory instance = new ServiceFactory();
-	private static DAOFactory daoFactory = DAOFactory.getInstance();
+	@Autowired
+	private CompanyService companyService;
 	
+	@Autowired
+	private ComputerService computerService;
+
 	private ServiceFactory() { }
 	
-	/**
-	 * @return the instance of the factory
-	 */
-	public static ServiceFactory getInstance() {
-		return instance;
-	}
-	
-	public DAOFactory getDaoFactory() {
-		return daoFactory;
-	}
-
 	/**
 	 * create a new manager for the company beans
 	 * @return the new manager
 	 */
 	public CompanyService getCompanyService() {
-		return CompanyService.getInstance();
+		return this.companyService;
 	}
 	
 	/**
@@ -38,6 +32,6 @@ public class ServiceFactory {
 	 * @return the new manager
 	 */
 	public ComputerService getComputerService() {
-		return ComputerService.getInstance();
+		return this.computerService;
 	}
 }

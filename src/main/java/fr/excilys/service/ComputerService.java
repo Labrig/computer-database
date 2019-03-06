@@ -3,7 +3,10 @@ package fr.excilys.service;
 import java.sql.SQLException;
 import java.util.List;
 
-import fr.excilys.dao.ComputerDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import fr.excilys.dao.DAOFactory;
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.exceptions.ValidationException;
 import fr.excilys.model.Computer;
@@ -17,16 +20,13 @@ import fr.excilys.model.Computer;
  * - list
  * @author Matheo
  */
+@Service
 public class ComputerService {
-
-	private static ComputerService instance = new ComputerService();
-	private static ComputerDAO dao = ServiceFactory.getInstance().getDaoFactory().getComputerDAO();
+	
+	@Autowired
+	private DAOFactory daoFactory;
 	
 	private ComputerService() { }
-	
-	public static ComputerService getInstance() {
-		return instance;
-	}
 	
 	/**
 	 * @return the list of all computers
@@ -34,7 +34,7 @@ public class ComputerService {
 	 * @throws SQLException 
 	 */
 	public List<Computer> list() throws DAOException {
-		return dao.list();
+		return daoFactory.getComputerDAO().list();
 	}
 	
 	/**
@@ -45,7 +45,7 @@ public class ComputerService {
 	 * @throws DAOException 
 	 */
 	public Computer find(Long computerId) throws ValidationException, DAOException {
-		return dao.find(computerId);
+		return daoFactory.getComputerDAO().find(computerId);
 	}
 	
 	/**
@@ -56,7 +56,7 @@ public class ComputerService {
 	 * @throws DAOException 
 	 */
 	public void create(Computer computer) throws ValidationException, DAOException {
-		dao.insert(computer);
+		daoFactory.getComputerDAO().insert(computer);
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class ComputerService {
 	 * @throws DAOException 
 	 */
 	public void update(Computer computer) throws ValidationException, DAOException {
-		dao.update(computer);
+		daoFactory.getComputerDAO().update(computer);
 	}
 	
 	/**
@@ -78,7 +78,7 @@ public class ComputerService {
 	 * @throws DAOException 
 	 */
 	public void delete(Long computerId) throws ValidationException, DAOException {
-		dao.delete(computerId);
+		daoFactory.getComputerDAO().delete(computerId);
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class ComputerService {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public List<Computer> listByName(String name) throws DAOException {
-		return dao.listByName(name);
+		return daoFactory.getComputerDAO().listByName(name);
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public class ComputerService {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public List<Computer> listWithPagination(int start, int size) throws DAOException {
-		return dao.listWithPagination(start, size);
+		return daoFactory.getComputerDAO().listWithPagination(start, size);
 	}
 	
 	/**
@@ -118,7 +118,7 @@ public class ComputerService {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public List<Computer> listByNameWithPagination(String name, int start, int size) throws DAOException {
-		return dao.listByNameWithPagination(name, start, size);
+		return daoFactory.getComputerDAO().listByNameWithPagination(name, start, size);
 	}
 	
 	/**
@@ -129,6 +129,6 @@ public class ComputerService {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public int count() throws DAOException {
-		return dao.count();
+		return daoFactory.getComputerDAO().count();
 	}
 }

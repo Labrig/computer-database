@@ -10,6 +10,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.exceptions.ValidationException;
@@ -22,7 +24,8 @@ import fr.excilys.validator.ComputerValidator;
  * 
  * @author Matheo
  */
-public class ComputerDAO implements DAO<Computer> {
+@Repository
+public class ComputerDAO extends DAO<Computer> {
 	
 	private static final String INSERT_COMPUTER_REQUEST = "INSERT INTO computer (name, introduced, discontinued, company_id) VALUES (?, ?, ?, ?)";
 	private static final String UPDATE_COMPUTER_REQUEST = "UPDATE computer SET name = ?, introduced = ?, discontinued = ?, company_id = ? WHERE id = ?";
@@ -33,22 +36,21 @@ public class ComputerDAO implements DAO<Computer> {
 	private static final String LIMIT_COMPUTER = " LIMIT ?, ?";
 	private static final String COUNT_COMPUTER_REQUEST = "SELECT COUNT(id) AS count FROM computer";
 	
-	private static ComputerDAO instance = new ComputerDAO();
+	@Autowired
+	private CompanyDAO companyDAO;
 	
-	private static ComputerValidator validator = ComputerValidator.getInstance();
+	@Autowired
+	private ComputerValidator validator;
+	
 	private Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
 	
-	private ComputerDAO() { }
-	
-	public static ComputerDAO getInstance() {
-		return instance;
-	}
+	private ComputerDAO() { super(); }
 
 	@Override
 	public void insert(Computer computer) throws ValidationException, DAOException {
 		validator.verifyComputerNotNull(computer);
 		validator.verifyName(computer.getName());
-		try(Connection connect = DAOFactory.getConnection();
+		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(INSERT_COMPUTER_REQUEST);){
 			statement.setString(1, computer.getName());
 			statement.setTimestamp(2, computer.getIntroduced() == null ? null : new Timestamp(computer.getIntroduced().getTime()));
@@ -67,7 +69,7 @@ public class ComputerDAO implements DAO<Computer> {
 		validator.verifyComputerNotNull(computer);
 		validator.verifyIdNotNull(computer.getId());
 		validator.verifyName(computer.getName());
-		try(Connection	connect = DAOFactory.getConnection();
+		try(Connection	connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(UPDATE_COMPUTER_REQUEST);){
 			statement.setString(1, computer.getName());
 			statement.setTimestamp(2, computer.getIntroduced() == null ? null : new Timestamp(computer.getIntroduced().getTime()));
@@ -85,7 +87,7 @@ public class ComputerDAO implements DAO<Computer> {
 	@Override
 	public void delete(Long idComputer) throws ValidationException, DAOException {
 		validator.verifyIdNotNull(idComputer);
-		try(Connection connect = DAOFactory.getConnection();
+		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(DELETE_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);
 			statement.execute();
@@ -99,7 +101,7 @@ public class ComputerDAO implements DAO<Computer> {
 	@Override
 	public Computer find(Long idComputer) throws ValidationException, DAOException {
 		validator.verifyIdNotNull(idComputer);
-		try(Connection	connect = DAOFactory.getConnection();
+		try(Connection	connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);	
 			ResultSet result = statement.executeQuery();
@@ -116,7 +118,7 @@ public class ComputerDAO implements DAO<Computer> {
 	@Override
 	public List<Computer> list() throws DAOException {
 		
-		try(Connection connect = DAOFactory.getConnection();
+		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST);){
 			List<Computer> listComputer = new ArrayList<>();
 			ResultSet result = statement.executeQuery();
@@ -142,7 +144,7 @@ public class ComputerDAO implements DAO<Computer> {
 	 * @throws DAOException 
 	 */
 	public List<Computer> listWithPagination(int start, int size) throws DAOException {
-		try(Connection connect = DAOFactory.getConnection();
+		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST+LIMIT_COMPUTER);){
 			List<Computer> listComputer = new ArrayList<>();
 			statement.setInt(1, start);
@@ -168,7 +170,7 @@ public class ComputerDAO implements DAO<Computer> {
 	 * @throws DAOException 
 	 */
 	public List<Computer> listByName(String name) throws DAOException {
-		try(Connection connect = DAOFactory.getConnection();
+		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_BY_NAME_REQUEST);){
 			List<Computer> listComputer = new ArrayList<>();
 			statement.setString(1, "%"+name+"%");
@@ -196,7 +198,7 @@ public class ComputerDAO implements DAO<Computer> {
 	 * @throws DAOException 
 	 */
 	public List<Computer> listByNameWithPagination(String name, int start, int size) throws DAOException {
-		try(Connection connect = DAOFactory.getConnection();
+		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_BY_NAME_REQUEST+LIMIT_COMPUTER);){
 			List<Computer> listComputer = new ArrayList<>();
 			statement.setString(1, "%"+name+"%");
@@ -216,7 +218,7 @@ public class ComputerDAO implements DAO<Computer> {
 	
 	@Override
 	public int count() throws DAOException {
-		try(Connection	connect = DAOFactory.getConnection();
+		try(Connection	connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(COUNT_COMPUTER_REQUEST);){
 			ResultSet result = statement.executeQuery();
 			logger.info("The statement "+statement+" has been executed." );
@@ -236,7 +238,7 @@ public class ComputerDAO implements DAO<Computer> {
 					.setName(result.getString("name"))
 					.setIntroduced(result.getTimestamp("introduced"))
 					.setDiscontinued(result.getTimestamp("discontinued"))
-					.setCompany(idCompany == 0 ? null : CompanyDAO.getInstance().find(idCompany))
+					.setCompany(idCompany == 0 ? null : companyDAO.find(idCompany))
 					.build();
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);

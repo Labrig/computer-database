@@ -2,6 +2,8 @@ package fr.excilys.validator;
 
 import java.sql.SQLException;
 
+import org.springframework.stereotype.Component;
+
 import fr.excilys.exceptions.ValidationException;
 import fr.excilys.model.Computer;
 
@@ -11,15 +13,10 @@ import fr.excilys.model.Computer;
  * 
  * @author Matheo
  */
+@Component
 public class ComputerValidator {
-
-	private static ComputerValidator instance = new ComputerValidator();
 	
 	private ComputerValidator() { }
-	
-	public static ComputerValidator getInstance() {
-		return instance;
-	}
 	
 	public void verifyIdNotNull(Long id) throws ValidationException {
 		if(id == null || id == 0) {

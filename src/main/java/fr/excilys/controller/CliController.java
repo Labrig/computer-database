@@ -2,6 +2,9 @@ package fr.excilys.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.ValidationException;
@@ -12,8 +15,6 @@ import fr.excilys.mapper.CompanyMapper;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
-import fr.excilys.service.CompanyService;
-import fr.excilys.service.ComputerService;
 import fr.excilys.service.ServiceFactory;
 import fr.excilys.validator.ComputerValidator;
 import fr.excilys.view.CliView;
@@ -22,29 +23,31 @@ import fr.excilys.view.CliView;
  * Read and treat the user command
  * @author Matheo
  */
-public class Controller {
+@Controller
+public class CliController {
 	
+	@Autowired
 	private CliView view;
 	
-	private static CompanyService companyService = ServiceFactory.getInstance().getCompanyService();
-	private static ComputerService computerService = ServiceFactory.getInstance().getComputerService();
+	@Autowired
+	private ServiceFactory serviceFactory;
 	
-	public Controller(CliView view) {
-		this.view = view;
-	}
+	@Autowired
+	private CompanyMapper companyMapper;
+	
+	@Autowired
+	private ComputerMapper computerMapper;
+	
+	@Autowired
+	private ComputerValidator computerValidator;
+	
+	private CliController() { }
 	
 	/**
 	 * @return the view
 	 */
 	public CliView getView() {
 		return view;
-	}
-
-	/**
-	 * @param view the view to set
-	 */
-	public void setView(CliView view) {
-		this.view = view;
 	}
 
 	/**
@@ -89,7 +92,7 @@ public class Controller {
 	private void deleteCompany(StringBuilder sb) throws MappingException, ValidationException, NotCommandeException {
 		String[] attributesD = {"id"};
 		try {
-			companyService.delete(this.fillCompanyField(attributesD).getId());
+			this.serviceFactory.getCompanyService().delete(this.fillCompanyField(attributesD).getId());
 			sb.append("Company as been deleted");
 		} catch(DAOException e) {
 			throw new NotCommandeException("Can not delete this company");
@@ -105,7 +108,7 @@ public class Controller {
 	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
 		String[] attributesD = {"id"};
 		try {
-			computerService.delete(this.fillComputerField(attributesD).getId());
+			this.serviceFactory.getComputerService().delete(this.fillComputerField(attributesD).getId());
 			sb.append("Computer as been deleted");
 		} catch(DAOException e) {
 			throw new NotCommandeException("Can not delete this computer");
@@ -122,7 +125,7 @@ public class Controller {
 		String[] attributesU = {"id","name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesU);
 		try {
-			computerService.update(computer);
+			this.serviceFactory.getComputerService().update(computer);
 			sb.append("Computer as been updated");
 		} catch(DAOException e) {
 			throw new NotCommandeException("Can not update this computer");
@@ -138,7 +141,7 @@ public class Controller {
 	private void findComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
 		String[] attributesR = {"id"};
 		try {
-			Computer computer = computerService.find(this.fillComputerField(attributesR).getId());
+			Computer computer = this.serviceFactory.getComputerService().find(this.fillComputerField(attributesR).getId());
 			sb.append(computer.toString());
 		} catch(DAOException e) {
 			throw new NotCommandeException("Computer not found");
@@ -155,7 +158,7 @@ public class Controller {
 		String[] attributesC = {"name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesC);
 		try {
-			computerService.create(computer);
+			this.serviceFactory.getComputerService().create(computer);
 			sb.append("Computer as been created");
 		} catch(DAOException e) {
 			throw new NotCommandeException("Can not create this computer");
@@ -168,7 +171,7 @@ public class Controller {
 	 */
 	private void listComputer(StringBuilder sb) throws NotCommandeException {
 		try {
-			List<Computer> computers = computerService.list();
+			List<Computer> computers = this.serviceFactory.getComputerService().list();
 			for(Computer comput : computers) {
 				sb.append(comput.toString()+"\n");
 			}
@@ -183,7 +186,7 @@ public class Controller {
 	 */
 	private void listCompany(StringBuilder sb) throws NotCommandeException {
 		try {
-			List<Company> companies = companyService.list();
+			List<Company> companies = this.serviceFactory.getCompanyService().list();
 			for(Company company : companies) {
 				sb.append(company.toString()+"\n");
 			}
@@ -226,8 +229,8 @@ public class Controller {
 				}
 			}
 		}
-		Computer computer = ComputerMapper.getInstance().mapDTOInObject(dto);
-		ComputerValidator.getInstance().verifyIntroBeforeDisco(computer);
+		Computer computer = this.computerMapper.mapDTOInObject(dto);
+		this.computerValidator.verifyIntroBeforeDisco(computer);
 		return computer;
 	}
 	
@@ -256,7 +259,7 @@ public class Controller {
 				}
 			}
 		}
-		Company company = CompanyMapper.getInstance().mapDTOInObject(dto);
+		Company company = this.companyMapper.mapDTOInObject(dto);
 		return company;
 	}
 }

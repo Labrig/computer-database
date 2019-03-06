@@ -29,7 +29,7 @@ public class ControllerTest {
 		computer.setName("test");
 		computer.setIntroduced(new SimpleDateFormat("dd-MM-yyyy").parse("19-10-2011"));
 		computer.setDiscontinued(new SimpleDateFormat("dd-MM-yyyy").parse("18-02-2019"));
-		Controller controller = new Controller(mockedView);
+		CliController controller = new CliController(mockedView);
 		String[] attributes = {"id", "name", "intro", "disco"};
 		Computer computerFill = controller.fillComputerField(attributes);
 		assertEquals(computer, computerFill);

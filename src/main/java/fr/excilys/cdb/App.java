@@ -1,10 +1,12 @@
 package fr.excilys.cdb;
 
-import fr.excilys.controller.Controller;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import fr.excilys.controller.CliController;
 import fr.excilys.exceptions.ValidationException;
 import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
-import fr.excilys.view.CliView;
 
 /**
  * Hello world!
@@ -14,7 +16,11 @@ public class App {
 	
     public static void main( String[] args ) {
     	boolean isRunning = true;
-		Controller controller = new Controller(new CliView());
+    	@SuppressWarnings("resource")
+		ApplicationContext vApplicationContext
+	        = new ClassPathXmlApplicationContext("classpath:/applicationContext.xml");
+
+		CliController controller = vApplicationContext.getBean("cliController", CliController.class);
 		while(isRunning) {
 			controller.getView().displayHelpCommand();
 		    try {

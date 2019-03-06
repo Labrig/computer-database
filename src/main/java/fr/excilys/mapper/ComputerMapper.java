@@ -6,27 +6,21 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.MappingException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 
+@Component
 public class ComputerMapper implements ObjectMapper<Computer, ComputerDTO> {
 
-	private static final ComputerMapper instance = new ComputerMapper();
 	private SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private Logger logger = LoggerFactory.getLogger(ComputerMapper.class);
 	
 	private ComputerMapper() { }
-
-	/**
-	 * @return the singleton of ComputerMapper
-	 */
-	public static ComputerMapper getInstance() {
-		return instance;
-	}
 
 	@Override
 	public Computer mapDTOInObject(ComputerDTO dto) throws MappingException {

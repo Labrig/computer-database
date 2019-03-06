@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.model.Company;
@@ -19,7 +20,8 @@ import fr.excilys.model.Company.CompanyBuilder;
  * 
  * @author Matheo
  */
-public class CompanyDAO implements DAO<Company> {
+@Repository
+public class CompanyDAO extends DAO<Company> {
 
 	private static final String SELECT_COMPANY_REQUEST = "SELECT id, name FROM company WHERE id = ?";
 	private static final String LIST_COMPANY_REQUEST = "SELECT id, name FROM company";
@@ -27,15 +29,9 @@ public class CompanyDAO implements DAO<Company> {
 	private static final String DELETE_COMPANY_REQUEST = "DELETE FROM company WHERE id = ?";
 	private static final String DELETE_COMPUTER_OF_COMPANY_REQUEST = "DELETE FROM computer WHERE company_id = ?";
 	
-	private static CompanyDAO instance = new CompanyDAO();
-	
 	private Logger logger = LoggerFactory.getLogger(CompanyDAO.class);
 	
-	private CompanyDAO() { }
-	
-	public static CompanyDAO getInstance() {
-		return instance;
-	}
+	private CompanyDAO() { super(); }
 	
 	@Override
 	public void insert(Company company) throws DAOException {
@@ -49,7 +45,7 @@ public class CompanyDAO implements DAO<Company> {
 
 	@Override
 	public void delete(Long idCompany) throws DAOException {
-		try(Connection connect = DAOFactory.getConnection();
+		try(Connection connect = getConnection();
 				PreparedStatement statementComputers = connect.prepareStatement(DELETE_COMPUTER_OF_COMPANY_REQUEST);
 				PreparedStatement statementCompany = connect.prepareStatement(DELETE_COMPANY_REQUEST);) {
 			try {
@@ -73,7 +69,7 @@ public class CompanyDAO implements DAO<Company> {
 
 	@Override
 	public Company find(Long idCompany) throws DAOException {
-		try(Connection	connect = DAOFactory.getConnection();
+		try(Connection	connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COMPANY_REQUEST);){
 			statement.setLong(1, idCompany);	
 			ResultSet result = statement.executeQuery();
@@ -89,7 +85,7 @@ public class CompanyDAO implements DAO<Company> {
 
 	@Override
 	public List<Company> list() throws DAOException {
-		try(Connection connect = DAOFactory.getConnection();
+		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPANY_REQUEST);) {
 			List<Company> listCompany = new ArrayList<>();
 			ResultSet result = statement.executeQuery();
@@ -106,7 +102,7 @@ public class CompanyDAO implements DAO<Company> {
 	
 	@Override
 	public int count() throws DAOException {
-		try(Connection	connect = DAOFactory.getConnection();
+		try(Connection	connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(COUNT_COMPANY_REQUEST);){
 			ResultSet result = statement.executeQuery();
 			logger.info("The statement "+statement+" has been executed." );

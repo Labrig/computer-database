@@ -2,11 +2,14 @@ package fr.excilys.view;
 
 import java.util.Scanner;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class CliView {
 
 	private Scanner sc = new Scanner(System.in);
 	
-	public CliView() { }
+	private CliView() { }
 	
 	public void displayHelp() {
 		System.out.println("Command :");

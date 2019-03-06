@@ -37,7 +37,7 @@ public class ControllerCompanyTest {
 		CompanyService service = mock(CompanyService.class);
 		when(CompanyService.getInstance()).thenReturn(service);
 		when(service.list()).thenReturn(listCompany);
-		Controller controller = new Controller(new CliView());
+		CliController controller = new CliController(new CliView());
 		try {
 			controller.executeCommand("/l company");
 		} catch (NotCommandeException e) {

@@ -2,6 +2,7 @@ package fr.excilys.mapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.exceptions.MappingException;
@@ -13,20 +14,12 @@ import fr.excilys.model.Company;
  * 
  * @author Matheo
  */
+@Component
 public class CompanyMapper implements ObjectMapper<Company, CompanyDTO> {
-
-	private static final CompanyMapper instance = new CompanyMapper();
 	
 	private Logger logger = LoggerFactory.getLogger(CompanyMapper.class);
 	
 	private CompanyMapper() { }
-
-	/**
-	 * @return the singleton of CompanyMapper
-	 */
-	public static CompanyMapper getInstance() {
-		return instance;
-	}
 	
 	@Override
 	public Company mapDTOInObject(CompanyDTO dto) throws MappingException {

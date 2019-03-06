@@ -40,7 +40,7 @@ public class ControllerComputerTest {
 		ComputerService service = mock(ComputerService.class);
 		when(ComputerService.getInstance()).thenReturn(service);
 		when(service.list()).thenReturn(listComputer);
-		Controller controller = new Controller(new CliView());
+		CliController controller = new CliController(new CliView());
 		try {
 			controller.executeCommand("/l computer");
 		} catch (NotCommandeException e) {
@@ -63,7 +63,7 @@ public class ControllerComputerTest {
 		
 		when(mockedView.requestAttribute("id")).thenReturn("1");
 		
-		Controller controller = new Controller(mockedView);
+		CliController controller = new CliController(mockedView);
 		try {
 			controller.executeCommand("/f computer");
 		} catch (NotCommandeException e) {
@@ -83,7 +83,7 @@ public class ControllerComputerTest {
 		ComputerService service = mock(ComputerService.class);
 		when(ComputerService.getInstance()).thenReturn(service);
 		
-		Controller controllerMock = mock(Controller.class);
+		CliController controllerMock = mock(CliController.class);
 		String[] attributes = {"name","intro","disco","idCompany"};
 		when(controllerMock.fillComputerField(attributes)).thenReturn(computer);
 		doCallRealMethod().when(controllerMock).executeCommand("/c computer");
@@ -107,7 +107,7 @@ public class ControllerComputerTest {
 		ComputerService service = mock(ComputerService.class);
 		when(ComputerService.getInstance()).thenReturn(service);
 		
-		Controller controllerMock = mock(Controller.class);
+		CliController controllerMock = mock(CliController.class);
 		String[] attributes = {"id","name","intro","disco","idCompany"};
 		when(controllerMock.fillComputerField(attributes)).thenReturn(computer);
 		doCallRealMethod().when(controllerMock).executeCommand("/u computer");
@@ -130,7 +130,7 @@ public class ControllerComputerTest {
 		ComputerService service = mock(ComputerService.class);
 		when(ComputerService.getInstance()).thenReturn(service);
 		
-		Controller controllerMock = mock(Controller.class);
+		CliController controllerMock = mock(CliController.class);
 		String[] attributes = {"id"};
 		when(controllerMock.fillComputerField(attributes)).thenReturn(computer);
 		doCallRealMethod().when(controllerMock).executeCommand("/d computer");

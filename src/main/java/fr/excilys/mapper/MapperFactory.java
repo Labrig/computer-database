@@ -1,20 +1,24 @@
 package fr.excilys.mapper;
 
-public class MapperFactory {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-	private static MapperFactory instance = new MapperFactory();
+@Component
+public class MapperFactory {
+	
+	@Autowired
+	private CompanyMapper companyMapper;
+	
+	@Autowired
+	private ComputerMapper computerMapper;
 	
 	private MapperFactory() { }
 	
-	public static MapperFactory getInstance() {
-		return instance;
-	}
-	
 	public CompanyMapper getCompanyMapper() {
-		return CompanyMapper.getInstance();
+		return companyMapper;
 	}
 	
 	public ComputerMapper getComputerMapper() {
-		return ComputerMapper.getInstance();
+		return computerMapper;
 	}
 }

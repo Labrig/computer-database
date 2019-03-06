@@ -8,7 +8,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import fr.excilys.controller.Controller;
+import fr.excilys.controller.CliController;
 import fr.excilys.exceptions.ValidationException;
 import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
@@ -17,7 +17,7 @@ import fr.excilys.view.CliView;
 @RunWith(Parameterized.class)
 public class ControllerExecuteTest {
 
-	private Controller command = new Controller(new CliView());
+	private CliController command = new CliController(new CliView());
 	
 	private String message;
 	

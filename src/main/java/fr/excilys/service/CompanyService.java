@@ -2,7 +2,10 @@ package fr.excilys.service;
 
 import java.util.List;
 
-import fr.excilys.dao.CompanyDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import fr.excilys.dao.DAOFactory;
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.model.Company;
 
@@ -10,23 +13,20 @@ import fr.excilys.model.Company;
  * Manager of the computer model. Allow only list.
  * @author Matheo
  */
+@Service
 public class CompanyService {
-	
-	private static CompanyService instance = new CompanyService();
-	private static CompanyDAO dao = ServiceFactory.getInstance().getDaoFactory().getCompanyDAO();
+
+	@Autowired
+	private DAOFactory daoFactory;
 	
 	private CompanyService() { }
 	
-	public static CompanyService getInstance() {
-		return instance;
-	}
-
 	/**
 	 * @return a list of all companies
 	 * @throws DAOException
 	 */
 	public List<Company> list() throws DAOException {
-		return dao.list();
+		return daoFactory.getCompanyDAO().list();
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class CompanyService {
 	 * @throws DAOException
 	 */
 	public Company find(Long companyId) throws DAOException {
-		return dao.find(companyId);
+		return daoFactory.getCompanyDAO().find(companyId);
 	}
 	
 	/**
@@ -43,6 +43,6 @@ public class CompanyService {
 	 * @throws DAOException
 	 */
 	public void delete(Long companyId) throws DAOException {
-		dao.delete(companyId);
+		daoFactory.getCompanyDAO().delete(companyId);
 	}
 }
