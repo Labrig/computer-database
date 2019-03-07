@@ -1,6 +1,6 @@
 package fr.excilys.mapper;
 
-import fr.excilys.exceptions.MappingException;
+import fr.excilys.exceptions.mapping.MappingException;
 
 /**
  * Interface use to create a mapper between

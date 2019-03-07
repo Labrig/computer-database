@@ -12,10 +12,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import fr.excilys.exceptions.ValidationException;
 import fr.excilys.exceptions.DAOException;
-import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
+import fr.excilys.exceptions.mapping.MappingException;
+import fr.excilys.exceptions.validation.ComputerValidationException;
 import fr.excilys.model.Company;
 import fr.excilys.service.CompanyService;
 import fr.excilys.view.CliView;
@@ -42,7 +42,7 @@ public class ControllerCompanyTest {
 			controller.executeCommand("/l company");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ValidationException e) {
+		} catch (ComputerValidationException e) {
 			e.printStackTrace();
 		} catch (MappingException e) {
 			e.printStackTrace();

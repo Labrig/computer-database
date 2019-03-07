@@ -5,9 +5,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import fr.excilys.config.SpringConfiguration;
 import fr.excilys.controller.CliController;
-import fr.excilys.exceptions.ValidationException;
-import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
+import fr.excilys.exceptions.mapping.MappingException;
+import fr.excilys.exceptions.validation.ComputerValidationException;
 
 /**
  * Hello world!
@@ -30,7 +30,7 @@ public class App {
 		    	} else {
 		    		controller.executeCommand(message);
 		    	}
-			} catch (NotCommandeException | MappingException | ValidationException e) {
+			} catch (NotCommandeException | MappingException | ComputerValidationException e) {
 				System.out.println(e.getMessage());
 			}
 		    System.out.println("\n");

@@ -54,6 +54,7 @@ public class FindComputerByNameServlet extends HttpServlet {
 			for(Computer computer : computerService.listByName(request.getParameter("search")))
 				computers.add(computerMapper.mapObjectInDTO(computer));
 			request.setAttribute("computers", computers);
+			request.setAttribute("totalComputer", computers.size());
 		} catch (DAOException e) {
 			logger.warn(e.getMessage(), e);
 		}

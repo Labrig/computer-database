@@ -9,9 +9,9 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import fr.excilys.controller.CliController;
-import fr.excilys.exceptions.ValidationException;
-import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
+import fr.excilys.exceptions.mapping.MappingException;
+import fr.excilys.exceptions.validation.ComputerValidationException;
 import fr.excilys.view.CliView;
 
 @RunWith(Parameterized.class)
@@ -53,7 +53,7 @@ public class ControllerExecuteTest {
     }
 	
     @Test(expected = NotCommandeException.class)
-	public void testExecuteException() throws NotCommandeException, ValidationException, MappingException {
+	public void testExecuteException() throws NotCommandeException, ComputerValidationException, MappingException {
 		this.command.executeCommand(this.message);
 	}
 

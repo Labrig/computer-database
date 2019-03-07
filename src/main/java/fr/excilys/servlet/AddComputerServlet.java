@@ -19,16 +19,15 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
-import fr.excilys.exceptions.ValidationException;
 import fr.excilys.exceptions.DAOException;
-import fr.excilys.exceptions.MappingException;
+import fr.excilys.exceptions.mapping.MappingException;
+import fr.excilys.exceptions.validation.ValidationException;
 import fr.excilys.mapper.CompanyMapper;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.service.CompanyService;
 import fr.excilys.service.ComputerService;
-import fr.excilys.validator.ComputerValidator;
 
 /**
  * Servlet implementation class AddComputerServlet
@@ -49,9 +48,6 @@ public class AddComputerServlet extends HttpServlet {
 	
 	@Autowired
 	private ComputerMapper computerMapper;
-	
-	@Autowired
-	private ComputerValidator computerValidator;
 	
 	private Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
 	
@@ -90,7 +86,6 @@ public class AddComputerServlet extends HttpServlet {
 				.setCompanyId(request.getParameter("companyId")).build();
 		try {
 			Computer computer = computerMapper.mapDTOInObject(dto);
-			computerValidator.verifyIntroBeforeDisco(computer);
 			computerService.create(computer);
 			logger.info("The computer "+computer+" has been created");
 		} catch (ValidationException | MappingException | DAOException e) {

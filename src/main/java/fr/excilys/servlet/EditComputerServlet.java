@@ -19,16 +19,16 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
-import fr.excilys.exceptions.ValidationException;
 import fr.excilys.exceptions.DAOException;
-import fr.excilys.exceptions.MappingException;
+import fr.excilys.exceptions.mapping.MappingException;
+import fr.excilys.exceptions.validation.ComputerValidationException;
+import fr.excilys.exceptions.validation.ValidationException;
 import fr.excilys.mapper.CompanyMapper;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.service.CompanyService;
 import fr.excilys.service.ComputerService;
-import fr.excilys.validator.ComputerValidator;
 
 /**
  * Servlet implementation class EditComputerServlet
@@ -50,9 +50,6 @@ public class EditComputerServlet extends HttpServlet {
 	@Autowired
 	private ComputerMapper computerMapper;
 	
-	@Autowired
-	private ComputerValidator computerValidator;
-	
 	private Logger logger = LoggerFactory.getLogger(EditComputerServlet.class);
 	
 	@Override
@@ -73,7 +70,7 @@ public class EditComputerServlet extends HttpServlet {
 			for(Company company : companyService.list())
 				companies.add(companyMapper.mapObjectInDTO(company));
 			request.setAttribute("companies", companies);
-		} catch (MappingException | DAOException | ValidationException e) {
+		} catch (MappingException | DAOException | ComputerValidationException e) {
 			logger.warn(e.getMessage(), e);
 		}
 		request.setAttribute("editComputer", dto);
@@ -92,7 +89,6 @@ public class EditComputerServlet extends HttpServlet {
 				.setCompanyId(request.getParameter("companyId")).build();
 		try {
 			Computer computer = computerMapper.mapDTOInObject(dto);
-			computerValidator.verifyIntroBeforeDisco(computer);
 			computerService.update(computer);
 			logger.info("The computer "+computer+" has been created");
 		} catch (ValidationException | MappingException | DAOException e) {

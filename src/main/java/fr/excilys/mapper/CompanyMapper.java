@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fr.excilys.dto.CompanyDTO;
-import fr.excilys.exceptions.MappingException;
+import fr.excilys.exceptions.mapping.CompanyIdFormatException;
+import fr.excilys.exceptions.mapping.CompanyMappingException;
 import fr.excilys.model.Company;
 
 /**
@@ -22,13 +23,13 @@ public class CompanyMapper implements ObjectMapper<Company, CompanyDTO> {
 	private CompanyMapper() { }
 	
 	@Override
-	public Company mapDTOInObject(CompanyDTO dto) throws MappingException {
+	public Company mapDTOInObject(CompanyDTO dto) throws CompanyMappingException {
 		Company company = new Company();
 		try {
 			company.setId(Long.valueOf(dto.getId()));
 		} catch(NumberFormatException e) {
 			logger.error(e.getMessage(), e);
-			throw new MappingException("the company id is not a long");
+			throw new CompanyIdFormatException();
 		}
 		company.setName(dto.getName());
 		logger.info("the dto has been converted into company");

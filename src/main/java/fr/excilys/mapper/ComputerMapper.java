@@ -9,7 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.exceptions.MappingException;
+import fr.excilys.exceptions.mapping.ComputerDateFormatException;
+import fr.excilys.exceptions.mapping.ComputerIdCompanyFormatException;
+import fr.excilys.exceptions.mapping.ComputerIdFormatException;
+import fr.excilys.exceptions.mapping.ComputerMappingException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 
@@ -23,33 +26,33 @@ public class ComputerMapper implements ObjectMapper<Computer, ComputerDTO> {
 	private ComputerMapper() { }
 
 	@Override
-	public Computer mapDTOInObject(ComputerDTO dto) throws MappingException {
+	public Computer mapDTOInObject(ComputerDTO dto) throws ComputerMappingException {
 		Computer computer = new Computer();
 		try {
 			computer.setId(this.convertStringToId(dto.getId()));
 		} catch(NumberFormatException e) {
 			logger.error(e.getMessage(), e);
-			throw new MappingException("the computer id is not a long");
+			throw new ComputerIdFormatException();
 		}
 		computer.setName(dto.getName());
 		try {
 			computer.setIntroduced(this.convertStringToDate(dto.getIntroduced()));
 		} catch(ParseException e) {
 			logger.error(e.getMessage(), e);
-			throw new MappingException("the introducted date is not good format");
+			throw new ComputerDateFormatException();
 		}
 		try {
 			computer.setDiscontinued(this.convertStringToDate(dto.getDiscontinued()));
 		} catch(ParseException e) {
 			logger.error(e.getMessage(), e);
-			throw new MappingException("the discontinued date is not good format");
+			throw new ComputerDateFormatException();
 		}
 		Company company = new Company();
 		try {
 			company.setId(this.convertStringToId(dto.getCompanyId()));
 		} catch(NumberFormatException e) {
 			logger.error(e.getMessage(), e);
-			throw new MappingException("the company id is not a long");
+			throw new ComputerIdCompanyFormatException();
 		}
 		company.setName(dto.getCompanyName());
 		computer.setCompany(company);

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import fr.excilys.dao.ComputerDAO;
 import fr.excilys.exceptions.DAOException;
-import fr.excilys.exceptions.ValidationException;
+import fr.excilys.exceptions.validation.ComputerValidationException;
 import fr.excilys.model.Computer;
 import fr.excilys.validator.ComputerValidator;
 
@@ -45,10 +45,10 @@ public class ComputerService {
 	 * @param computerId the id of the desired computer
 	 * @return the desired computer
 	 * @throws SQLException 
-	 * @throws ValidationException 
+	 * @throws ComputerValidationException 
 	 * @throws DAOException 
 	 */
-	public Computer find(Long computerId) throws ValidationException, DAOException {
+	public Computer find(Long computerId) throws ComputerValidationException, DAOException {
 		validator.verifyIdNotNull(computerId);
 		return dao.find(computerId);
 	}
@@ -57,12 +57,13 @@ public class ComputerService {
 	 * create a new computer
 	 * @param computer
 	 * @throws SQLException 
-	 * @throws ValidationException 
+	 * @throws ComputerValidationException 
 	 * @throws DAOException 
 	 */
-	public void create(Computer computer) throws ValidationException, DAOException {
+	public void create(Computer computer) throws ComputerValidationException, DAOException {
 		validator.verifyComputerNotNull(computer);
 		validator.verifyName(computer.getName());
+		validator.verifyIntroBeforeDisco(computer);
 		dao.insert(computer);
 	}
 	
@@ -71,23 +72,24 @@ public class ComputerService {
 	 * @param computer
 	 * @return the computer updated
 	 * @throws SQLException 
-	 * @throws ValidationException 
+	 * @throws ComputerValidationException 
 	 * @throws DAOException 
 	 */
-	public void update(Computer computer) throws ValidationException, DAOException {
+	public void update(Computer computer) throws ComputerValidationException, DAOException {
 		validator.verifyComputerNotNull(computer);
 		validator.verifyIdNotNull(computer.getId());
 		validator.verifyName(computer.getName());
+		validator.verifyIntroBeforeDisco(computer);
 		dao.update(computer);
 	}
 	
 	/**
 	 * @param computer the computer to delete
 	 * @throws SQLException 
-	 * @throws ValidationException 
+	 * @throws ComputerValidationException 
 	 * @throws DAOException 
 	 */
-	public void delete(Long computerId) throws ValidationException, DAOException {
+	public void delete(Long computerId) throws ComputerValidationException, DAOException {
 		validator.verifyIdNotNull(computerId);
 		dao.delete(computerId);
 	}

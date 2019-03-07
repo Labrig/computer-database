@@ -13,10 +13,10 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import fr.excilys.exceptions.ValidationException;
 import fr.excilys.exceptions.DAOException;
-import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
+import fr.excilys.exceptions.mapping.MappingException;
+import fr.excilys.exceptions.validation.ComputerValidationException;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
 import fr.excilys.view.CliView;
@@ -45,7 +45,7 @@ public class ControllerComputerTest {
 			controller.executeCommand("/l computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ValidationException e) {
+		} catch (ComputerValidationException e) {
 			e.printStackTrace();
 		} catch (MappingException e) {
 			e.printStackTrace();
@@ -53,7 +53,7 @@ public class ControllerComputerTest {
 	}
 	
 	@Test
-	public void testFindComputer() throws ValidationException, DAOException {
+	public void testFindComputer() throws ComputerValidationException, DAOException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
 		PowerMockito.mockStatic(ComputerService.class);
@@ -68,7 +68,7 @@ public class ControllerComputerTest {
 			controller.executeCommand("/f computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ValidationException e) {
+		} catch (ComputerValidationException e) {
 			e.printStackTrace();
 		} catch (MappingException e) {
 			e.printStackTrace();
@@ -76,7 +76,7 @@ public class ControllerComputerTest {
 	}
 	
 	@Test
-	public void testCreateComputer() throws NotCommandeException, ValidationException, MappingException {
+	public void testCreateComputer() throws NotCommandeException, ComputerValidationException, MappingException {
 		Computer computer = new Computer();
 		computer.setName("test");
 		PowerMockito.mockStatic(ComputerService.class);
@@ -93,13 +93,13 @@ public class ControllerComputerTest {
 			controllerMock.executeCommand("/c computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ValidationException e) {
+		} catch (ComputerValidationException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Test
-	public void testUpdateComputer() throws NotCommandeException, ValidationException, MappingException {
+	public void testUpdateComputer() throws NotCommandeException, ComputerValidationException, MappingException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
 		computer.setName("test");
@@ -117,13 +117,13 @@ public class ControllerComputerTest {
 			controllerMock.executeCommand("/u computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ValidationException e) {
+		} catch (ComputerValidationException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	@Test
-	public void testDeleteComputer() throws NotCommandeException, ValidationException, MappingException {
+	public void testDeleteComputer() throws NotCommandeException, ComputerValidationException, MappingException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
 		PowerMockito.mockStatic(ComputerService.class);
@@ -140,7 +140,7 @@ public class ControllerComputerTest {
 			controllerMock.executeCommand("/d computer");
 		} catch (NotCommandeException e) {
 			e.printStackTrace();
-		} catch (ValidationException e) {
+		} catch (ComputerValidationException e) {
 			e.printStackTrace();
 		}
 	}

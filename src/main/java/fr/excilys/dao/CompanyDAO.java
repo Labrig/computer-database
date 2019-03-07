@@ -31,7 +31,7 @@ public class CompanyDAO extends DAO<Company> {
 	
 	private Logger logger = LoggerFactory.getLogger(CompanyDAO.class);
 	
-	private CompanyDAO() { super(); }
+	private CompanyDAO() { }
 	
 	@Override
 	public void insert(Company company) throws DAOException {
@@ -60,7 +60,7 @@ public class CompanyDAO extends DAO<Company> {
 			} catch (SQLException e) {
 				logger.error(e.getMessage(), e);
 				connect.rollback();
-				throw new DAOException("can not company the computer with the id "+idCompany);
+				throw new DAOException("can not delete the company with the id "+idCompany);
 			}
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
@@ -74,9 +74,13 @@ public class CompanyDAO extends DAO<Company> {
 			statement.setLong(1, idCompany);	
 			ResultSet result = statement.executeQuery();
 			logger.info("The statement "+statement+" has been executed." );
-			result.next();
-			Company company = mapResultSet(result);
-			return company;
+			if(result.next()) {
+				Company company = mapResultSet(result);
+				return company;
+			} else {
+				logger.warn("No result returned by the statement");
+				throw new DAOException("No result returned by the statement");
+			}
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not find the Company with the id "+idCompany);
@@ -106,8 +110,12 @@ public class CompanyDAO extends DAO<Company> {
 				PreparedStatement statement = connect.prepareStatement(COUNT_COMPANY_REQUEST);){
 			ResultSet result = statement.executeQuery();
 			logger.info("The statement "+statement+" has been executed." );
-			result.next();
-			return result.getInt("count");
+			if(result.next()) {
+				return result.getInt("count");
+			} else {
+				logger.warn("No result returned by the statement");
+				throw new DAOException("No result returned by the statement");
+			}
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not count the companies");

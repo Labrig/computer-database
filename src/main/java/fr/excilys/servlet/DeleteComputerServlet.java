@@ -17,8 +17,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.DAOException;
-import fr.excilys.exceptions.MappingException;
-import fr.excilys.exceptions.ValidationException;
+import fr.excilys.exceptions.mapping.MappingException;
+import fr.excilys.exceptions.validation.ValidationException;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.service.ComputerService;
 

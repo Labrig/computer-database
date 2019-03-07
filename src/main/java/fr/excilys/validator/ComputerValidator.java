@@ -4,7 +4,10 @@ import java.sql.SQLException;
 
 import org.springframework.stereotype.Component;
 
-import fr.excilys.exceptions.ValidationException;
+import fr.excilys.exceptions.validation.ComputerDiscoBeforeIntroException;
+import fr.excilys.exceptions.validation.ComputerIdNullException;
+import fr.excilys.exceptions.validation.ComputerNameNullException;
+import fr.excilys.exceptions.validation.ComputerValidationException;
 import fr.excilys.model.Computer;
 
 /**
@@ -18,15 +21,15 @@ public class ComputerValidator {
 	
 	private ComputerValidator() { }
 	
-	public void verifyIdNotNull(Long id) throws ValidationException {
+	public void verifyIdNotNull(Long id) throws ComputerValidationException {
 		if(id == null || id == 0) {
-			throw new ValidationException("the id is null or zero");
+			throw new ComputerIdNullException();
 		}
 	}
 	
-	public void verifyName(String name) throws ValidationException {
+	public void verifyName(String name) throws ComputerValidationException {
 		if(name == null || name.isEmpty()) {
-			throw new ValidationException("the name is null or empty");
+			throw new ComputerNameNullException();
 		}
 	}
 	
@@ -34,11 +37,11 @@ public class ComputerValidator {
 	 * Check if the discontinued date is before the introduction one
 	 * 
 	 * @param computer the computer to check
-	 * @throws ValidationException thrown if the discontinued date is before the introduction one
+	 * @throws ComputerValidationException thrown if the discontinued date is before the introduction one
 	 */
-	public void verifyIntroBeforeDisco(Computer computer) throws ValidationException {
+	public void verifyIntroBeforeDisco(Computer computer) throws ComputerValidationException {
 		if(computer.getDiscontinued() != null && (computer.getIntroduced() == null || !computer.getIntroduced().before(computer.getDiscontinued()))) {
-			throw new ValidationException("the discontinued date is before the introduction");
+			throw new ComputerDiscoBeforeIntroException();
 		}
 	}
 	
@@ -48,9 +51,9 @@ public class ComputerValidator {
 	 * @param object the object to check
 	 * @throws SQLException thrown if the gave object is null
 	 */
-	public void verifyComputerNotNull(Computer computer) throws ValidationException {
+	public void verifyComputerNotNull(Computer computer) throws ComputerValidationException {
 		if(computer == null) {
-			throw new ValidationException("the computer is null");
+			throw new ComputerValidationException();
 		}
 	}
 }

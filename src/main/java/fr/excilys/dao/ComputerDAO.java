@@ -39,7 +39,7 @@ public class ComputerDAO extends DAO<Computer> {
 	
 	private Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
 	
-	private ComputerDAO() { super(); }
+	private ComputerDAO() { }
 
 	@Override
 	public void insert(Computer computer) throws DAOException {
@@ -94,9 +94,13 @@ public class ComputerDAO extends DAO<Computer> {
 			statement.setLong(1, idComputer);	
 			ResultSet result = statement.executeQuery();
 			logger.info("The statement "+statement+" has been executed." );
-			result.next();
-			Computer computer = mapResultSet(result);
-			return computer;
+			if(result.next()) {
+				Computer computer = mapResultSet(result);
+				return computer;
+			} else {
+				logger.warn("No result returned by the statement");
+				throw new DAOException("No result returned by the statement");
+			}
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not find the computer with the id "+idComputer);
@@ -209,8 +213,12 @@ public class ComputerDAO extends DAO<Computer> {
 				PreparedStatement statement = connect.prepareStatement(COUNT_COMPUTER_REQUEST);){
 			ResultSet result = statement.executeQuery();
 			logger.info("The statement "+statement+" has been executed." );
-			result.next();
-			return result.getInt("count");
+			if(result.next()) {
+				return result.getInt("count");
+			} else {
+				logger.warn("No result returned by the statement");
+				throw new DAOException("No result returned by the statement");
+			}
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not count the computers");

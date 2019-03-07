@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.exceptions.MappingException;
+import fr.excilys.exceptions.mapping.MappingException;
 import fr.excilys.model.Computer;
 
 public class ComputerMapperTest {

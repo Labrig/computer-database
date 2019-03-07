@@ -7,17 +7,18 @@ import org.springframework.stereotype.Controller;
 
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.exceptions.ValidationException;
 import fr.excilys.exceptions.DAOException;
-import fr.excilys.exceptions.MappingException;
 import fr.excilys.exceptions.NotCommandeException;
+import fr.excilys.exceptions.mapping.CompanyMappingException;
+import fr.excilys.exceptions.mapping.ComputerMappingException;
+import fr.excilys.exceptions.mapping.MappingException;
+import fr.excilys.exceptions.validation.ComputerValidationException;
 import fr.excilys.mapper.CompanyMapper;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.service.CompanyService;
 import fr.excilys.service.ComputerService;
-import fr.excilys.validator.ComputerValidator;
 import fr.excilys.view.CliView;
 
 /**
@@ -42,9 +43,6 @@ public class CliController {
 	@Autowired
 	private ComputerMapper computerMapper;
 	
-	@Autowired
-	private ComputerValidator computerValidator;
-	
 	private CliController() { }
 	
 	/**
@@ -57,10 +55,10 @@ public class CliController {
 	/**
 	 * @param message the command to threat
 	 * @throws NotCommandeException
-	 * @throws ValidationException
+	 * @throws ComputerValidationException
 	 * @throws MappingException
 	 */
-	public void executeCommand(String message) throws NotCommandeException, ValidationException, MappingException {
+	public void executeCommand(String message) throws NotCommandeException, ComputerValidationException, MappingException {
 		StringBuilder sb = new StringBuilder();
 		switch(message) {
 		case "/l company":
@@ -93,7 +91,7 @@ public class CliController {
 		this.view.displayResultCommand(sb.toString());
 	}
 	
-	private void deleteCompany(StringBuilder sb) throws MappingException, ValidationException, NotCommandeException {
+	private void deleteCompany(StringBuilder sb) throws CompanyMappingException, ComputerValidationException, NotCommandeException {
 		String[] attributesD = {"id"};
 		try {
 			this.companyService.delete(this.fillCompanyField(attributesD).getId());
@@ -106,10 +104,10 @@ public class CliController {
 	/**
 	 * @param sb the StringBuilder need to construct the answer
 	 * @throws NotCommandeException
-	 * @throws ValidationException
+	 * @throws ComputerValidationException
 	 * @throws MappingException
 	 */
-	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
+	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ComputerValidationException, ComputerMappingException {
 		String[] attributesD = {"id"};
 		try {
 			this.computerService.delete(this.fillComputerField(attributesD).getId());
@@ -122,10 +120,10 @@ public class CliController {
 	/**
 	 * @param sb the StringBuilder need to construct the answer
 	 * @throws NotCommandeException
-	 * @throws ValidationException
+	 * @throws ComputerValidationException
 	 * @throws MappingException
 	 */
-	private void updateComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
+	private void updateComputer(StringBuilder sb) throws NotCommandeException, ComputerValidationException, ComputerMappingException {
 		String[] attributesU = {"id","name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesU);
 		try {
@@ -139,10 +137,10 @@ public class CliController {
 	/**
 	 * @param sb the StringBuilder need to construct the answer
 	 * @throws NotCommandeException
-	 * @throws ValidationException
+	 * @throws ComputerValidationException
 	 * @throws MappingException
 	 */
-	private void findComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
+	private void findComputer(StringBuilder sb) throws NotCommandeException, ComputerValidationException, ComputerMappingException {
 		String[] attributesR = {"id"};
 		try {
 			Computer computer = this.computerService.find(this.fillComputerField(attributesR).getId());
@@ -155,10 +153,10 @@ public class CliController {
 	/**
 	 * @param sb the StringBuilder need to construct the answer
 	 * @throws NotCommandeException
-	 * @throws ValidationException
+	 * @throws ComputerValidationException
 	 * @throws MappingException
 	 */
-	private void createComputer(StringBuilder sb) throws NotCommandeException, ValidationException, MappingException {
+	private void createComputer(StringBuilder sb) throws NotCommandeException, ComputerValidationException, ComputerMappingException {
 		String[] attributesC = {"name","intro","disco","idCompany"};
 		Computer computer = this.fillComputerField(attributesC);
 		try {
@@ -204,10 +202,10 @@ public class CliController {
 	 * 
 	 * @param attributes the attributes to fill in computer
 	 * @return the computer fill with the user answer
-	 * @throws ValidationException
+	 * @throws ComputerValidationException
 	 * @throws MappingException
 	 */
-	public Computer fillComputerField(String[] attributes) throws MappingException, ValidationException {
+	public Computer fillComputerField(String[] attributes) throws ComputerMappingException, ComputerValidationException {
 		ComputerDTO dto = new ComputerDTO();
 		for(String attribute : attributes) {
 			String value = this.view.requestAttribute(attribute);
@@ -229,12 +227,11 @@ public class CliController {
 					dto.setCompanyId(value);
 					break;
 				default:
-					throw new MappingException(attribute+" is not an attribute of computer");
+					throw new ComputerMappingException();
 				}
 			}
 		}
 		Computer computer = this.computerMapper.mapDTOInObject(dto);
-		this.computerValidator.verifyIntroBeforeDisco(computer);
 		return computer;
 	}
 	
@@ -244,9 +241,9 @@ public class CliController {
 	 * @param attributes the attributes to fill in company
 	 * @return the company fill with the user answer
 	 * @throws MappingException
-	 * @throws ValidationException
+	 * @throws ComputerValidationException
 	 */
-	public Company fillCompanyField(String[] attributes) throws MappingException, ValidationException {
+	public Company fillCompanyField(String[] attributes) throws CompanyMappingException, ComputerValidationException {
 		CompanyDTO dto = new CompanyDTO();
 		for(String attribute : attributes) {
 			String value = this.view.requestAttribute(attribute);
@@ -259,7 +256,7 @@ public class CliController {
 					dto.setName(value);
 					break;
 				default:
-					throw new MappingException(attribute+" is not an attribute of company");
+					throw new CompanyMappingException();
 				}
 			}
 		}
