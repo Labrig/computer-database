@@ -14,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import fr.excilys.exceptions.DAOException;
-import fr.excilys.exceptions.ValidationException;
 import fr.excilys.model.Computer;
 import fr.excilys.model.Computer.ComputerBuilder;
-import fr.excilys.validator.ComputerValidator;
 
 /**
  * The DAO of the computer object
@@ -39,17 +37,12 @@ public class ComputerDAO extends DAO<Computer> {
 	@Autowired
 	private CompanyDAO companyDAO;
 	
-	@Autowired
-	private ComputerValidator validator;
-	
 	private Logger logger = LoggerFactory.getLogger(ComputerDAO.class);
 	
 	private ComputerDAO() { super(); }
 
 	@Override
-	public void insert(Computer computer) throws ValidationException, DAOException {
-		validator.verifyComputerNotNull(computer);
-		validator.verifyName(computer.getName());
+	public void insert(Computer computer) throws DAOException {
 		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(INSERT_COMPUTER_REQUEST);){
 			statement.setString(1, computer.getName());
@@ -65,10 +58,7 @@ public class ComputerDAO extends DAO<Computer> {
 	}
 
 	@Override
-	public void update(Computer computer) throws ValidationException, DAOException {
-		validator.verifyComputerNotNull(computer);
-		validator.verifyIdNotNull(computer.getId());
-		validator.verifyName(computer.getName());
+	public void update(Computer computer) throws DAOException {
 		try(Connection	connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(UPDATE_COMPUTER_REQUEST);){
 			statement.setString(1, computer.getName());
@@ -85,8 +75,7 @@ public class ComputerDAO extends DAO<Computer> {
 	}
 
 	@Override
-	public void delete(Long idComputer) throws ValidationException, DAOException {
-		validator.verifyIdNotNull(idComputer);
+	public void delete(Long idComputer) throws DAOException {
 		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(DELETE_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);
@@ -99,8 +88,7 @@ public class ComputerDAO extends DAO<Computer> {
 	}
 
 	@Override
-	public Computer find(Long idComputer) throws ValidationException, DAOException {
-		validator.verifyIdNotNull(idComputer);
+	public Computer find(Long idComputer) throws DAOException {
 		try(Connection	connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);	
@@ -117,7 +105,6 @@ public class ComputerDAO extends DAO<Computer> {
 
 	@Override
 	public List<Computer> list() throws DAOException {
-		
 		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST);){
 			List<Computer> listComputer = new ArrayList<>();

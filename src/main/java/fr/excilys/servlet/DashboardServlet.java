@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,12 +13,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.DAOException;
-import fr.excilys.mapper.MapperFactory;
+import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.model.Computer;
-import fr.excilys.service.ServiceFactory;
+import fr.excilys.service.ComputerService;
 
 /**
  * Servlet implementation class DashboardServlet
@@ -27,7 +30,18 @@ import fr.excilys.service.ServiceFactory;
 public class DashboardServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	private static ServiceFactory serviceFactory = ServiceFactory.getInstance();
+	@Autowired
+	private ComputerService computerService;
+	
+	@Autowired
+	private ComputerMapper computerMapper;
+	
+	@Override
+	public void init(ServletConfig config) throws ServletException{
+		super.init(config);
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+		
+	}
 	
 	private Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
 	
@@ -43,10 +57,10 @@ public class DashboardServlet extends HttpServlet {
 		}
 		try {
 			List<ComputerDTO> computers = new ArrayList<>();
-			for(Computer computer : serviceFactory.getComputerService().listWithPagination((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize)))
-				computers.add(MapperFactory.getInstance().getComputerMapper().mapObjectInDTO(computer));
+			for(Computer computer : computerService.listWithPagination((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize)))
+				computers.add(computerMapper.mapObjectInDTO(computer));
 			request.setAttribute("computers", computers);
-			int totalComputer = serviceFactory.getComputerService().count();
+			int totalComputer = computerService.count();
 			int pageTotal = totalComputer/Integer.valueOf(pageSize) + (totalComputer%Integer.valueOf(pageSize) != 0 ? 1 : 0);
 			request.setAttribute("pageSize", pageSize);
 			request.setAttribute("pageNumber", pageNumber);

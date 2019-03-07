@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.excilys.dao.DAOFactory;
+import fr.excilys.dao.CompanyDAO;
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.model.Company;
 
@@ -17,7 +17,7 @@ import fr.excilys.model.Company;
 public class CompanyService {
 
 	@Autowired
-	private DAOFactory daoFactory;
+	private CompanyDAO dao;
 	
 	private CompanyService() { }
 	
@@ -26,7 +26,7 @@ public class CompanyService {
 	 * @throws DAOException
 	 */
 	public List<Company> list() throws DAOException {
-		return daoFactory.getCompanyDAO().list();
+		return dao.list();
 	}
 	
 	/**
@@ -35,7 +35,7 @@ public class CompanyService {
 	 * @throws DAOException
 	 */
 	public Company find(Long companyId) throws DAOException {
-		return daoFactory.getCompanyDAO().find(companyId);
+		return dao.find(companyId);
 	}
 	
 	/**
@@ -43,6 +43,6 @@ public class CompanyService {
 	 * @throws DAOException
 	 */
 	public void delete(Long companyId) throws DAOException {
-		daoFactory.getCompanyDAO().delete(companyId);
+		dao.delete(companyId);
 	}
 }
