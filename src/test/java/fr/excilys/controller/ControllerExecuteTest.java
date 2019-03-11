@@ -3,21 +3,24 @@ package fr.excilys.controller;
 import java.util.Arrays;
 import java.util.Collection;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import fr.excilys.config.SpringConfiguration;
 import fr.excilys.controller.CliController;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.exceptions.mapping.MappingException;
 import fr.excilys.exceptions.validation.ComputerValidationException;
-import fr.excilys.view.CliView;
 
 @RunWith(Parameterized.class)
 public class ControllerExecuteTest {
 
-	private CliController command = new CliController(new CliView());
+	private static CliController controller;
 	
 	private String message;
 	
@@ -43,18 +46,26 @@ public class ControllerExecuteTest {
     		{"/c company"},
     		{"/f company"},
     		{"/u company"},
-    		{"/d company"},
     		{"test"},
     		{"/t"},
     		{"/f  computer"},
-    		{"/fcomputer"}
+    		{"/computer"},
+    		{"/t computer"},
+    		{"/f computer 30"}
         };
         return Arrays.asList(data);
     }
 	
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		@SuppressWarnings("resource")
+		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		controller = vApplicationContext.getBean("cliController", CliController.class);
+	}
+	
     @Test(expected = NotCommandeException.class)
 	public void testExecuteException() throws NotCommandeException, ComputerValidationException, MappingException {
-		this.command.executeCommand(this.message);
+		controller.executeCommand(this.message);
 	}
 
 }

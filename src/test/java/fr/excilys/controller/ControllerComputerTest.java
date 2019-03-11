@@ -4,15 +4,17 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doCallRealMethod;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import fr.excilys.config.SpringConfiguration;
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.exceptions.mapping.MappingException;
@@ -21,14 +23,33 @@ import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
 import fr.excilys.view.CliView;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({ComputerService.class})
 public class ControllerComputerTest {
 
-	private CliView mockedView = mock(CliView.class);
+	private static CliController controller;
+	
+	private static CliController controllerMock = mock(CliController.class);
+	
+	private static Field computerServiceField;
+
+	private static Field viewField;
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws BeansException, IllegalAccessException, NoSuchFieldException, SecurityException {
+		@SuppressWarnings("resource")
+		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		controller = vApplicationContext.getBean("cliController", CliController.class);
+		
+		computerServiceField = CliController.class.getDeclaredField("computerService");
+		computerServiceField.setAccessible(true);
+		
+		viewField = CliController.class.getDeclaredField("view");
+		viewField.setAccessible(true);
+		
+		viewField.set(controllerMock, vApplicationContext.getBean("cliView", CliView.class));
+	}
 	
 	@Test
-	public void testListComputer() throws DAOException {
+	public void testListComputer() throws DAOException, IllegalArgumentException, IllegalAccessException, ComputerValidationException, NotCommandeException, MappingException {
 		List<Computer> listComputer = new ArrayList<>();
 		for(int i = 1; i < 4 ; i++) {
 			Computer computer = new Computer();
@@ -36,113 +57,65 @@ public class ControllerComputerTest {
 			computer.setName("test"+i);
 			listComputer.add(computer);
 		}
-		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
-		when(ComputerService.getInstance()).thenReturn(service);
 		when(service.list()).thenReturn(listComputer);
-		CliController controller = new CliController(new CliView());
-		try {
-			controller.executeCommand("/l computer");
-		} catch (NotCommandeException e) {
-			e.printStackTrace();
-		} catch (ComputerValidationException e) {
-			e.printStackTrace();
-		} catch (MappingException e) {
-			e.printStackTrace();
-		}
+		computerServiceField.set(controller, service);
+		controller.executeCommand("/l computer");
 	}
 	
 	@Test
-	public void testFindComputer() throws ComputerValidationException, DAOException {
+	public void testFindComputer() throws ComputerValidationException, DAOException, IllegalArgumentException, IllegalAccessException, NotCommandeException, MappingException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
-		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
-		when(ComputerService.getInstance()).thenReturn(service);
 		when(service.find(new Long(1))).thenReturn(computer);
 		
-		when(mockedView.requestAttribute("id")).thenReturn("1");
+		CliView view = mock(CliView.class);
+		when(view.requestAttribute("id")).thenReturn("1");
 		
-		CliController controller = new CliController(mockedView);
-		try {
-			controller.executeCommand("/f computer");
-		} catch (NotCommandeException e) {
-			e.printStackTrace();
-		} catch (ComputerValidationException e) {
-			e.printStackTrace();
-		} catch (MappingException e) {
-			e.printStackTrace();
-		}
+		computerServiceField.set(controller, service);
+		viewField.set(controller, view);
+		controller.executeCommand("/f computer");
 	}
 	
 	@Test
-	public void testCreateComputer() throws NotCommandeException, ComputerValidationException, MappingException {
+	public void testCreateComputer() throws NotCommandeException, ComputerValidationException, MappingException, IllegalArgumentException, IllegalAccessException {
 		Computer computer = new Computer();
 		computer.setName("test");
-		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
-		when(ComputerService.getInstance()).thenReturn(service);
 		
-		CliController controllerMock = mock(CliController.class);
 		String[] attributes = {"name","intro","disco","idCompany"};
 		when(controllerMock.fillComputerField(attributes)).thenReturn(computer);
 		doCallRealMethod().when(controllerMock).executeCommand("/c computer");
-		doCallRealMethod().when(controllerMock).setView(mockedView);
-		try {
-			controllerMock.setView(mockedView);
-			controllerMock.executeCommand("/c computer");
-		} catch (NotCommandeException e) {
-			e.printStackTrace();
-		} catch (ComputerValidationException e) {
-			e.printStackTrace();
-		}
+		computerServiceField.set(controllerMock, service);
+		controllerMock.executeCommand("/c computer");
 	}
 	
 	@Test
-	public void testUpdateComputer() throws NotCommandeException, ComputerValidationException, MappingException {
+	public void testUpdateComputer() throws NotCommandeException, ComputerValidationException, MappingException, IllegalArgumentException, IllegalAccessException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
 		computer.setName("test");
-		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
-		when(ComputerService.getInstance()).thenReturn(service);
 		
-		CliController controllerMock = mock(CliController.class);
 		String[] attributes = {"id","name","intro","disco","idCompany"};
 		when(controllerMock.fillComputerField(attributes)).thenReturn(computer);
 		doCallRealMethod().when(controllerMock).executeCommand("/u computer");
-		doCallRealMethod().when(controllerMock).setView(mockedView);
-		try {
-			controllerMock.setView(mockedView);
-			controllerMock.executeCommand("/u computer");
-		} catch (NotCommandeException e) {
-			e.printStackTrace();
-		} catch (ComputerValidationException e) {
-			e.printStackTrace();
-		}
+		computerServiceField.set(controllerMock, service);
+		controllerMock.executeCommand("/u computer");
 	}
 	
 	@Test
-	public void testDeleteComputer() throws NotCommandeException, ComputerValidationException, MappingException {
+	public void testDeleteComputer() throws NotCommandeException, ComputerValidationException, MappingException, IllegalArgumentException, IllegalAccessException {
 		Computer computer = new Computer();
 		computer.setId(new Long(1));
-		PowerMockito.mockStatic(ComputerService.class);
 		ComputerService service = mock(ComputerService.class);
-		when(ComputerService.getInstance()).thenReturn(service);
 		
-		CliController controllerMock = mock(CliController.class);
 		String[] attributes = {"id"};
 		when(controllerMock.fillComputerField(attributes)).thenReturn(computer);
 		doCallRealMethod().when(controllerMock).executeCommand("/d computer");
-		doCallRealMethod().when(controllerMock).setView(mockedView);
-		try {
-			controllerMock.setView(mockedView);
-			controllerMock.executeCommand("/d computer");
-		} catch (NotCommandeException e) {
-			e.printStackTrace();
-		} catch (ComputerValidationException e) {
-			e.printStackTrace();
-		}
+		computerServiceField.set(controllerMock, service);
+		controllerMock.executeCommand("/d computer");
 	}
 
 }

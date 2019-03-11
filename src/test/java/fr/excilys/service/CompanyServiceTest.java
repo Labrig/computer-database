@@ -1,84 +1,63 @@
 package fr.excilys.service;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import fr.excilys.config.SpringTestConfiguration;
+import fr.excilys.dao.CompanyDAO;
+import fr.excilys.exceptions.DAOException;
 import fr.excilys.model.Company;
+import fr.excilys.model.Company.CompanyBuilder;
 import fr.excilys.service.CompanyService;
-import fr.excilys.service.ServiceFactory;
 
 public class CompanyServiceTest {
 
-//	private static CompanyService manager = ServiceFactory.getInstance().getCompanyService();
-//	private static Field entityManagerField;
-//	
-//	@BeforeClass
-//	public static void setUpBeforeClass() {
-//		try {
-//			entityManagerField = CompanyService.class.getDeclaredField("entityManager");
-//			entityManagerField.setAccessible(true);
-//			entityManagerField.set(manager, Persistence.createEntityManagerFactory("computer-database-test").createEntityManager());
-//		} catch (NoSuchFieldException | SecurityException e) {
-//			e.printStackTrace();
-//		} catch (IllegalArgumentException e) {
-//			e.printStackTrace();
-//		} catch (IllegalAccessException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	@Test
-//	public void testListCompanyEmpty() {
-//		List<Company> listCompany = manager.listCompany();
-//		assertEquals(0, listCompany.size());
-//	}
-//	
-//	@Test
-//	public void testFindCompanyEmpty() {
-//		Company company = manager.findCompany(1);
-//		assertNull(company);
-//	}
-//	
-//	@Test
-//	public void testListAndFindCompanyWith1() {
-//		insertNewTestCompany();
-//		List<Company> listCompany = manager.listCompany();
-//		assertEquals(1, listCompany.size());
-//		Company company = manager.findCompany(listCompany.get(0).getId());
-//		assertEquals(listCompany.get(0), company);
-//		deleteAllCompany();
-//	}
-//
-//	private void deleteAllCompany() {
-//		try {
-//			EntityManager entityManager = (EntityManager)entityManagerField.get(manager);
-//			for(Object company : entityManager.createQuery("FROM Company").getResultList()) {
-//				entityManager.getTransaction().begin();
-//				entityManager.remove(company);
-//				entityManager.getTransaction().commit();
-//			}
-//		} catch (IllegalArgumentException | IllegalAccessException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//
-//	private void insertNewTestCompany() {
-//		try {
-//			Company company = new Company();
-//			company.setName("test");
-//			EntityManager entityManager = (EntityManager)entityManagerField.get(manager);
-//			entityManager.getTransaction().begin();
-//			entityManager.persist(company);
-//			entityManager.getTransaction().commit();
-//		} catch (IllegalArgumentException | IllegalAccessException e) {
-//			e.printStackTrace();
-//		}
-//	}
+	private static CompanyService service;
+	
+	private CompanyDAO mockedDAO = mock(CompanyDAO.class);
+
+	private static Field daoField;
+	
+	@BeforeClass
+	public static void setUpBeforeClass() throws NoSuchFieldException, SecurityException {
+		@SuppressWarnings("resource")
+		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringTestConfiguration.class);
+		service = vApplicationContext.getBean("companyService", CompanyService.class);
+		
+		daoField = CompanyService.class.getDeclaredField("dao");
+		daoField.setAccessible(true);
+	}
+	
+	@Test
+	public void testListCompany() throws DAOException, IllegalArgumentException, IllegalAccessException {
+		List<Company> listCompanySet = new ArrayList<>();
+		when(mockedDAO.list()).thenReturn(listCompanySet);
+		
+		daoField.set(service, mockedDAO);
+		
+		List<Company> listCompanyFound = service.list();
+		assertEquals(listCompanySet, listCompanyFound);
+	}
+	
+	@Test
+	public void testFindCompany() throws DAOException, IllegalArgumentException, IllegalAccessException {
+		Company companySet = new CompanyBuilder().setName("test").setId(1L).build();
+		when(mockedDAO.find(1L)).thenReturn(companySet);
+		
+		daoField.set(service, mockedDAO);
+		
+		Company companyFound = service.find(1L);
+		assertEquals(companySet, companyFound);
+	}
 
 }

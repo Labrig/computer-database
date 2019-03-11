@@ -11,8 +11,8 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @ComponentScan({"fr.excilys.controller","fr.excilys.dao","fr.excilys.mapper","fr.excilys.service","fr.excilys.servlet","fr.excilys.validator","fr.excilys.view"})
-@PropertySource(value = { "classpath:configuration.properties" })
-public class SpringConfiguration {
+@PropertySource(value = { "classpath:configurationTest.properties" })
+public class SpringTestConfiguration {
 
     @Autowired
     private Environment environement;

@@ -9,15 +9,23 @@ import java.util.Scanner;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import fr.excilys.config.SpringConfiguration;
 
 public class CliViewTest {
 
-	private static CliView view = new CliView();
+	private static CliView view;
 	private static Field scannerField;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		try {
+			@SuppressWarnings("resource")
+			ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+			view = vApplicationContext.getBean("cliView", CliView.class);
+			
 			scannerField = CliView.class.getDeclaredField("sc");
 			scannerField.setAccessible(true);
 		} catch (NoSuchFieldException | SecurityException e) {
