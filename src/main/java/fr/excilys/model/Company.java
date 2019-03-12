@@ -9,8 +9,6 @@ public class Company {
 	private Long id;
 
 	private String name;
-	
-	public Company() { }
 
 	/**
 	 * @return the id
@@ -91,8 +89,6 @@ public class Company {
 		
 		private Long id;
 		private String name;
-		
-		public CompanyBuilder() { }
 
 		/**
 		 * @param id the id to set

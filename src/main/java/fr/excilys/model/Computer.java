@@ -18,8 +18,6 @@ public class Computer {
 	private Date discontinued;
 
 	private Company company;
-	
-	public Computer() { }
 
 	/**
 	 * @return the id
@@ -175,8 +173,6 @@ public class Computer {
 		private Date discontinued;
 
 		private Company company;
-		
-		public ComputerBuilder() { }
 
 		/**
 		 * @param id the id to set

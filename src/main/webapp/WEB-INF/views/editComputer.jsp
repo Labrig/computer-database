@@ -26,6 +26,7 @@
                     <form action="<c:url value="/EditComputer"/>" method="POST">
                         <input type="hidden" value="${editComputer.getId()}" id="computerId" name="computerId"/> <!-- TODO: Change this value with the computer id -->
                         <fieldset>
+                        	<legend>Computer information</legend>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${editComputer.getName()}" required>

@@ -18,8 +18,6 @@ public class ComputerDTO {
 	private String companyId;
 	
 	private String companyName;
-
-	public ComputerDTO() { }
 	
 	/**
 	 * @return the id
@@ -123,8 +121,6 @@ public class ComputerDTO {
 		private String companyId;
 		
 		private String companyName;
-		
-		public ComputerDTOBuilder() { }
 
 		/**
 		 * @param id the id to set

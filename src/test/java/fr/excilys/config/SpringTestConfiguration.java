@@ -1,6 +1,5 @@
 package fr.excilys.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +13,8 @@ import com.zaxxer.hikari.HikariDataSource;
 @PropertySource(value = { "classpath:configurationTest.properties" })
 public class SpringTestConfiguration {
 
-    @Autowired
-    private Environment environement;
-	
 	@Bean
-    public HikariDataSource dataSource() {
+    public HikariDataSource dataSource(Environment environement) {
 		HikariDataSource dataSource = new HikariDataSource();
 		dataSource.setJdbcUrl(environement.getRequiredProperty("URL"));
 		dataSource.setUsername(environement.getRequiredProperty("USERNAME"));

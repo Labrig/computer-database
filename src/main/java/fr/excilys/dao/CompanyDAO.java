@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import fr.excilys.exceptions.DAOException;
+import fr.excilys.logger.ELoggerMessage;
 import fr.excilys.model.Company;
 import fr.excilys.model.Company.CompanyBuilder;
 
@@ -52,10 +53,10 @@ public class CompanyDAO extends DAO<Company> {
 				connect.setAutoCommit(false);
 				statementComputers.setLong(1, idCompany);
 				statementComputers.execute();
-				logger.info("The statement "+statementComputers+" has been executed." );
+				logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statementComputers);
 				statementCompany.setLong(1, idCompany);
 				statementCompany.execute();
-				logger.info("The statement "+statementCompany+" has been executed." );
+				logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statementCompany);
 				connect.commit();
 			} catch (SQLException e) {
 				logger.error(e.getMessage(), e);
@@ -71,16 +72,20 @@ public class CompanyDAO extends DAO<Company> {
 	public Company find(Long idCompany) throws DAOException {
 		try(Connection	connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COMPANY_REQUEST);){
-			statement.setLong(1, idCompany);	
-			ResultSet result = statement.executeQuery();
-			logger.info("The statement "+statement+" has been executed." );
-			if(result.next()) {
-				Company company = mapResultSet(result);
-				return company;
-			} else {
-				logger.warn("No result returned by the statement");
-				throw new DAOException("No result returned by the statement");
+			
+			statement.setLong(1, idCompany);
+			
+			try(ResultSet result = statement.executeQuery();){
+				logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
+				if(result.next()) {
+					Company company = mapResultSet(result);
+					return company;
+				} else {
+					logger.warn(ELoggerMessage.NO_RESULSET_RETURNED.toString());
+					throw new DAOException(ELoggerMessage.NO_RESULSET_RETURNED.toString());
+				}
 			}
+			
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not find the Company with the id "+idCompany);
@@ -90,10 +95,10 @@ public class CompanyDAO extends DAO<Company> {
 	@Override
 	public List<Company> list() throws DAOException {
 		try(Connection connect = getConnection();
-				PreparedStatement statement = connect.prepareStatement(LIST_COMPANY_REQUEST);) {
+				PreparedStatement statement = connect.prepareStatement(LIST_COMPANY_REQUEST);
+				ResultSet result = statement.executeQuery();) {
 			List<Company> listCompany = new ArrayList<>();
-			ResultSet result = statement.executeQuery();
-			logger.info("The statement "+statement+" has been executed." );
+			logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
 			while(result.next()) {
 				listCompany.add(mapResultSet(result));		
 			}
@@ -107,14 +112,14 @@ public class CompanyDAO extends DAO<Company> {
 	@Override
 	public int count() throws DAOException {
 		try(Connection	connect = getConnection();
-				PreparedStatement statement = connect.prepareStatement(COUNT_COMPANY_REQUEST);){
-			ResultSet result = statement.executeQuery();
-			logger.info("The statement "+statement+" has been executed." );
+				PreparedStatement statement = connect.prepareStatement(COUNT_COMPANY_REQUEST);
+				ResultSet result = statement.executeQuery();){
+			logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
 			if(result.next()) {
 				return result.getInt("count");
 			} else {
-				logger.warn("No result returned by the statement");
-				throw new DAOException("No result returned by the statement");
+				logger.warn(ELoggerMessage.NO_RESULSET_RETURNED.toString());
+				throw new DAOException(ELoggerMessage.NO_RESULSET_RETURNED.toString());
 			}
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);

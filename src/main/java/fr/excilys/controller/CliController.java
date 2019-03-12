@@ -28,6 +28,17 @@ import fr.excilys.view.CliView;
 @Controller
 public class CliController {
 	
+	//TODO change this with enum
+	private static final String ID_COMPANY = "idCompany";
+
+	private static final String DISCO = "disco";
+
+	private static final String INTRO = "intro";
+
+	private static final String NAME = "name";
+
+	private static final String ID = "id";
+
 	@Autowired
 	private CliView view;
 	
@@ -92,7 +103,7 @@ public class CliController {
 	}
 	
 	private void deleteCompany(StringBuilder sb) throws CompanyMappingException, ComputerValidationException, NotCommandeException {
-		String[] attributesD = {"id"};
+		String[] attributesD = {ID};
 		try {
 			this.companyService.delete(this.fillCompanyField(attributesD).getId());
 			sb.append("Company as been deleted");
@@ -108,7 +119,7 @@ public class CliController {
 	 * @throws MappingException
 	 */
 	private void deleteComputer(StringBuilder sb) throws NotCommandeException, ComputerValidationException, ComputerMappingException {
-		String[] attributesD = {"id"};
+		String[] attributesD = {ID};
 		try {
 			this.computerService.delete(this.fillComputerField(attributesD).getId());
 			sb.append("Computer as been deleted");
@@ -124,7 +135,7 @@ public class CliController {
 	 * @throws MappingException
 	 */
 	private void updateComputer(StringBuilder sb) throws NotCommandeException, ComputerValidationException, ComputerMappingException {
-		String[] attributesU = {"id","name","intro","disco","idCompany"};
+		String[] attributesU = {ID,NAME,INTRO,DISCO,ID_COMPANY};
 		Computer computer = this.fillComputerField(attributesU);
 		try {
 			this.computerService.update(computer);
@@ -141,7 +152,7 @@ public class CliController {
 	 * @throws MappingException
 	 */
 	private void findComputer(StringBuilder sb) throws NotCommandeException, ComputerValidationException, ComputerMappingException {
-		String[] attributesR = {"id"};
+		String[] attributesR = {ID};
 		try {
 			Computer computer = this.computerService.find(this.fillComputerField(attributesR).getId());
 			sb.append(computer.toString());
@@ -157,7 +168,7 @@ public class CliController {
 	 * @throws MappingException
 	 */
 	private void createComputer(StringBuilder sb) throws NotCommandeException, ComputerValidationException, ComputerMappingException {
-		String[] attributesC = {"name","intro","disco","idCompany"};
+		String[] attributesC = {NAME,INTRO,DISCO,ID_COMPANY};
 		Computer computer = this.fillComputerField(attributesC);
 		try {
 			this.computerService.create(computer);
@@ -211,19 +222,19 @@ public class CliController {
 			String value = this.view.requestAttribute(attribute);
 			if(!"".equals(value)) {
 				switch(attribute) {
-				case "id":
+				case ID:
 					dto.setId(value);
 					break;
-				case "name":
+				case NAME:
 					dto.setName(value);
 					break;
-				case "intro":
+				case INTRO:
 					dto.setIntroduced(value);
 					break;
-				case "disco":
+				case DISCO:
 					dto.setDiscontinued(value);
 					break;
-				case "idCompany":
+				case ID_COMPANY:
 					dto.setCompanyId(value);
 					break;
 				default:
@@ -249,10 +260,10 @@ public class CliController {
 			String value = this.view.requestAttribute(attribute);
 			if(!"".equals(value)) {
 				switch(attribute) {
-				case "id":
+				case ID:
 					dto.setId(value);
 					break;
-				case "name":
+				case NAME:
 					dto.setName(value);
 					break;
 				default:

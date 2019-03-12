@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import fr.excilys.exceptions.DAOException;
+import fr.excilys.logger.ELoggerMessage;
 import fr.excilys.model.Computer;
 import fr.excilys.model.Computer.ComputerBuilder;
 
@@ -50,7 +51,7 @@ public class ComputerDAO extends DAO<Computer> {
 			statement.setTimestamp(3, computer.getDiscontinued() == null ? null : new Timestamp(computer.getDiscontinued().getTime()));
 			statement.setObject(4, computer.getCompany() == null ? null : computer.getCompany().getId());
 			statement.execute();
-			logger.info("The statement "+statement+" has been executed." );
+			logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not insert the computer "+computer.toString());
@@ -67,7 +68,7 @@ public class ComputerDAO extends DAO<Computer> {
 			statement.setObject(4, computer.getCompany() == null ? null : computer.getCompany().getId());
 			statement.setLong(5, computer.getId());
 			statement.execute();
-			logger.info("The statement "+statement+" has been executed." );
+			logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not update the computer "+computer.toString());
@@ -80,7 +81,7 @@ public class ComputerDAO extends DAO<Computer> {
 				PreparedStatement statement = connect.prepareStatement(DELETE_COMPUTER_REQUEST);){
 			statement.setLong(1, idComputer);
 			statement.execute();
-			logger.info("The statement "+statement+" has been executed." );
+			logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not delete the computer with the id "+idComputer);
@@ -91,16 +92,20 @@ public class ComputerDAO extends DAO<Computer> {
 	public Computer find(Long idComputer) throws DAOException {
 		try(Connection	connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(SELECT_COMPUTER_REQUEST);){
-			statement.setLong(1, idComputer);	
-			ResultSet result = statement.executeQuery();
-			logger.info("The statement "+statement+" has been executed." );
-			if(result.next()) {
-				Computer computer = mapResultSet(result);
-				return computer;
-			} else {
-				logger.warn("No result returned by the statement");
-				throw new DAOException("No result returned by the statement");
+			
+			statement.setLong(1, idComputer);
+			
+			try(ResultSet result = statement.executeQuery();) {
+				logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
+				if(result.next()) {
+					Computer computer = mapResultSet(result);
+					return computer;
+				} else {
+					logger.warn(ELoggerMessage.NO_RESULSET_RETURNED.toString());
+					throw new DAOException(ELoggerMessage.NO_RESULSET_RETURNED.toString());
+				}
 			}
+			
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not find the computer with the id "+idComputer);
@@ -110,10 +115,10 @@ public class ComputerDAO extends DAO<Computer> {
 	@Override
 	public List<Computer> list() throws DAOException {
 		try(Connection connect = getConnection();
-				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST);){
+				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST);
+				ResultSet result = statement.executeQuery();){
 			List<Computer> listComputer = new ArrayList<>();
-			ResultSet result = statement.executeQuery();
-			logger.info("The statement "+statement+" has been executed." );
+			logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
 			while(result.next()) {
 				listComputer.add(mapResultSet(result));		
 			}
@@ -137,15 +142,19 @@ public class ComputerDAO extends DAO<Computer> {
 	public List<Computer> listWithPagination(int start, int size) throws DAOException {
 		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_REQUEST+LIMIT_COMPUTER);){
+			
 			List<Computer> listComputer = new ArrayList<>();
 			statement.setInt(1, start);
 			statement.setInt(2, size);
-			ResultSet result = statement.executeQuery();
-			logger.info("The statement "+statement+" has been executed." );
-			while(result.next()) {
-				listComputer.add(mapResultSet(result));		
+			
+			try(ResultSet result = statement.executeQuery();) {
+				logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
+				while(result.next()) {
+					listComputer.add(mapResultSet(result));		
+				}
+				return listComputer;
 			}
-			return listComputer;
+			
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not list the computers between "+start+" and "+(start+size));
@@ -163,14 +172,18 @@ public class ComputerDAO extends DAO<Computer> {
 	public List<Computer> listByName(String name) throws DAOException {
 		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_BY_NAME_REQUEST);){
+			
 			List<Computer> listComputer = new ArrayList<>();
 			statement.setString(1, "%"+name+"%");
-			ResultSet result = statement.executeQuery();
-			logger.info("The statement "+statement+" has been executed." );
-			while(result.next()) {
-				listComputer.add(mapResultSet(result));		
+			
+			try(ResultSet result = statement.executeQuery();) {
+				logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
+				while(result.next()) {
+					listComputer.add(mapResultSet(result));		
+				}
+				return listComputer;
 			}
-			return listComputer;
+			
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not list the computers with the name "+name);
@@ -191,16 +204,20 @@ public class ComputerDAO extends DAO<Computer> {
 	public List<Computer> listByNameWithPagination(String name, int start, int size) throws DAOException {
 		try(Connection connect = getConnection();
 				PreparedStatement statement = connect.prepareStatement(LIST_COMPUTER_BY_NAME_REQUEST+LIMIT_COMPUTER);){
+			
 			List<Computer> listComputer = new ArrayList<>();
 			statement.setString(1, "%"+name+"%");
 			statement.setInt(2, start);
 			statement.setInt(3, size);
-			ResultSet result = statement.executeQuery();
-			logger.info("The statement "+statement+" has been executed." );
-			while(result.next()) {
-				listComputer.add(mapResultSet(result));		
+			
+			try(ResultSet result = statement.executeQuery();) {
+				logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
+				while(result.next()) {
+					listComputer.add(mapResultSet(result));		
+				}
+				return listComputer;
 			}
-			return listComputer;
+			
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not list the computers with the name "+name+" between "+start+" and "+(start+size));
@@ -210,14 +227,14 @@ public class ComputerDAO extends DAO<Computer> {
 	@Override
 	public int count() throws DAOException {
 		try(Connection	connect = getConnection();
-				PreparedStatement statement = connect.prepareStatement(COUNT_COMPUTER_REQUEST);){
-			ResultSet result = statement.executeQuery();
-			logger.info("The statement "+statement+" has been executed." );
+				PreparedStatement statement = connect.prepareStatement(COUNT_COMPUTER_REQUEST);
+				ResultSet result = statement.executeQuery();){
+			logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
 			if(result.next()) {
 				return result.getInt("count");
 			} else {
-				logger.warn("No result returned by the statement");
-				throw new DAOException("No result returned by the statement");
+				logger.warn(ELoggerMessage.NO_RESULSET_RETURNED.toString());
+				throw new DAOException(ELoggerMessage.NO_RESULSET_RETURNED.toString());
 			}
 		} catch (SQLException e) {
 			logger.warn(e.getMessage(), e);

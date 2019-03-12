@@ -49,7 +49,7 @@ public class AddComputerServlet extends HttpServlet {
 	@Autowired
 	private ComputerMapper computerMapper;
 	
-	private Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
+	private static Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException{
@@ -87,7 +87,7 @@ public class AddComputerServlet extends HttpServlet {
 		try {
 			Computer computer = computerMapper.mapDTOInObject(dto);
 			computerService.create(computer);
-			logger.info("The computer "+computer+" has been created");
+			logger.info("The computer {} has been created", computer);
 		} catch (ValidationException | MappingException | DAOException e) {
 			logger.error(e.getMessage(), e);
 			request.setAttribute("error", e.getMessage());

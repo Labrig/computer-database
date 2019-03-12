@@ -36,7 +36,7 @@ public class FindComputerByNameServlet extends HttpServlet {
 	@Autowired
 	private ComputerMapper computerMapper;
 	
-	private Logger logger = LoggerFactory.getLogger(FindComputerByNameServlet.class);
+	private static Logger logger = LoggerFactory.getLogger(FindComputerByNameServlet.class);
 
 	@Override
 	public void init(ServletConfig config) throws ServletException{
@@ -48,6 +48,7 @@ public class FindComputerByNameServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
 			List<ComputerDTO> computers = new ArrayList<>();
@@ -65,6 +66,7 @@ public class FindComputerByNameServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}

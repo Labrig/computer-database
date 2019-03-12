@@ -36,6 +36,8 @@ public class DashboardServlet extends HttpServlet {
 	@Autowired
 	private ComputerMapper computerMapper;
 	
+	private static Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
+	
 	@Override
 	public void init(ServletConfig config) throws ServletException{
 		super.init(config);
@@ -43,11 +45,10 @@ public class DashboardServlet extends HttpServlet {
 		
 	}
 	
-	private Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
-	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String pageNumber = request.getParameter("pageNumber");
 		String pageSize = request.getParameter("pageSize");
@@ -76,6 +77,7 @@ public class DashboardServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}

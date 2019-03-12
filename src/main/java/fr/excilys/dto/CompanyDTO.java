@@ -9,8 +9,6 @@ public class CompanyDTO {
 	private String id;
 	private String name;
 	
-	public CompanyDTO() { }
-	
 	/**
 	 * @return the id
 	 */
@@ -44,8 +42,6 @@ public class CompanyDTO {
 		
 		private String id;
 		private String name;
-		
-		public CompanyDTOBuilder() { }
 		
 		/**
 		 * @param id the id to set

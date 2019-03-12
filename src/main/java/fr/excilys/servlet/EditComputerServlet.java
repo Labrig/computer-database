@@ -50,7 +50,7 @@ public class EditComputerServlet extends HttpServlet {
 	@Autowired
 	private ComputerMapper computerMapper;
 	
-	private Logger logger = LoggerFactory.getLogger(EditComputerServlet.class);
+	private static Logger logger = LoggerFactory.getLogger(EditComputerServlet.class);
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException{
@@ -62,6 +62,7 @@ public class EditComputerServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ComputerDTO dto = new ComputerDTOBuilder().setId(request.getParameter("idEditComputer")).build();
 		try {
@@ -81,6 +82,7 @@ public class EditComputerServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ComputerDTO dto = new ComputerDTOBuilder().setId(request.getParameter("computerId"))
 				.setName(request.getParameter("computerName"))
@@ -90,7 +92,7 @@ public class EditComputerServlet extends HttpServlet {
 		try {
 			Computer computer = computerMapper.mapDTOInObject(dto);
 			computerService.update(computer);
-			logger.info("The computer "+computer+" has been created");
+			logger.info("The computer {} has been created", computer);
 		} catch (ValidationException | MappingException | DAOException e) {
 			logger.error(e.getMessage(), e);
 			request.setAttribute("error", e.getMessage());

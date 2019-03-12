@@ -36,7 +36,7 @@ public class DeleteComputerServlet extends HttpServlet {
 	@Autowired
 	private ComputerMapper computerMapper;
 	
-	private Logger logger = LoggerFactory.getLogger(DeleteComputerServlet.class);
+	private static Logger logger = LoggerFactory.getLogger(DeleteComputerServlet.class);
 
 	@Override
 	public void init(ServletConfig config) throws ServletException{
@@ -48,6 +48,7 @@ public class DeleteComputerServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.info("Redirect to dashboard.jsp");
 		this.getServletContext().getRequestDispatcher("/").forward(request, response);
@@ -56,13 +57,14 @@ public class DeleteComputerServlet extends HttpServlet {
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String[] computersId = request.getParameter("selection").split(",");
 		for(String idComputer : computersId) {
 			ComputerDTO dto = new ComputerDTOBuilder().setId(idComputer).build();
 			try {
 				computerService.delete(computerMapper.mapDTOInObject(dto).getId());
-				logger.info("The computer with the id "+idComputer+" has been deleted");
+				logger.info("The computer with the id {} has been deleted", idComputer);
 			} catch (MappingException | ValidationException | DAOException e) {
 				logger.error(e.getMessage(), e);
 				request.setAttribute("error", e.getMessage());

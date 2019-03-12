@@ -1,6 +1,5 @@
 package fr.excilys.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -13,12 +12,9 @@ import com.zaxxer.hikari.HikariDataSource;
 @ComponentScan({"fr.excilys.controller","fr.excilys.dao","fr.excilys.mapper","fr.excilys.service","fr.excilys.servlet","fr.excilys.validator","fr.excilys.view"})
 @PropertySource(value = { "classpath:configuration.properties" })
 public class SpringConfiguration {
-
-    @Autowired
-    private Environment environement;
 	
 	@Bean
-    public HikariDataSource dataSource() {
+    public HikariDataSource dataSource(Environment environement) {
 		HikariDataSource dataSource = new HikariDataSource();
 		dataSource.setJdbcUrl(environement.getRequiredProperty("URL"));
 		dataSource.setUsername(environement.getRequiredProperty("USERNAME"));

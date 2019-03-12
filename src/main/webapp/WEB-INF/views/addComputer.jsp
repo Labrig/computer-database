@@ -23,6 +23,7 @@
                     <h1>Add Computer</h1>
                     <form action="<c:url value="/AddComputer"/>" method="POST">
                         <fieldset>
+                        	<legend>Computer information</legend>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
                                 <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" required>
