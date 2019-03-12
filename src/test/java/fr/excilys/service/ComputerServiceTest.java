@@ -2,6 +2,8 @@ package fr.excilys.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -66,6 +68,8 @@ public class ComputerServiceTest {
 		Computer computerSet = new ComputerBuilder().setName("test").setId(1L).build();
 		daoField.set(service, mockedDAO);
 		service.create(computerSet);
+		
+		verify(mockedDAO, times(1)).insert(computerSet);
 	}
 	
 	@Test
@@ -73,12 +77,16 @@ public class ComputerServiceTest {
 		Computer computerSet = new ComputerBuilder().setName("test").setId(1L).build();
 		daoField.set(service, mockedDAO);
 		service.update(computerSet);
+		
+		verify(mockedDAO, times(1)).update(computerSet);
 	}
 	
 	@Test
 	public void testDeleteComputer() throws DAOException, ComputerValidationException, IllegalArgumentException, IllegalAccessException {
 		daoField.set(service, mockedDAO);
 		service.delete(1L);
+		
+		verify(mockedDAO, times(1)).delete(1L);
 	}
 	
 	@Test

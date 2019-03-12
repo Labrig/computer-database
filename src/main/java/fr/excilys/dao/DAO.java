@@ -1,11 +1,10 @@
 package fr.excilys.dao;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -18,7 +17,7 @@ import fr.excilys.exceptions.DAOException;
  *
  * @param <T> the object to persist
  */
-public abstract class DAO<T> {
+public abstract class DAO<T> implements RowMapper<T> {
 	
 	@Autowired
 	private HikariDataSource dataSource;
@@ -27,8 +26,8 @@ public abstract class DAO<T> {
 	 * @return the connection to the database
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public Connection getConnection() throws SQLException {
-		return dataSource.getConnection();
+	public HikariDataSource getDataSource() {
+		return dataSource;
 	}
 	
 	/**
@@ -79,15 +78,5 @@ public abstract class DAO<T> {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public abstract int count() throws DAOException;
-	
-	/**
-	 * Convert the result of the query in business object
-	 * 
-	 * @param result the result of the query
-	 * @return the object build with the result
-	 * @throws SQLException thrown if a problem occur during the communication
-	 * @throws DAOException 
-	 */
-	public abstract T mapResultSet(ResultSet result) throws DAOException;
 	
 }

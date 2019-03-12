@@ -1,6 +1,8 @@
 package fr.excilys.controller;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doCallRealMethod;
 
@@ -61,6 +63,7 @@ public class ControllerComputerTest {
 		when(service.list()).thenReturn(listComputer);
 		computerServiceField.set(controller, service);
 		controller.executeCommand("/l computer");
+		verify(service, times(1)).list();
 	}
 	
 	@Test
@@ -76,6 +79,7 @@ public class ControllerComputerTest {
 		computerServiceField.set(controller, service);
 		viewField.set(controller, view);
 		controller.executeCommand("/f computer");
+		verify(view, times(1)).requestAttribute("id");
 	}
 	
 	@Test
@@ -89,6 +93,8 @@ public class ControllerComputerTest {
 		doCallRealMethod().when(controllerMock).executeCommand("/c computer");
 		computerServiceField.set(controllerMock, service);
 		controllerMock.executeCommand("/c computer");
+		
+		verify(controllerMock, times(1)).fillComputerField(attributes);
 	}
 	
 	@Test
@@ -103,6 +109,8 @@ public class ControllerComputerTest {
 		doCallRealMethod().when(controllerMock).executeCommand("/u computer");
 		computerServiceField.set(controllerMock, service);
 		controllerMock.executeCommand("/u computer");
+		
+		verify(controllerMock, times(1)).fillComputerField(attributes);
 	}
 	
 	@Test
@@ -116,6 +124,8 @@ public class ControllerComputerTest {
 		doCallRealMethod().when(controllerMock).executeCommand("/d computer");
 		computerServiceField.set(controllerMock, service);
 		controllerMock.executeCommand("/d computer");
+		
+		verify(controllerMock, times(1)).fillComputerField(attributes);
 	}
 
 }
