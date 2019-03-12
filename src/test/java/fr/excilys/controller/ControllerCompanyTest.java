@@ -2,6 +2,8 @@ package fr.excilys.controller;
 
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
@@ -61,10 +63,11 @@ public class ControllerCompanyTest {
 		when(service.list()).thenReturn(listCompany);
 		companyServiceField.set(controller, service);
 		controller.executeCommand("/l company");
+		verify(service, times(1)).list();
 	}
 	
 	@Test
-	public void testDeleteCompany() throws NotCommandeException, MappingException, IllegalArgumentException, IllegalAccessException, ComputerValidationException {
+	public void testDeleteCompany() throws NotCommandeException, MappingException, IllegalArgumentException, IllegalAccessException, ComputerValidationException, DAOException {
 		Company company = new Company();
 		company.setId(new Long(1));
 		CompanyService service = mock(CompanyService.class);
@@ -74,6 +77,7 @@ public class ControllerCompanyTest {
 		doCallRealMethod().when(controllerMock).executeCommand("/d company");
 		companyServiceField.set(controllerMock, service);
 		controllerMock.executeCommand("/d company");
+		verify(controllerMock, times(1)).fillCompanyField(attributes);
 	}
 
 }

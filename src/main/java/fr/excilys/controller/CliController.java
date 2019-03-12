@@ -216,7 +216,7 @@ public class CliController {
 	 * @throws ComputerValidationException
 	 * @throws MappingException
 	 */
-	public Computer fillComputerField(String[] attributes) throws ComputerMappingException, ComputerValidationException {
+	public Computer fillComputerField(String[] attributes) throws ComputerMappingException {
 		ComputerDTO dto = new ComputerDTO();
 		for(String attribute : attributes) {
 			String value = this.view.requestAttribute(attribute);
@@ -254,7 +254,7 @@ public class CliController {
 	 * @throws MappingException
 	 * @throws ComputerValidationException
 	 */
-	public Company fillCompanyField(String[] attributes) throws CompanyMappingException, ComputerValidationException {
+	public Company fillCompanyField(String[] attributes) throws CompanyMappingException {
 		CompanyDTO dto = new CompanyDTO();
 		for(String attribute : attributes) {
 			String value = this.view.requestAttribute(attribute);
@@ -271,7 +271,6 @@ public class CliController {
 				}
 			}
 		}
-		Company company = this.companyMapper.mapDTOInObject(dto);
-		return company;
+		return this.companyMapper.mapDTOInObject(dto);
 	}
 }

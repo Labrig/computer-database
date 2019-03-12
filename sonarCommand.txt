@@ -1,0 +1,5 @@
+mvn sonar:sonar \
+  -Dsonar.projectKey=Labrig_computer-database \
+  -Dsonar.organization=labrig-github \
+  -Dsonar.host.url=https://sonarcloud.io \
+  -Dsonar.login=6e2be623653135dcc43d1224f2d672be31e33ed0

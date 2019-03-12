@@ -78,8 +78,7 @@ public class CompanyDAO extends DAO<Company> {
 			try(ResultSet result = statement.executeQuery();){
 				logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
 				if(result.next()) {
-					Company company = mapResultSet(result);
-					return company;
+					return mapResultSet(result);
 				} else {
 					logger.warn(ELoggerMessage.NO_RESULSET_RETURNED.toString());
 					throw new DAOException(ELoggerMessage.NO_RESULSET_RETURNED.toString());

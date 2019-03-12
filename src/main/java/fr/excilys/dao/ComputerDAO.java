@@ -98,8 +98,7 @@ public class ComputerDAO extends DAO<Computer> {
 			try(ResultSet result = statement.executeQuery();) {
 				logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), statement);
 				if(result.next()) {
-					Computer computer = mapResultSet(result);
-					return computer;
+					return mapResultSet(result);
 				} else {
 					logger.warn(ELoggerMessage.NO_RESULSET_RETURNED.toString());
 					throw new DAOException(ELoggerMessage.NO_RESULSET_RETURNED.toString());

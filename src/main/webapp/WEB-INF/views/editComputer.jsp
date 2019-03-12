@@ -24,7 +24,7 @@
                     </div>
                     <h1>Edit Computer</h1>
                     <form action="<c:url value="/EditComputer"/>" method="POST">
-                        <input type="hidden" value="${editComputer.getId()}" id="computerId" name="computerId"/> <!-- TODO: Change this value with the computer id -->
+                        <input type="hidden" value="${editComputer.getId()}" id="computerId" name="computerId"/>
                         <fieldset>
                         	<legend>Computer information</legend>
                             <div class="form-group">
