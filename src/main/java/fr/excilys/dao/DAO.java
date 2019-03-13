@@ -69,7 +69,7 @@ public abstract class DAO<T> implements RowMapper<T> {
 	 * @return the list of objects
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public abstract List<T> list() throws DAOException;
+	public abstract List<T> list();
 	
 	/**
 	 * Count the number of object in the database
@@ -77,6 +77,6 @@ public abstract class DAO<T> implements RowMapper<T> {
 	 * @return the number of object in database
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public abstract int count() throws DAOException;
+	public abstract int count();
 	
 }

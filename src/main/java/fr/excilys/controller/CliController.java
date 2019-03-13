@@ -157,7 +157,7 @@ public class CliController {
 			Computer computer = this.computerService.find(this.fillComputerField(attributesR).getId());
 			sb.append(computer.toString());
 		} catch(DAOException e) {
-			throw new NotCommandeException("Computer not found");
+			throw new NotCommandeException(e.getMessage());
 		}
 	}
 

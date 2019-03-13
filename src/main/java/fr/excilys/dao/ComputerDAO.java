@@ -9,7 +9,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -45,51 +45,42 @@ public class ComputerDAO extends DAO<Computer> {
 
 	@Override
 	public void insert(Computer computer) throws DAOException {
-		try {
-			MapSqlParameterSource parameters = new MapSqlParameterSource();
-			parameters.addValue("name", computer.getName());
-		    parameters.addValue("intro", computer.getIntroduced() == null ? null : new Timestamp(computer.getIntroduced().getTime()), Types.TIMESTAMP);
-		    parameters.addValue("disco", computer.getDiscontinued() == null ? null : new Timestamp(computer.getDiscontinued().getTime()), Types.TIMESTAMP);
-		    parameters.addValue("idCompany", computer.getCompany() == null ? null : computer.getCompany().getId());
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("name", computer.getName());
+	    parameters.addValue("intro", computer.getIntroduced() == null ? null : new Timestamp(computer.getIntroduced().getTime()), Types.TIMESTAMP);
+	    parameters.addValue("disco", computer.getDiscontinued() == null ? null : new Timestamp(computer.getDiscontinued().getTime()), Types.TIMESTAMP);
+	    parameters.addValue("idCompany", computer.getCompany() == null ? null : computer.getCompany().getId());
 
-		    NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
-		    vJdbcTemplate.update(INSERT_COMPUTER_REQUEST, parameters);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not insert the computer "+computer.toString());
-		}
+	    NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
+	    if(vJdbcTemplate.update(INSERT_COMPUTER_REQUEST, parameters) == 0) {
+	    	throw new DAOException("can not insert the computer "+computer.toString());
+	    }
 	}
 
 	@Override
 	public void update(Computer computer) throws DAOException {
-		try {
-			MapSqlParameterSource parameters = new MapSqlParameterSource();
-			parameters.addValue("id", computer.getId());
-			parameters.addValue("name", computer.getName());
-		    parameters.addValue("intro", computer.getIntroduced() == null ? null : new Timestamp(computer.getIntroduced().getTime()), Types.TIMESTAMP);
-		    parameters.addValue("disco", computer.getDiscontinued() == null ? null : new Timestamp(computer.getDiscontinued().getTime()), Types.TIMESTAMP);
-		    parameters.addValue("idCompany", computer.getCompany() == null ? null : computer.getCompany().getId());
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("id", computer.getId());
+		parameters.addValue("name", computer.getName());
+	    parameters.addValue("intro", computer.getIntroduced() == null ? null : new Timestamp(computer.getIntroduced().getTime()), Types.TIMESTAMP);
+	    parameters.addValue("disco", computer.getDiscontinued() == null ? null : new Timestamp(computer.getDiscontinued().getTime()), Types.TIMESTAMP);
+	    parameters.addValue("idCompany", computer.getCompany() == null ? null : computer.getCompany().getId());
 
-		    NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
-		    vJdbcTemplate.update(UPDATE_COMPUTER_REQUEST, parameters);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not update the computer "+computer.toString());
-		}
+	    NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
+	    if(vJdbcTemplate.update(UPDATE_COMPUTER_REQUEST, parameters) == 0) {
+	    	throw new DAOException("can not update the computer "+computer.toString());
+	    }
 	}
 
 	@Override
 	public void delete(Long idComputer) throws DAOException {
-		try {
-			MapSqlParameterSource parameters = new MapSqlParameterSource();
-			parameters.addValue("id", idComputer);
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("id", idComputer);
 
-		    NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
-		    vJdbcTemplate.update(DELETE_COMPUTER_REQUEST, parameters);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not delete the computer with the id "+idComputer);
-		}
+	    NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
+	    if(vJdbcTemplate.update(DELETE_COMPUTER_REQUEST, parameters) == 0) {
+	    	throw new DAOException("can not delete the computer with the id "+idComputer);
+	    }
 	}
 
 	@Override
@@ -100,21 +91,16 @@ public class ComputerDAO extends DAO<Computer> {
 
 		    NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
 		    return vJdbcTemplate.queryForObject(SELECT_COMPUTER_REQUEST, parameters, this);
-		} catch (DataAccessException e) {
+		} catch (IncorrectResultSizeDataAccessException e) {
 			logger.warn(e.getMessage(), e);
 			throw new DAOException("can not find the computer with the id "+idComputer);
 		}
 	}
 
 	@Override
-	public List<Computer> list() throws DAOException {
-		try {
-			JdbcTemplate vJdbcTemplate = new JdbcTemplate(getDataSource());
-		    return vJdbcTemplate.query(LIST_COMPUTER_REQUEST, this);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not list the computers");
-		}
+	public List<Computer> list() {
+		JdbcTemplate vJdbcTemplate = new JdbcTemplate(getDataSource());
+	    return vJdbcTemplate.query(LIST_COMPUTER_REQUEST, this);
 	}
 	
 	/**
@@ -126,18 +112,13 @@ public class ComputerDAO extends DAO<Computer> {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 * @throws DAOException 
 	 */
-	public List<Computer> listWithPagination(int start, int size) throws DAOException {
-		try {
-			MapSqlParameterSource parameters = new MapSqlParameterSource();
-			parameters.addValue("start", start);
-			parameters.addValue("size", size);
-			
-			NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
-		    return vJdbcTemplate.query(LIST_COMPUTER_REQUEST+LIMIT_COMPUTER, parameters, this);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not list the computers between "+start+" and "+(start+size));
-		}
+	public List<Computer> listWithPagination(int start, int size) {
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("start", start);
+		parameters.addValue("size", size);
+		
+		NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
+	    return vJdbcTemplate.query(LIST_COMPUTER_REQUEST+LIMIT_COMPUTER, parameters, this);
 	}
 	
 	/**
@@ -148,18 +129,12 @@ public class ComputerDAO extends DAO<Computer> {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 * @throws DAOException 
 	 */
-	public List<Computer> listByName(String name) throws DAOException {
-		try {
-			MapSqlParameterSource parameters = new MapSqlParameterSource();
-			parameters.addValue("name", name);
-			
-			NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
-		    return vJdbcTemplate.query(LIST_COMPUTER_BY_NAME_REQUEST, parameters, this);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not list the computers with the name "+name);
-		}
+	public List<Computer> listByName(String name) {
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("name", "%"+name+"%");
 		
+		NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
+	    return vJdbcTemplate.query(LIST_COMPUTER_BY_NAME_REQUEST, parameters, this);
 	}
 	
 	/**
@@ -173,30 +148,20 @@ public class ComputerDAO extends DAO<Computer> {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 * @throws DAOException 
 	 */
-	public List<Computer> listByNameWithPagination(String name, int start, int size) throws DAOException {
-		try {
-			MapSqlParameterSource parameters = new MapSqlParameterSource();
-			parameters.addValue("start", start);
-			parameters.addValue("size", size);
-			parameters.addValue("name", name);
-			
-			NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
-		    return vJdbcTemplate.query(LIST_COMPUTER_BY_NAME_REQUEST+LIMIT_COMPUTER, parameters, this);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not list the computers with the name "+name+" between "+start+" and "+(start+size));
-		}
+	public List<Computer> listByNameWithPagination(String name, int start, int size) {
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+		parameters.addValue("start", start);
+		parameters.addValue("size", size);
+		parameters.addValue("name", "%"+name+"%");
+		
+		NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
+	    return vJdbcTemplate.query(LIST_COMPUTER_BY_NAME_REQUEST+LIMIT_COMPUTER, parameters, this);
 	}
 	
 	@Override
-	public int count() throws DAOException {
-		try {
-			JdbcTemplate vJdbcTemplate = new JdbcTemplate(getDataSource());
-		    return vJdbcTemplate.queryForObject(COUNT_COMPUTER_REQUEST, Integer.class);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not count the computers");
-		}
+	public int count() {
+		JdbcTemplate vJdbcTemplate = new JdbcTemplate(getDataSource());
+	    return vJdbcTemplate.queryForObject(COUNT_COMPUTER_REQUEST, Integer.class);
 	}
 
 	@Override

@@ -47,19 +47,18 @@ public class CompanyDAO extends DAO<Company> {
 
 	@Override
 	public void delete(Long idCompany) throws DAOException {
-		try {
-			MapSqlParameterSource parameters = new MapSqlParameterSource();
-		    parameters.addValue("id", idCompany);
+		MapSqlParameterSource parameters = new MapSqlParameterSource();
+	    parameters.addValue("id", idCompany);
 
-		    NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
-		    vJdbcTemplate.update(DELETE_COMPUTER_OF_COMPANY_REQUEST, parameters);
-		    logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), idCompany);
-		    vJdbcTemplate.update(DELETE_COMPANY_REQUEST, parameters);
-		    logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), idCompany);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not delete the company with the id "+idCompany);
-		}
+	    NamedParameterJdbcTemplate vJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
+	    if(vJdbcTemplate.update(DELETE_COMPUTER_OF_COMPANY_REQUEST, parameters) == 0) {
+	    	throw new DAOException("can not delete the computer with the idCompany "+idCompany);
+	    }
+	    logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), idCompany);
+	    if(vJdbcTemplate.update(DELETE_COMPANY_REQUEST, parameters) == 0) {
+	    	throw new DAOException("can not delete the company with the id "+idCompany);
+	    }
+	    logger.info(ELoggerMessage.STATEMENT_EXECUTED.toString(), idCompany);
 	}
 
 	@Override
@@ -77,25 +76,15 @@ public class CompanyDAO extends DAO<Company> {
 	}
 
 	@Override
-	public List<Company> list() throws DAOException {
-		try {
-			JdbcTemplate vJdbcTemplate = new JdbcTemplate(getDataSource());
-		    return vJdbcTemplate.query(LIST_COMPANY_REQUEST, this);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not list the company");
-		}
+	public List<Company> list() {
+		JdbcTemplate vJdbcTemplate = new JdbcTemplate(getDataSource());
+	    return vJdbcTemplate.query(LIST_COMPANY_REQUEST, this);
 	}
 	
 	@Override
-	public int count() throws DAOException {
-		try {
-			JdbcTemplate vJdbcTemplate = new JdbcTemplate(getDataSource());
-		    return vJdbcTemplate.queryForObject(COUNT_COMPANY_REQUEST, Integer.class);
-		} catch (DataAccessException e) {
-			logger.warn(e.getMessage(), e);
-			throw new DAOException("can not count the company");
-		}
+	public int count() {
+		JdbcTemplate vJdbcTemplate = new JdbcTemplate(getDataSource());
+	    return vJdbcTemplate.queryForObject(COUNT_COMPANY_REQUEST, Integer.class);
 	}
 
 	@Override
