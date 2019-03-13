@@ -34,12 +34,6 @@
   </servlet-mapping>
   <servlet>
     <description></description>
-    <display-name>DashboardServlet</display-name>
-    <servlet-name>DashboardServlet</servlet-name>
-    <servlet-class>fr.excilys.servlet.DashboardServlet</servlet-class>
-  </servlet>
-  <servlet>
-    <description></description>
     <display-name>AddComputerServlet</display-name>
     <servlet-name>AddComputerServlet</servlet-name>
     <servlet-class>fr.excilys.servlet.AddComputerServlet</servlet-class>
@@ -62,19 +56,5 @@
     <servlet-name>FindComputerByNameServlet</servlet-name>
     <servlet-class>fr.excilys.servlet.FindComputerByNameServlet</servlet-class>
   </servlet>
-  
-  <listener>
-      <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>
-
-  <context-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>fr.excilys.config.SpringConfiguration</param-value>
-  </context-param>
-
-  <context-param>
-      <param-name>contextClass</param-name>
-      <param-value>org.springframework.web.context.support.AnnotationConfigWebApplicationContext</param-value>
-  </context-param>
   
 </web-app>

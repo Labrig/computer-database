@@ -16,7 +16,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import fr.excilys.config.SpringConfiguration;
+import fr.excilys.config.SpringTestConfiguration;
 import fr.excilys.exceptions.DAOException;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.exceptions.mapping.MappingException;
@@ -38,7 +38,7 @@ public class ControllerComputerTest {
 	@BeforeClass
 	public static void setUpBeforeClass() throws BeansException, IllegalAccessException, NoSuchFieldException, SecurityException {
 		@SuppressWarnings("resource")
-		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringTestConfiguration.class);
 		controller = vApplicationContext.getBean("cliController", CliController.class);
 		
 		computerServiceField = CliController.class.getDeclaredField("computerService");

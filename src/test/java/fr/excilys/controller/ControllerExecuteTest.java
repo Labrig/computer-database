@@ -11,7 +11,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import fr.excilys.config.SpringConfiguration;
+import fr.excilys.config.SpringTestConfiguration;
 import fr.excilys.controller.CliController;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.exceptions.mapping.MappingException;
@@ -59,7 +59,7 @@ public class ControllerExecuteTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		@SuppressWarnings("resource")
-		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringTestConfiguration.class);
 		controller = vApplicationContext.getBean("cliController", CliController.class);
 	}
 	

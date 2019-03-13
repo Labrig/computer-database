@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import fr.excilys.config.SpringConfiguration;
+import fr.excilys.config.SpringTestConfiguration;
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.mapping.ComputerDateFormatException;
 import fr.excilys.exceptions.mapping.ComputerIdCompanyFormatException;
@@ -22,7 +22,7 @@ public class ComputerMapperTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		@SuppressWarnings("resource")
-		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringTestConfiguration.class);
 		mapper = vApplicationContext.getBean("computerMapper", ComputerMapper.class);
 	}
 	

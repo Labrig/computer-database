@@ -1,20 +1,18 @@
 package fr.excilys.servlet;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
@@ -34,9 +32,9 @@ import fr.excilys.service.ComputerService;
  * Servlet implementation class EditComputerServlet
  * @author Matheo
  */
-@WebServlet("/EditComputer")
-public class EditComputerServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@Controller
+@RequestMapping("/EditComputer")
+public class EditComputerServlet {
 
 	@Autowired
 	private CompanyService companyService;
@@ -52,38 +50,26 @@ public class EditComputerServlet extends HttpServlet {
 	
 	private static Logger logger = LoggerFactory.getLogger(EditComputerServlet.class);
 	
-	@Override
-	public void init(ServletConfig config) throws ServletException{
-		super.init(config);
-		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-		
-	}
-	
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ComputerDTO dto = new ComputerDTOBuilder().setId(request.getParameter("idEditComputer")).build();
+	@GetMapping
+	protected ModelAndView doGet(@RequestParam(value = "idEditComputer", defaultValue = "1") String idComputer, ModelAndView modelView) {
+		ComputerDTO dto = new ComputerDTOBuilder().setId(idComputer).build();
 		try {
 			dto = computerMapper.mapObjectInDTO(computerService.find(computerMapper.mapDTOInObject(dto).getId()));
 			List<CompanyDTO> companies = new ArrayList<>();
 			for(Company company : companyService.list())
 				companies.add(companyMapper.mapObjectInDTO(company));
-			request.setAttribute("companies", companies);
+			modelView.addObject("companies", companies);
 		} catch (MappingException | DAOException | ComputerValidationException e) {
 			logger.warn(e.getMessage(), e);
 		}
-		request.setAttribute("editComputer", dto);
+		modelView.addObject("editComputer", dto);
+		modelView.setViewName("editComputer");
 		logger.info("Redirect to editComputer.jsp");
-		this.getServletContext().getRequestDispatcher("/WEB-INF/views/editComputer.jsp").forward(request, response);
+		return modelView;
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	@PostMapping
+	protected ModelAndView doPost(WebRequest request, ModelAndView modelView) {
 		ComputerDTO dto = new ComputerDTOBuilder().setId(request.getParameter("computerId"))
 				.setName(request.getParameter("computerName"))
 				.setIntroduced(request.getParameter("introduced"))
@@ -95,10 +81,11 @@ public class EditComputerServlet extends HttpServlet {
 			logger.info("The computer {} has been created", computer);
 		} catch (ValidationException | MappingException | DAOException e) {
 			logger.error(e.getMessage(), e);
-			request.setAttribute("error", e.getMessage());
+			modelView.addObject("error", e.getMessage());
 		}
 		logger.info("Redirect to dashboard.jsp");
-		this.getServletContext().getRequestDispatcher("/").forward(request, response);
+		modelView.setViewName("redirect:/");
+		return modelView;
 	}
 
 }

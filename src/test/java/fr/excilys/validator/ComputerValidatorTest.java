@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import fr.excilys.config.SpringConfiguration;
+import fr.excilys.config.SpringTestConfiguration;
 import fr.excilys.exceptions.validation.ComputerValidationException;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.model.Computer;
@@ -20,7 +20,7 @@ public class ComputerValidatorTest {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		@SuppressWarnings("resource")
-		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringTestConfiguration.class);
 		mapper = vApplicationContext.getBean("computerMapper", ComputerMapper.class);
 		validator = vApplicationContext.getBean("computerValidator", ComputerValidator.class);	
 	}

@@ -1,20 +1,16 @@
 package fr.excilys.servlet;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exceptions.DAOException;
@@ -26,9 +22,9 @@ import fr.excilys.service.ComputerService;
  * Servlet implementation class DashboardServlet
  * @author Matheo
  */
-@WebServlet("/")
-public class DashboardServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+@Controller
+@RequestMapping("/")
+public class DashboardServlet {
 
 	@Autowired
 	private ComputerService computerService;
@@ -38,48 +34,26 @@ public class DashboardServlet extends HttpServlet {
 	
 	private static Logger logger = LoggerFactory.getLogger(DashboardServlet.class);
 	
-	@Override
-	public void init(ServletConfig config) throws ServletException{
-		super.init(config);
-		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-		
-	}
-	
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String pageNumber = request.getParameter("pageNumber");
-		String pageSize = request.getParameter("pageSize");
-		if (pageNumber == null || pageSize == null) {
-			pageNumber = "1";
-			pageSize = "50";
-		}
+	@GetMapping
+	public ModelAndView doGet(@RequestParam(value = "pageNumber", defaultValue = "1") String pageNumber, 
+			@RequestParam(value = "pageSize", defaultValue = "50") String pageSize, ModelAndView modelView) {
 		try {
 			List<ComputerDTO> computers = new ArrayList<>();
 			for(Computer computer : computerService.listWithPagination((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize)))
 				computers.add(computerMapper.mapObjectInDTO(computer));
-			request.setAttribute("computers", computers);
+			modelView.addObject("computers", computers);
 			int totalComputer = computerService.count();
 			int pageTotal = totalComputer/Integer.valueOf(pageSize) + (totalComputer%Integer.valueOf(pageSize) != 0 ? 1 : 0);
-			request.setAttribute("pageSize", pageSize);
-			request.setAttribute("pageNumber", pageNumber);
-			request.setAttribute("totalComputer", totalComputer);
-			request.setAttribute("pageTotal", pageTotal);
+			modelView.addObject("pageSize", pageSize);
+			modelView.addObject("pageNumber", pageNumber);
+			modelView.addObject("totalComputer", totalComputer);
+			modelView.addObject("pageTotal", pageTotal);
 		} catch (DAOException e) {
 			logger.warn(e.getMessage(), e);
 		}
 		logger.info("Redirect to dashboard.jsp");
-		this.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	@Override
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		doGet(request, response);
+		modelView.setViewName("dashboard");
+		return modelView;
 	}
 
 }

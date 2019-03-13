@@ -3,7 +3,7 @@ package fr.excilys.cdb;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import fr.excilys.config.SpringConfiguration;
+import fr.excilys.config.SpringCliConfiguration;
 import fr.excilys.controller.CliController;
 import fr.excilys.exceptions.NotCommandeException;
 import fr.excilys.exceptions.mapping.MappingException;
@@ -18,7 +18,7 @@ public class App {
     public static void main( String[] args ) {
     	boolean isRunning = true;
     	@SuppressWarnings("resource")
-		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringCliConfiguration.class);
 
 		CliController controller = vApplicationContext.getBean("cliController", CliController.class);
 		while(isRunning) {

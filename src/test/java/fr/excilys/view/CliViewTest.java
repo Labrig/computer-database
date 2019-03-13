@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import fr.excilys.config.SpringConfiguration;
+import fr.excilys.config.SpringTestConfiguration;
 
 public class CliViewTest {
 
@@ -23,7 +23,7 @@ public class CliViewTest {
 	public static void setUpBeforeClass() {
 		try {
 			@SuppressWarnings("resource")
-			ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+			ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringTestConfiguration.class);
 			view = vApplicationContext.getBean("cliView", CliView.class);
 			
 			scannerField = CliView.class.getDeclaredField("sc");

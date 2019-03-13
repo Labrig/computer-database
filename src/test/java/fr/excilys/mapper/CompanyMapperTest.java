@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import fr.excilys.config.SpringConfiguration;
+import fr.excilys.config.SpringTestConfiguration;
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.exceptions.mapping.CompanyIdFormatException;
 import fr.excilys.exceptions.mapping.CompanyMappingException;
@@ -21,7 +21,7 @@ private static CompanyMapper mapper;
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		@SuppressWarnings("resource")
-		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringTestConfiguration.class);
 		mapper = vApplicationContext.getBean("companyMapper", CompanyMapper.class);
 	}
 	
