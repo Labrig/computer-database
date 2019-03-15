@@ -3,14 +3,17 @@ package fr.excilys.servlet;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
 import fr.excilys.dto.CompanyDTO;
@@ -48,8 +51,13 @@ public class AddComputerServlet {
 	
 	private static Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
 	
+	@ModelAttribute("dto")
+	public ComputerDTO newDTO() {
+		return new ComputerDTOBuilder().build();
+	}
+	
 	@GetMapping
-	protected ModelAndView doGet(ModelAndView modelView) {
+	public ModelAndView doGet(ModelAndView modelView) {
 		try {
 			List<CompanyDTO> companies = new ArrayList<>();
 			for(Company company : companyService.list())
@@ -64,22 +72,24 @@ public class AddComputerServlet {
 	}
 
 	@PostMapping
-	protected ModelAndView doPost(WebRequest request, ModelAndView modelView) {
-		ComputerDTO dto = new ComputerDTOBuilder().setName(request.getParameter("computerName"))
-				.setIntroduced(request.getParameter("introduced"))
-				.setDiscontinued(request.getParameter("discontinued"))
-				.setCompanyId(request.getParameter("companyId")).build();
-		try {
-			Computer computer = computerMapper.mapDTOInObject(dto);
-			computerService.create(computer);
-			logger.info("The computer {} has been created", computer);
-		} catch (ValidationException | MappingException | DAOException e) {
-			logger.error(e.getMessage(), e);
-			modelView.addObject("error", e.getMessage());
-		}
-		logger.info("Redirect to dashboard.jsp");
-		modelView.setViewName("redirect:/");
-		return modelView;
+	public ModelAndView doPost(@ModelAttribute("dto") @Valid ComputerDTO dto, BindingResult bindingResult, ModelAndView modelView) {
+		if (bindingResult.hasErrors()) {
+			modelView.setViewName("addComputer");
+			logger.info("Redirect to addComputer.jsp");
+			return modelView;
+        } else {
+        	try {
+    			Computer computer = computerMapper.mapDTOInObject(dto);
+    			computerService.create(computer);
+    			logger.info("The computer {} has been created", computer);
+    		} catch (ValidationException | MappingException | DAOException e) {
+    			logger.error(e.getMessage(), e);
+    			modelView.addObject("error", e.getMessage());
+    		}
+    		logger.info("Redirect to dashboard.jsp");
+    		modelView.setViewName("redirect:/");
+    		return modelView;
+        }
 	}
 
 }

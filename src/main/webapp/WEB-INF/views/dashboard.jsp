@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <html>
 <head>
 <title>Computer Database</title>
@@ -13,27 +14,26 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="<c:url value="/"/>"> Application - Computer Database </a>
+            <a class="navbar-brand" href="<c:url value="/"/>"> <spring:message code="application.title"/> </a>
         </div>
     </header>
     <section id="main">
         <div class="container">
             <h1 id="homeTitle">
-                ${totalComputer} Computers found
+                <spring:message code="dashborad.computersFound" arguments="${totalComputer}"/>
             </h1>
             <p>${error}</p>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
                     <form id="searchForm" action="<c:url value="/FindComputerByName"/>" method="GET" class="form-inline">
 
-                        <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" />
-                        <input type="submit" id="searchsubmit" value="Filter by name"
-                        class="btn btn-primary" />
+                        <input type="search" id="searchbox" name="search" class="form-control" placeholder="<spring:message code="dashboard.searchPlaceholder"/>" />
+                        <input type="submit" id="searchsubmit" value="<spring:message code="dashboard.searchButton"/>" class="btn btn-primary" />
                     </form>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" id="addComputer" href="<c:url value="/AddComputer"/>">Add Computer</a> 
-                    <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
+                    <a class="btn btn-success" id="addComputer" href="<c:url value="/AddComputer"/>"><spring:message code="dashboard.addComputerButton"/></a> 
+                    <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();"><spring:message code="dashboard.editComputerButton"/></a>
                 </div>
             </div>
         </div>
@@ -58,18 +58,18 @@
                             </span>
                         </th>
                         <th>
-                            Computer name
+                            <spring:message code="application.computerNameColumn"/>
                         </th>
                         <th>
-                            Introduced date
+                            <spring:message code="application.computerIntroColumn"/>
                         </th>
                         <!-- Table header for Discontinued Date -->
                         <th>
-                            Discontinued date
+                            <spring:message code="application.computerDiscoColumn"/>
                         </th>
                         <!-- Table header for Company -->
                         <th>
-                            Company
+                            <spring:message code="application.companyColumn"/>
                         </th>
 
                     </tr>
@@ -97,6 +97,9 @@
 
     <footer class="navbar-fixed-bottom">
         <div class="container text-center">
+       		<div class="pull-left" >
+        		<spring:message code="application.language"/> : <a href="?lang=en">English</a> | <a href="?lang=fr">Français</a>
+        	</div>
             <ul class="pagination">
                 <li>
                     <a href="<c:url value="/?pageNumber=${pageNumber-1}&pageSize=${pageSize}"/>" aria-label="Previous">

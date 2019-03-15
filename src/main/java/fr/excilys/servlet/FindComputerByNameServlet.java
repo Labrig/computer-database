@@ -38,7 +38,7 @@ public class FindComputerByNameServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	@GetMapping
-	protected ModelAndView doGet(WebRequest request, ModelAndView modelView) {
+	public ModelAndView doGet(WebRequest request, ModelAndView modelView) {
 		try {
 			List<ComputerDTO> computers = new ArrayList<>();
 			for(Computer computer : computerService.listByName(request.getParameter("search")))

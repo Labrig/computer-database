@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <html>
 <head>
 <title>Computer Database</title>
@@ -12,7 +14,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
+            <a class="navbar-brand" href="dashboard.html"> <spring:message code="application.title"/> </a>
         </div>
     </header>
     <section id="main">
@@ -22,51 +24,48 @@
                     <div class="label label-default pull-right">
                         <p>id: ${editComputer.getId()}</p>
                     </div>
-                    <h1>Edit Computer</h1>
-                    <form action="<c:url value="/EditComputer"/>" method="POST">
-                        <input type="hidden" value="${editComputer.getId()}" id="computerId" name="computerId"/>
+                    <h1><spring:message code="editComputer.title"/></h1>
+                    <form:form modelAttribute="dto">
                         <fieldset>
-                        	<legend>Computer information</legend>
+                        	<legend><spring:message code="modifyComputer.information"/></legend>
                             <div class="form-group">
-                                <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="computerName" name="computerName" placeholder="Computer name" value="${editComputer.getName()}" required>
+                                <label for="computerName"><spring:message code="application.computerNameColumn"/></label>
+                                <form:input type="text" class="form-control" path="name" />
+                                <form:errors path="name" />
                             </div>
                             <div class="form-group">
-                                <label for="introduced">Introduced date</label>
-                                <input type="date" class="form-control" id="introduced" name="introduced" placeholder="Introduced date" value="${editComputer.getIntroduced()}">
+                                <label for="introduced"><spring:message code="application.computerIntroColumn"/></label>
+                                <form:input type="date" class="form-control" path="introduced" />
+                                <form:errors path="introduced" />
                             </div>
                             <div class="form-group">
-                                <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" name="discontinued" placeholder="Discontinued date" value="${editComputer.getDiscontinued()}">
+                                <label for="discontinued"><spring:message code="application.computerDiscoColumn"/></label>
+                                <form:input type="date" class="form-control" path="discontinued" />
+                                <form:errors path="discontinued" />
                             </div>
                             <div class="form-group">
-                                <label for="companyId">Company</label>
-                                <select class="form-control" id="companyId" name="companyId">
-                                    <option value="0">--</option>
-                                    <c:forEach items="${companies}" var="company" varStatus="status">
-                                    	<c:choose>
-                                    		<c:when test="${company.getId().equals(editComputer.getCompanyId())}">
-                                    			<c:set var="selected" value="selected" scope="page" />
-                                    		</c:when>
-                                    		<c:otherwise>
-                                    			<c:set var="selected" value="" scope="page" />
-                                    		</c:otherwise>
-                                    	</c:choose>
-					                	<option value="${company.getId()}" ${selected}>${company.getName()}</option>
-									</c:forEach>
-                                </select>
-                            </div>            
+                                <label for="companyId"><spring:message code="application.companyColumn"/></label>
+                                <form:select class="form-control" path="companyId">
+                                    <form:option value="0" label="--" />
+					                <form:options items="${companies}" itemValue="id" itemLabel="name"/>
+                                </form:select>
+                            </div>                  
                         </fieldset>
                         <div class="actions pull-right">
-                            <input type="submit" value="Edit" class="btn btn-primary">
-                            or
-                            <a href="<c:url value="/"/>" class="btn btn-default">Cancel</a>
+                            <input type="submit" value="<spring:message code="editComputer.editButton"/>" class="btn btn-primary">
+                            <spring:message code="modifyComputer.or"/>
+                            <a href="<c:url value="/"/>" class="btn btn-default"><spring:message code="modifyComputer.cancel"/></a>
                         </div>
-                    </form>
+                    </form:form>
                 </div>
             </div>
         </div>
     </section>
+    <footer class="navbar-fixed-bottom">
+        <div class="container text-center">
+       		<spring:message code="application.language"/> : <a href="?lang=en">English</a> | <a href="?lang=fr">Français</a>
+       	</div>
+    </footer>
 <script src="<c:url value="/js/jquery.min.js"/>"></script>
 <script src="<c:url value="/js/validatorComputer.js"/>"></script>
 </body>

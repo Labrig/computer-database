@@ -36,7 +36,8 @@ public class DashboardServlet {
 	
 	@GetMapping
 	public ModelAndView doGet(@RequestParam(value = "pageNumber", defaultValue = "1") String pageNumber, 
-			@RequestParam(value = "pageSize", defaultValue = "50") String pageSize, ModelAndView modelView) {
+			@RequestParam(value = "pageSize", defaultValue = "50") String pageSize,
+			@RequestParam(value = "error", required = false) String error, ModelAndView modelView) {
 		try {
 			List<ComputerDTO> computers = new ArrayList<>();
 			for(Computer computer : computerService.listWithPagination((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize)))
@@ -48,6 +49,7 @@ public class DashboardServlet {
 			modelView.addObject("pageNumber", pageNumber);
 			modelView.addObject("totalComputer", totalComputer);
 			modelView.addObject("pageTotal", pageTotal);
+			modelView.addObject("error", error);
 		} catch (DAOException e) {
 			logger.warn(e.getMessage(), e);
 		}

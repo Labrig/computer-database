@@ -34,7 +34,7 @@ public class DeleteComputerServlet {
 	private static Logger logger = LoggerFactory.getLogger(DeleteComputerServlet.class);
 	
 	@PostMapping
-	protected ModelAndView doPost(WebRequest request, ModelAndView modelView) {
+	public ModelAndView doPost(WebRequest request, ModelAndView modelView) {
 		String[] computersId = request.getParameter("selection").split(",");
 		for(String idComputer : computersId) {
 			ComputerDTO dto = new ComputerDTOBuilder().setId(idComputer).build();

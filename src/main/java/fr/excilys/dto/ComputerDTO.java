@@ -1,20 +1,32 @@
 package fr.excilys.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.NumberFormat;
+import org.springframework.format.annotation.NumberFormat.Style;
+
 /**
  * The computer object used by the client
  * @author Matheo
  */
 public class ComputerDTO {
 
+	@NumberFormat(style = Style.NUMBER)
 	private String id;
+	
+	@NotNull(message = "Name cannot be null or empty")
 	private String name;
 	
-	//The date of the introduction of the product
+	@DateTimeFormat(pattern="MM-dd-yyyy")
 	private String introduced;
 	
-	//The date of the end of the production
+	@DateTimeFormat(pattern="MM-dd-yyyy")
 	private String discontinued;
 	
+	@NumberFormat(style = Style.NUMBER)
 	private String companyId;
 	
 	private String companyName;
