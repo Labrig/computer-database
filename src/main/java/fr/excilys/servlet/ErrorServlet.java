@@ -5,39 +5,31 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/errors")
 public class ErrorServlet {
  
 	@GetMapping
-    public ModelAndView renderErrorPage(HttpServletRequest httpRequest) {
+    public String renderErrorPage(HttpServletRequest httpRequest) {
          
-        ModelAndView errorPage = new ModelAndView("errorPage");
-        String errorMsg = "";
+        String errorPage = "";
         int httpErrorCode = getErrorCode(httpRequest);
  
         switch (httpErrorCode) {
-            case 400: {
-                errorMsg = "Http Error Code: 400. Bad Request";
-                break;
-            }
-            case 401: {
-                errorMsg = "Http Error Code: 401. Unauthorized";
+            case 403: {
+            	errorPage = "403";
                 break;
             }
             case 404: {
-                errorMsg = "Http Error Code: 404. Resource not found";
+            	errorPage = "404";
                 break;
             }
             case 500: {
-                errorMsg = "Http Error Code: 500. Internal Server Error";
+            	errorPage = "500";
                 break;
             }
         }
-        errorPage.addObject("errorMsg", errorMsg);
         return errorPage;
     }
      
