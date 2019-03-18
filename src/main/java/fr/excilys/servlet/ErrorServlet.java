@@ -29,6 +29,7 @@ public class ErrorServlet {
             	errorPage = "500";
                 break;
             }
+            default:
         }
         return errorPage;
     }
