@@ -1,9 +1,6 @@
 package fr.excilys.dto;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 import org.springframework.format.annotation.NumberFormat.Style;
@@ -17,7 +14,7 @@ public class ComputerDTO {
 	@NumberFormat(style = Style.NUMBER)
 	private String id;
 	
-	@NotNull(message = "Name cannot be null or empty")
+	@Length(min = 2)
 	private String name;
 	
 	@DateTimeFormat(pattern="MM-dd-yyyy")

@@ -2,21 +2,43 @@ package fr.excilys.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 /**
  * The computer bean and his builder
  * @author Matheo
  */
+@Entity
+@Table(name = "computer")
 public class Computer {
 
+	@Id
+	@GeneratedValue
 	private Long id;
+	
+	@Column(name = "name")
 	private String name;
 	
-	//The date of the introduction of the product
+	@Column(name = "introduced")
 	private Date introduced;
 	
-	//The date of the end of the production
+	@Column(name = "discontinued")
 	private Date discontinued;
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "company_id",
+		table = "computer",
+		referencedColumnName = "id",
+		foreignKey = @ForeignKey(name = "fk_computer_company_1")
+	)
 	private Company company;
 
 	/**

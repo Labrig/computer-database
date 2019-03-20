@@ -1,9 +1,8 @@
 package fr.excilys.service;
 
-import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import fr.excilys.dao.ComputerDAO;
@@ -23,22 +22,22 @@ import fr.excilys.validator.ComputerValidator;
  */
 @Service
 public class ComputerService {
-	
-	@Autowired
+
 	private ComputerDAO dao;
-	
-	@Autowired
 	private ComputerValidator validator;
 	
-	private ComputerService() { }
+	private ComputerService(ComputerDAO dao, ComputerValidator validator) {
+		this.dao = dao;
+		this.validator = validator;
+	}
 	
 	/**
 	 * @return the list of all computers
 	 * @throws DAOException 
 	 * @throws SQLException 
 	 */
-	public List<Computer> list() throws DAOException {
-		return dao.list();
+	public List<Computer> list() {
+		return dao.findAll();
 	}
 	
 	/**
@@ -50,7 +49,11 @@ public class ComputerService {
 	 */
 	public Computer find(Long computerId) throws ComputerValidationException, DAOException {
 		validator.verifyIdNotNull(computerId);
-		return dao.find(computerId);
+		try {
+			return dao.getById(computerId);
+		} catch (EmptyResultDataAccessException e) {
+			throw new DAOException("computer not found with the id "+computerId);
+		}
 	}
 	
 	/**
@@ -64,7 +67,9 @@ public class ComputerService {
 		validator.verifyComputerNotNull(computer);
 		validator.verifyName(computer.getName());
 		validator.verifyIntroBeforeDisco(computer);
-		dao.insert(computer);
+		if(dao.insert(computer) == 0) {
+			throw new DAOException("can not create the computer "+computer);
+		}
 	}
 	
 	/**
@@ -80,7 +85,9 @@ public class ComputerService {
 		validator.verifyIdNotNull(computer.getId());
 		validator.verifyName(computer.getName());
 		validator.verifyIntroBeforeDisco(computer);
-		dao.update(computer);
+		if(dao.update(computer) == 0) {
+			throw new DAOException("can not update the computer "+computer);
+		}
 	}
 	
 	/**
@@ -91,7 +98,9 @@ public class ComputerService {
 	 */
 	public void delete(Long computerId) throws ComputerValidationException, DAOException {
 		validator.verifyIdNotNull(computerId);
-		dao.delete(computerId);
+		if(dao.deleteById(computerId) == 0) {
+			throw new DAOException("can not delete the computer with the id "+computerId);
+		}
 	}
 	
 	/**
@@ -102,8 +111,8 @@ public class ComputerService {
 	 * @throws DAOException 
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public List<Computer> listByName(String name) throws DAOException {
-		return dao.listByName(name);
+	public List<Computer> listByName(String name) {
+		return dao.findByNameContaining(name);
 	}
 	
 	/**
@@ -115,8 +124,8 @@ public class ComputerService {
 	 * @throws DAOException 
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public List<Computer> listWithPagination(int start, int size) throws DAOException {
-		return dao.listWithPagination(start, size);
+	public List<Computer> listWithPagination(int start, int size) {
+		return dao.findAllWithPagination(start, size);
 	}
 	
 	/**
@@ -131,7 +140,7 @@ public class ComputerService {
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public List<Computer> listByNameWithPagination(String name, int start, int size) throws DAOException {
-		return dao.listByNameWithPagination(name, start, size);
+		return null;//dao.listByNameWithPagination(name, start, size);
 	}
 	
 	/**
@@ -141,7 +150,7 @@ public class ComputerService {
 	 * @throws DAOException 
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public int count() throws DAOException {
+	public int count() {
 		return dao.count();
 	}
 }

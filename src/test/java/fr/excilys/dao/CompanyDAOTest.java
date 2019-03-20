@@ -45,13 +45,11 @@ public class CompanyDAOTest {
 	public void testFindAndListCompany() throws SQLException, DAOException {
 		try(Connection connect = dataSource.getConnection();
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO company (name) VALUES ('test')")) {
-			assertEquals(0, companyDAO.count());
-			assertEquals(0, companyDAO.list().size());
+			assertEquals(0, companyDAO.findAll().size());
 			statement.execute();
-			assertEquals(1, companyDAO.count());
-			List<Company> list = companyDAO.list();
+			List<Company> list = companyDAO.findAll();
 			assertEquals(1, list.size());
-			Company company = companyDAO.find(list.get(0).getId());
+			Company company = companyDAO.getById(list.get(0).getId());
 			assertEquals(list.get(0), company);
 		}
 	}

@@ -7,7 +7,6 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,19 +36,19 @@ import fr.excilys.service.ComputerService;
 @RequestMapping("/AddComputer")
 public class AddComputerServlet {
 
-	@Autowired
 	private CompanyService companyService;
-	
-	@Autowired
 	private ComputerService computerService;
-	
-	@Autowired
 	private CompanyMapper companyMapper;
-	
-	@Autowired
 	private ComputerMapper computerMapper;
 	
 	private static Logger logger = LoggerFactory.getLogger(AddComputerServlet.class);
+	
+	private AddComputerServlet(CompanyService companyService, ComputerService computerService, CompanyMapper companyMapper,ComputerMapper computerMapper) {
+		this.companyService = companyService;
+		this.computerService = computerService;
+		this.companyMapper = companyMapper;
+		this.computerMapper = computerMapper;
+	}
 	
 	@ModelAttribute("dto")
 	public ComputerDTO newDTO() {
@@ -58,14 +57,10 @@ public class AddComputerServlet {
 	
 	@GetMapping
 	public ModelAndView doGet(ModelAndView modelView) {
-		try {
-			List<CompanyDTO> companies = new ArrayList<>();
-			for(Company company : companyService.list())
-				companies.add(companyMapper.mapObjectInDTO(company));
-			modelView.addObject("companies", companies);
-		} catch (DAOException e) {
-			logger.warn(e.getMessage(), e);
-		}
+		List<CompanyDTO> companies = new ArrayList<>();
+		for(Company company : companyService.list())
+			companies.add(companyMapper.mapObjectInDTO(company));
+		modelView.addObject("companies", companies);
 		modelView.setViewName("addComputer");
 		logger.info("Redirect to addComputer.jsp");
 		return modelView;

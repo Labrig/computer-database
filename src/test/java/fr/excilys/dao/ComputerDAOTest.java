@@ -17,6 +17,7 @@ import com.zaxxer.hikari.HikariDataSource;
 
 import fr.excilys.config.SpringTestConfiguration;
 import fr.excilys.exceptions.DAOException;
+import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.model.Computer.ComputerBuilder;
 
@@ -47,12 +48,12 @@ public class ComputerDAOTest {
 		try(Connection connect = dataSource.getConnection();
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO computer (name) VALUES ('test')")) {
 			assertEquals(0, computerDAO.count());
-			assertEquals(0, computerDAO.list().size());
+			assertEquals(0, computerDAO.findAll().size());
 			statement.execute();
 			assertEquals(1, computerDAO.count());
-			List<Computer> list = computerDAO.list();
+			List<Computer> list = computerDAO.findAll();
 			assertEquals(1, list.size());
-			Computer computer = computerDAO.find(list.get(0).getId());
+			Computer computer = computerDAO.getById(list.get(0).getId());
 			assertEquals(list.get(0), computer);
 		}
 	}
@@ -66,7 +67,7 @@ public class ComputerDAOTest {
 				statement.execute();
 			}
 			assertEquals(9, computerDAO.count());
-			List<Computer> list = computerDAO.listWithPagination(3, 3);
+			List<Computer> list = computerDAO.findAllWithPagination(3, 3);
 			assertEquals(3, list.size());
 			assertEquals("test4", list.get(0).getName());
 			assertEquals("test5", list.get(1).getName());
@@ -91,36 +92,17 @@ public class ComputerDAOTest {
 			statement.setString(1, "notFound");
 			statement.execute();
 			assertEquals(6, computerDAO.count());
-			List<Computer> list = computerDAO.listByName("test");
+			List<Computer> list = computerDAO.findByNameContaining("test");
 			assertEquals(3, list.size());
-		}
-	}
-	
-	@Test
-	public void testListComputerWithPaginationByName() throws SQLException, DAOException {
-		try(Connection connect = dataSource.getConnection();
-				PreparedStatement statement = connect.prepareStatement("INSERT INTO computer (name) VALUES (?)")) {
-			for(int i = 1; i < 10; i++) {
-				statement.setString(1, "test"+i);
-				statement.execute();
-				statement.setString(1, "tset"+i);
-				statement.execute();
-			}
-			assertEquals(18, computerDAO.count());
-			List<Computer> list = computerDAO.listByNameWithPagination("test", 3, 3);
-			assertEquals(3, list.size());
-			assertEquals("test4", list.get(0).getName());
-			assertEquals("test5", list.get(1).getName());
-			assertEquals("test6", list.get(2).getName());
 		}
 	}
 	
 	@Test
 	public void testInsertComputer() throws SQLException, DAOException {
-		Computer computer = new ComputerBuilder().setName("test").build();
+		Computer computer = new ComputerBuilder().setName("test").setCompany(new Company()).build();
 		assertEquals(0, computerDAO.count());
 		computerDAO.insert(computer);
-		List<Computer> list = computerDAO.list();
+		List<Computer> list = computerDAO.findAll();
 		assertEquals(1, list.size());
 		assertEquals(computer.getName(), list.get(0).getName());
 	}
@@ -129,10 +111,11 @@ public class ComputerDAOTest {
 	public void testUpdateComputer() throws SQLException, DAOException {
 		try(Connection connect = dataSource.getConnection();
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO computer (id,name) VALUES (1,'test')")) {
-			Computer computer = new ComputerBuilder().setId(1L).setName("test2").build();
+			Computer computer = new ComputerBuilder().setId(1L).setName("test2").setCompany(new Company()).build();
 			statement.execute();
 			computerDAO.update(computer);
-			assertEquals(computer, computerDAO.find(1L));
+			computer.setCompany(null);
+			assertEquals(computer, computerDAO.getById(1L));
 		}
 	}
 	
@@ -142,7 +125,7 @@ public class ComputerDAOTest {
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO computer (id,name) VALUES (1,'test')")) {
 			statement.execute();
 			assertEquals(1, computerDAO.count());
-			computerDAO.delete(1L);
+			computerDAO.deleteById(1L);
 			assertEquals(0, computerDAO.count());
 		}
 	}

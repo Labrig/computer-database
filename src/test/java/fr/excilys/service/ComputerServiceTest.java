@@ -44,7 +44,7 @@ public class ComputerServiceTest {
 	@Test
 	public void testListComputer() throws DAOException, IllegalArgumentException, IllegalAccessException {
 		List<Computer> listComputerSet = new ArrayList<>();
-		when(mockedDAO.list()).thenReturn(listComputerSet);
+		when(mockedDAO.findAll()).thenReturn(listComputerSet);
 		
 		daoField.set(service, mockedDAO);
 		
@@ -55,7 +55,7 @@ public class ComputerServiceTest {
 	@Test
 	public void testFindComputer() throws DAOException, ComputerValidationException, IllegalArgumentException, IllegalAccessException {
 		Computer computerSet = new ComputerBuilder().setName("test").setId(1L).build();
-		when(mockedDAO.find(1L)).thenReturn(computerSet);
+		when(mockedDAO.getById(1L)).thenReturn(computerSet);
 		
 		daoField.set(service, mockedDAO);
 		
@@ -86,7 +86,7 @@ public class ComputerServiceTest {
 		daoField.set(service, mockedDAO);
 		service.delete(1L);
 		
-		verify(mockedDAO, times(1)).delete(1L);
+		verify(mockedDAO, times(1)).deleteById(1L);
 	}
 	
 	@Test
@@ -101,7 +101,7 @@ public class ComputerServiceTest {
 	@Test
 	public void testByName() throws DAOException, IllegalArgumentException, IllegalAccessException {
 		List<Computer> listComputerSet = new ArrayList<>();
-		when(mockedDAO.listByName("test")).thenReturn(listComputerSet);
+		when(mockedDAO.findByNameContaining("test")).thenReturn(listComputerSet);
 		
 		daoField.set(service, mockedDAO);
 		
@@ -112,22 +112,11 @@ public class ComputerServiceTest {
 	@Test
 	public void testWithPagination() throws DAOException, IllegalArgumentException, IllegalAccessException {
 		List<Computer> listComputerSet = new ArrayList<>();
-		when(mockedDAO.listWithPagination(1, 5)).thenReturn(listComputerSet);
+		when(mockedDAO.findAllWithPagination(1, 5)).thenReturn(listComputerSet);
 		
 		daoField.set(service, mockedDAO);
 		
 		List<Computer> listComputerFound = service.listWithPagination(1, 5);
-		assertEquals(listComputerSet, listComputerFound);
-	}
-	
-	@Test
-	public void testWithPaginationByName() throws DAOException, IllegalArgumentException, IllegalAccessException {
-		List<Computer> listComputerSet = new ArrayList<>();
-		when(mockedDAO.listByNameWithPagination("test", 1, 5)).thenReturn(listComputerSet);
-		
-		daoField.set(service, mockedDAO);
-		
-		List<Computer> listComputerFound = service.listByNameWithPagination("test", 1, 5);
 		assertEquals(listComputerSet, listComputerFound);
 	}
 	

@@ -34,14 +34,14 @@ public class CompanyServiceTest {
 		ApplicationContext vApplicationContext = new AnnotationConfigApplicationContext(SpringTestConfiguration.class);
 		service = vApplicationContext.getBean("companyService", CompanyService.class);
 		
-		daoField = CompanyService.class.getDeclaredField("dao");
+		daoField = CompanyService.class.getDeclaredField("companyDAO");
 		daoField.setAccessible(true);
 	}
 	
 	@Test
 	public void testListCompany() throws DAOException, IllegalArgumentException, IllegalAccessException {
 		List<Company> listCompanySet = new ArrayList<>();
-		when(mockedDAO.list()).thenReturn(listCompanySet);
+		when(mockedDAO.findAll()).thenReturn(listCompanySet);
 		
 		daoField.set(service, mockedDAO);
 		
@@ -52,7 +52,7 @@ public class CompanyServiceTest {
 	@Test
 	public void testFindCompany() throws DAOException, IllegalArgumentException, IllegalAccessException {
 		Company companySet = new CompanyBuilder().setName("test").setId(1L).build();
-		when(mockedDAO.find(1L)).thenReturn(companySet);
+		when(mockedDAO.getById(1L)).thenReturn(companySet);
 		
 		daoField.set(service, mockedDAO);
 		

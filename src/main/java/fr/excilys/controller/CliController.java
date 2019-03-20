@@ -2,7 +2,6 @@ package fr.excilys.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
 import fr.excilys.dto.CompanyDTO;
@@ -39,22 +38,19 @@ public class CliController {
 
 	private static final String ID = "id";
 
-	@Autowired
 	private CliView view;
-	
-	@Autowired
 	private CompanyService companyService;
-	
-	@Autowired
 	private ComputerService computerService;
-	
-	@Autowired
 	private CompanyMapper companyMapper;
-	
-	@Autowired
 	private ComputerMapper computerMapper;
 	
-	private CliController() { }
+	private CliController(CliView view, CompanyService companyService, ComputerService computerService, CompanyMapper companyMapper, ComputerMapper computerMapper) {
+		this.view = view;
+		this.companyService = companyService;
+		this.computerService = computerService;
+		this.companyMapper = companyMapper;
+		this.computerMapper = computerMapper;
+	}
 	
 	/**
 	 * @return the view
@@ -183,13 +179,9 @@ public class CliController {
 	 * @throws NotCommandeException
 	 */
 	private void listComputer(StringBuilder sb) throws NotCommandeException {
-		try {
-			List<Computer> computers = this.computerService.list();
-			for(Computer comput : computers) {
-				sb.append(comput.toString()+"\n");
-			}
-		} catch (DAOException e) {
-			throw new NotCommandeException("Can not list the computers");
+		List<Computer> computers = this.computerService.list();
+		for(Computer comput : computers) {
+			sb.append(comput.toString()+"\n");
 		}
 	}
 
@@ -198,13 +190,9 @@ public class CliController {
 	 * @throws NotCommandeException
 	 */
 	private void listCompany(StringBuilder sb) throws NotCommandeException {
-		try {
-			List<Company> companies = this.companyService.list();
-			for(Company company : companies) {
-				sb.append(company.toString()+"\n");
-			}
-		} catch (DAOException e) {
-			throw new NotCommandeException("Can not list the companies");
+		List<Company> companies = this.companyService.list();
+		for(Company company : companies) {
+			sb.append(company.toString()+"\n");
 		}
 	}
 	
