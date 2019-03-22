@@ -3,14 +3,16 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>fr.excilys</groupId>
-  <artifactId>cdb</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <artifactId>cdb-multi-modules</artifactId>
+  <version>${application.version}</version>
+  <packaging>pom</packaging>
 
   <name>cdb</name>
   <url>http://maven.apache.org</url>
 
   <properties>
+    <application.version>1.0</application.version>
+    <module.version>1.1</module.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -23,81 +25,18 @@
     <slf4j.version>1.7.26</slf4j.version>
     <hikaricp.version>3.3.1</hikaricp.version>
     <spring.version>5.1.4.RELEASE</spring.version>
+    <spring-data-jpa.version>2.1.4.RELEASE</spring-data-jpa.version>
     <hibernate-validation.version>6.0.15.Final</hibernate-validation.version>
+    <hibernate-core.version>5.4.1.Final</hibernate-core.version>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-    	<groupId>mysql</groupId>
-    	<artifactId>mysql-connector-java</artifactId>
-    	<version>${mysql-connector.version}</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.mockito</groupId>
-    	<artifactId>mockito-all</artifactId>
-    	<version>${mockito.version}</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.powermock</groupId>
-    	<artifactId>powermock-module-junit4</artifactId>
-    	<version>${powermock.version}</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.powermock</groupId>
-    	<artifactId>powermock-api-mockito</artifactId>
-    	<version>${powermock.version}</version>
-    </dependency>
-    <dependency>
-    	<groupId>javax.servlet</groupId>
-    	<artifactId>javax.servlet-api</artifactId>
-    	<version>${servlet.version}</version>
-    </dependency>
-    <dependency>
-    	<groupId>javax.servlet</groupId>
-    	<artifactId>jstl</artifactId>
-    	<version>${jstl.version}</version>
-    </dependency>
-	<dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>${slf4j.version}</version>
-    </dependency>
-	<dependency>
-	    <groupId>com.zaxxer</groupId>
-	    <artifactId>HikariCP</artifactId>
-	    <version>${hikaricp.version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.springframework</groupId>
-	    <artifactId>spring-webmvc</artifactId>
-	    <version>${spring.version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.springframework</groupId>
-	    <artifactId>spring-orm</artifactId>
-	    <version>${spring.version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.springframework.data</groupId>
-	    <artifactId>spring-data-jpa</artifactId>
-	    <version>2.1.4.RELEASE</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.hibernate.validator</groupId>
-	    <artifactId>hibernate-validator</artifactId>
-	    <version>${hibernate-validation.version}</version>
-	</dependency>
-	<dependency>
-	    <groupId>org.hibernate</groupId>
-	    <artifactId>hibernate-core</artifactId>
-	    <version>5.4.1.Final</version>
-	</dependency>
-  </dependencies>
+  <modules>
+    <module>core</module>
+    <module>persistence</module>
+    <module>binding</module>
+    <module>service</module>
+    <module>console</module>
+    <module>webapp</module>
+  </modules>
   
 </project>
