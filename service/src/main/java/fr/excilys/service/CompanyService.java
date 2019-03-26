@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import fr.excilys.dao.CompanyDAO;
 import fr.excilys.dao.ComputerDAO;
 import fr.excilys.dto.CompanyDTO;
-import fr.excilys.exception.DAOException;
+import fr.excilys.exception.ServiceException;
 import fr.excilys.mapper.CompanyMapper;
 import fr.excilys.model.Company;
 
@@ -33,7 +33,7 @@ public class CompanyService {
 	
 	/**
 	 * @return a list of all companies
-	 * @throws DAOException
+	 * @throws ServiceException
 	 */
 	public List<CompanyDTO> list() {
 		List<CompanyDTO> list = new ArrayList<>();
@@ -45,25 +45,25 @@ public class CompanyService {
 	/**
 	 * @param companyId the id of the desired company
 	 * @return the desired company
-	 * @throws DAOException
+	 * @throws ServiceException
 	 */
-	public CompanyDTO find(Long companyId) throws DAOException {
+	public CompanyDTO find(Long companyId) throws ServiceException {
 		try {
 			return mapper.mapObjectInDTO(companyDAO.getById(companyId));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DAOException("company not found with the id "+companyId);
+			throw new ServiceException("company not found with the id "+companyId);
 		}
 	}
 	
 	/**
 	 * @param companyId
-	 * @throws DAOException
+	 * @throws ServiceException
 	 */
 	@Transactional
-	public void delete(Long companyId) throws DAOException {
+	public void delete(Long companyId) throws ServiceException {
 		computerDAO.deleteByIdCompany(companyId);
 		if(companyDAO.deleteById(companyId) == 0) {
-			throw new DAOException("can not delete the company with the id "+companyId);
+			throw new ServiceException("can not delete the company with the id "+companyId);
 		}
 	}
 }

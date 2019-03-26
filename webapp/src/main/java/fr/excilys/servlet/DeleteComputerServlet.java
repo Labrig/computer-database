@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
-import fr.excilys.exception.DAOException;
+import fr.excilys.exception.ServiceException;
 import fr.excilys.exception.MappingException;
 import fr.excilys.exception.ValidationException;
 import fr.excilys.mapper.ComputerMapper;
@@ -42,7 +42,7 @@ public class DeleteComputerServlet {
 			try {
 				computerService.delete(computerMapper.mapDTOInObject(dto).getId());
 				logger.info("The computer with the id {} has been deleted", idComputer);
-			} catch (MappingException | ValidationException | DAOException e) {
+			} catch (MappingException | ValidationException | ServiceException e) {
 				logger.error(e.getMessage(), e);
 				modelView.addObject("error", e.getMessage());
 			}

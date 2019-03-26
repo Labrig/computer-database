@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fr.excilys.dao.ComputerDAO;
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.exception.DAOException;
+import fr.excilys.exception.ServiceException;
 import fr.excilys.exception.ComputerMappingException;
 import fr.excilys.mapper.ComputerMapper;
 import fr.excilys.exception.ComputerValidationException;
@@ -39,7 +40,7 @@ public class ComputerService {
 	
 	/**
 	 * @return the list of all computers
-	 * @throws DAOException 
+	 * @throws ServiceException 
 	 * @throws SQLException 
 	 */
 	public List<ComputerDTO> list() {
@@ -54,14 +55,14 @@ public class ComputerService {
 	 * @return the desired computer
 	 * @throws SQLException 
 	 * @throws ComputerValidationException 
-	 * @throws DAOException 
+	 * @throws ServiceException 
 	 */
-	public ComputerDTO find(Long computerId) throws ComputerValidationException, DAOException {
+	public ComputerDTO find(Long computerId) throws ComputerValidationException, ServiceException {
 		validator.verifyIdNotNull(computerId);
 		try {
 			return mapper.mapObjectInDTO(dao.getById(computerId));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DAOException("computer not found with the id "+computerId);
+			throw new ServiceException("computer not found with the id "+computerId);
 		}
 	}
 	
@@ -70,16 +71,16 @@ public class ComputerService {
 	 * @param computer
 	 * @throws SQLException 
 	 * @throws ComputerValidationException 
-	 * @throws DAOException 
+	 * @throws ServiceException 
 	 * @throws ComputerMappingException 
 	 */
-	public void create(ComputerDTO computerDTO) throws ComputerValidationException, DAOException, ComputerMappingException {
+	public void create(ComputerDTO computerDTO) throws ComputerValidationException, ServiceException, ComputerMappingException {
 		Computer computer = mapper.mapDTOInObject(computerDTO);
 		validator.verifyComputerNotNull(computer);
 		validator.verifyName(computer.getName());
 		validator.verifyIntroBeforeDisco(computer);
 		if(dao.insert(computer) == 0) {
-			throw new DAOException("can not create the computer "+computer);
+			throw new ServiceException("can not create the computer "+computer);
 		}
 	}
 	
@@ -89,17 +90,17 @@ public class ComputerService {
 	 * @return the computer updated
 	 * @throws SQLException 
 	 * @throws ComputerValidationException 
-	 * @throws DAOException 
+	 * @throws ServiceException 
 	 * @throws ComputerMappingException 
 	 */
-	public void update(ComputerDTO computerDTO) throws ComputerValidationException, DAOException, ComputerMappingException {
+	public void update(ComputerDTO computerDTO) throws ComputerValidationException, ServiceException, ComputerMappingException {
 		Computer computer = mapper.mapDTOInObject(computerDTO);
 		validator.verifyComputerNotNull(computer);
 		validator.verifyIdNotNull(computer.getId());
 		validator.verifyName(computer.getName());
 		validator.verifyIntroBeforeDisco(computer);
 		if(dao.update(computer) == 0) {
-			throw new DAOException("can not update the computer "+computer);
+			throw new ServiceException("can not update the computer "+computer);
 		}
 	}
 	
@@ -107,12 +108,12 @@ public class ComputerService {
 	 * @param computer the computer to delete
 	 * @throws SQLException 
 	 * @throws ComputerValidationException 
-	 * @throws DAOException 
+	 * @throws ServiceException 
 	 */
-	public void delete(Long computerId) throws ComputerValidationException, DAOException {
+	public void delete(Long computerId) throws ComputerValidationException, ServiceException {
 		validator.verifyIdNotNull(computerId);
 		if(dao.deleteById(computerId) == 0) {
-			throw new DAOException("can not delete the computer with the id "+computerId);
+			throw new ServiceException("can not delete the computer with the id "+computerId);
 		}
 	}
 	
@@ -121,7 +122,7 @@ public class ComputerService {
 	 * 
 	 * @param name the pattern of search
 	 * @return the list of computer found with the name parameter
-	 * @throws DAOException 
+	 * @throws ServiceException 
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public List<ComputerDTO> listByName(String name) {
@@ -137,12 +138,19 @@ public class ComputerService {
 	 * @param start the first computer object to be listed
 	 * @param size the number of computer to list
 	 * @return the list of computer found
-	 * @throws DAOException 
+	 * @throws ServiceException 
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public List<ComputerDTO> listWithPagination(int start, int size) {
 		List<ComputerDTO> list = new ArrayList<>();
 		for(Computer computer : dao.findAllWithPagination(start, size))
+			list.add(mapper.mapObjectInDTO(computer));
+		return list;
+	}
+	
+	public List<ComputerDTO> listWithPagination(Pageable pageable) {
+		List<ComputerDTO> list = new ArrayList<>();
+		for(Computer computer : dao.findAll(pageable))
 			list.add(mapper.mapObjectInDTO(computer));
 		return list;
 	}
@@ -155,21 +163,28 @@ public class ComputerService {
 	 * @param start the first computer object to be listed
 	 * @param size the number of computer to list
 	 * @return the list of computer found
-	 * @throws DAOException 
+	 * @throws ServiceException 
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
-	public List<Computer> listByNameWithPagination(String name, int start, int size) throws DAOException {
-		return null;//dao.listByNameWithPagination(name, start, size);
+	public List<ComputerDTO> listByNameWithPagination(String name, Pageable pageable) {
+		List<ComputerDTO> list = new ArrayList<>();
+		for(Computer computer : dao.findByNameContaining(name, pageable))
+			list.add(mapper.mapObjectInDTO(computer));
+		return list;
 	}
 	
 	/**
 	 * Count the number of object in the database
 	 * 
 	 * @return the number of object in database
-	 * @throws DAOException 
+	 * @throws ServiceException 
 	 * @throws SQLException thrown if a problem occur during the communication
 	 */
 	public int count() {
 		return dao.count();
+	}
+	
+	public int countByName(String name) {
+		return dao.countByNameContaining(name);
 	}
 }

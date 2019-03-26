@@ -16,7 +16,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.zaxxer.hikari.HikariDataSource;
 
 import fr.excilys.config.SpringDAOTestConfiguration;
-import fr.excilys.exception.DAOException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.model.Computer.ComputerBuilder;
@@ -44,7 +43,7 @@ public class ComputerDAOTest {
 	}
 	
 	@Test
-	public void testFindAndListComputer() throws SQLException, DAOException {
+	public void testFindAndListComputer() throws SQLException {
 		try(Connection connect = dataSource.getConnection();
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO computer (name) VALUES ('test')")) {
 			assertEquals(0, computerDAO.count());
@@ -59,7 +58,7 @@ public class ComputerDAOTest {
 	}
 	
 	@Test
-	public void testListComputerWithPagination() throws SQLException, DAOException {
+	public void testListComputerWithPagination() throws SQLException {
 		try(Connection connect = dataSource.getConnection();
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO computer (name) VALUES (?)")) {
 			for(int i = 1; i < 10; i++) {
@@ -76,7 +75,7 @@ public class ComputerDAOTest {
 	}
 	
 	@Test
-	public void testListComputerByName() throws SQLException, DAOException {
+	public void testListComputerByName() throws SQLException {
 		try(Connection connect = dataSource.getConnection();
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO computer (name) VALUES (?)")) {
 			statement.setString(1, "test");
@@ -98,7 +97,7 @@ public class ComputerDAOTest {
 	}
 	
 	@Test
-	public void testInsertComputer() throws SQLException, DAOException {
+	public void testInsertComputer() throws SQLException {
 		Computer computer = new ComputerBuilder().setName("test").setCompany(new Company()).build();
 		assertEquals(0, computerDAO.count());
 		computerDAO.insert(computer);
@@ -108,7 +107,7 @@ public class ComputerDAOTest {
 	}
 	
 	@Test
-	public void testUpdateComputer() throws SQLException, DAOException {
+	public void testUpdateComputer() throws SQLException {
 		try(Connection connect = dataSource.getConnection();
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO computer (id,name) VALUES (1,'test')")) {
 			Computer computer = new ComputerBuilder().setId(1L).setName("test2").setCompany(new Company()).build();
@@ -120,7 +119,7 @@ public class ComputerDAOTest {
 	}
 	
 	@Test
-	public void testDeleteComputer() throws SQLException, DAOException {
+	public void testDeleteComputer() throws SQLException {
 		try(Connection connect = dataSource.getConnection();
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO computer (id,name) VALUES (1,'test')")) {
 			statement.execute();

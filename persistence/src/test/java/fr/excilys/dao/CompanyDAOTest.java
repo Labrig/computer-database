@@ -16,7 +16,6 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import com.zaxxer.hikari.HikariDataSource;
 
 import fr.excilys.config.SpringDAOTestConfiguration;
-import fr.excilys.exception.DAOException;
 import fr.excilys.model.Company;
 
 public class CompanyDAOTest {
@@ -42,7 +41,7 @@ public class CompanyDAOTest {
 	}
 	
 	@Test
-	public void testFindAndListCompany() throws SQLException, DAOException {
+	public void testFindAndListCompany() throws SQLException {
 		try(Connection connect = dataSource.getConnection();
 				PreparedStatement statement = connect.prepareStatement("INSERT INTO company (name) VALUES ('test')")) {
 			assertEquals(0, companyDAO.findAll().size());

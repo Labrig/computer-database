@@ -2,6 +2,7 @@ package fr.excilys.servlet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ public class DashboardServlet {
 	public ModelAndView doGet(@RequestParam(value = "pageNumber", defaultValue = "1") String pageNumber, 
 			@RequestParam(value = "pageSize", defaultValue = "50") String pageSize,
 			@RequestParam(value = "error", required = false) String error, ModelAndView modelView) {
-		modelView.addObject("computers", computerService.listWithPagination((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize)));
+		modelView.addObject("computers", computerService.listWithPagination(PageRequest.of((Integer.valueOf(pageNumber)-1)*Integer.valueOf(pageSize), Integer.valueOf(pageSize))));
 		int totalComputer = computerService.count();
 		int pageTotal = totalComputer/Integer.valueOf(pageSize) + (totalComputer%Integer.valueOf(pageSize) != 0 ? 1 : 0);
 		modelView.addObject("pageSize", pageSize);

@@ -2,6 +2,8 @@ package fr.excilys.dao;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
@@ -18,6 +20,8 @@ import fr.excilys.model.Computer;
 public interface ComputerDAO extends Repository<Computer, Long> {
 	
 	public List<Computer> findAll();
+	
+	public Page<Computer> findAll(Pageable pageable);
 	
 	public Computer getById(Long id);
 	
@@ -45,9 +49,13 @@ public interface ComputerDAO extends Repository<Computer, Long> {
 	
 	public List<Computer> findByNameContaining(String name);
 	
+	public List<Computer> findByNameContaining(String name, Pageable pageable);
+	
 	@Query(value = "SELECT id, name, introduced, discontinued, company_id FROM computer LIMIT :start, :size",
 			nativeQuery = true)
 	public List<Computer> findAllWithPagination(@Param("start") int start, @Param("size") int size);
 	
 	public int count();
+	
+	public int countByNameContaining(String name);
 }

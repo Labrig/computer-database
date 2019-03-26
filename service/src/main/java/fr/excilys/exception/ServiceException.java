@@ -1,10 +1,10 @@
 package fr.excilys.exception;
 
-public class DAOException extends Exception {
+public class ServiceException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 	
-	public DAOException(String message) {
+	public ServiceException(String message) {
 		super(message);
 	}
 }

@@ -14,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
-import fr.excilys.exception.DAOException;
+import fr.excilys.exception.ServiceException;
 import fr.excilys.exception.MappingException;
 import fr.excilys.exception.ValidationException;
 import fr.excilys.service.CompanyService;
@@ -61,7 +61,7 @@ public class AddComputerServlet {
         	try {
     			computerService.create(dto);
     			logger.info("The computer {} has been created", dto);
-    		} catch (ValidationException | MappingException | DAOException e) {
+    		} catch (ValidationException | MappingException | ServiceException e) {
     			logger.error(e.getMessage(), e);
     			modelView.addObject("error", e.getMessage());
     		}

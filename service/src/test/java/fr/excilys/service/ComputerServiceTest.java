@@ -19,7 +19,7 @@ import fr.excilys.config.SpringBindingTestConfiguration;
 import fr.excilys.dao.ComputerDAO;
 import fr.excilys.dto.ComputerDTO;
 import fr.excilys.dto.ComputerDTO.ComputerDTOBuilder;
-import fr.excilys.exception.DAOException;
+import fr.excilys.exception.ServiceException;
 import fr.excilys.exception.ComputerMappingException;
 import fr.excilys.exception.ComputerValidationException;
 import fr.excilys.model.Computer;
@@ -45,7 +45,7 @@ public class ComputerServiceTest {
 	}
 	
 	@Test
-	public void testListComputer() throws DAOException, IllegalArgumentException, IllegalAccessException {
+	public void testListComputer() throws ServiceException, IllegalArgumentException, IllegalAccessException {
 		List<Computer> listComputerSet = new ArrayList<>();
 		when(mockedDAO.findAll()).thenReturn(listComputerSet);
 		
@@ -56,7 +56,7 @@ public class ComputerServiceTest {
 	}
 	
 	@Test
-	public void testFindComputer() throws DAOException, ComputerValidationException, IllegalArgumentException, IllegalAccessException {
+	public void testFindComputer() throws ServiceException, ComputerValidationException, IllegalArgumentException, IllegalAccessException {
 		Computer computerSet = new ComputerBuilder().setName("test").setId(1L).build();
 		when(mockedDAO.getById(1L)).thenReturn(computerSet);
 		
@@ -67,7 +67,7 @@ public class ComputerServiceTest {
 	}
 	
 	@Test
-	public void testCreateComputer() throws DAOException, ComputerValidationException, IllegalArgumentException, IllegalAccessException, ComputerMappingException {
+	public void testCreateComputer() throws ServiceException, ComputerValidationException, IllegalArgumentException, IllegalAccessException, ComputerMappingException {
 		Computer computerSet = new ComputerBuilder().setName("test").setId(1L).build();
 		daoField.set(service, mockedDAO);
 		service.create(new ComputerDTOBuilder().setName("test").setId("1").build());
@@ -76,7 +76,7 @@ public class ComputerServiceTest {
 	}
 	
 	@Test
-	public void testUpdateComputer() throws DAOException, ComputerValidationException, IllegalArgumentException, IllegalAccessException, ComputerMappingException {
+	public void testUpdateComputer() throws ServiceException, ComputerValidationException, IllegalArgumentException, IllegalAccessException, ComputerMappingException {
 		Computer computerSet = new ComputerBuilder().setName("test").setId(1L).build();
 		daoField.set(service, mockedDAO);
 		service.update(new ComputerDTOBuilder().setName("test").setId("1").build());
@@ -85,7 +85,7 @@ public class ComputerServiceTest {
 	}
 	
 	@Test
-	public void testDeleteComputer() throws DAOException, ComputerValidationException, IllegalArgumentException, IllegalAccessException {
+	public void testDeleteComputer() throws ServiceException, ComputerValidationException, IllegalArgumentException, IllegalAccessException {
 		daoField.set(service, mockedDAO);
 		service.delete(1L);
 		
@@ -93,7 +93,7 @@ public class ComputerServiceTest {
 	}
 	
 	@Test
-	public void testCountComputer() throws DAOException, IllegalArgumentException, IllegalAccessException {
+	public void testCountComputer() throws ServiceException, IllegalArgumentException, IllegalAccessException {
 		when(mockedDAO.count()).thenReturn(3);
 		
 		daoField.set(service, mockedDAO);
@@ -102,7 +102,7 @@ public class ComputerServiceTest {
 	}
 	
 	@Test
-	public void testByName() throws DAOException, IllegalArgumentException, IllegalAccessException {
+	public void testByName() throws ServiceException, IllegalArgumentException, IllegalAccessException {
 		List<Computer> listComputerSet = new ArrayList<>();
 		when(mockedDAO.findByNameContaining("test")).thenReturn(listComputerSet);
 		
@@ -113,7 +113,7 @@ public class ComputerServiceTest {
 	}
 	
 	@Test
-	public void testWithPagination() throws DAOException, IllegalArgumentException, IllegalAccessException {
+	public void testWithPagination() throws ServiceException, IllegalArgumentException, IllegalAccessException {
 		List<Computer> listComputerSet = new ArrayList<>();
 		when(mockedDAO.findAllWithPagination(1, 5)).thenReturn(listComputerSet);
 		

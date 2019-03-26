@@ -16,6 +16,9 @@
         <div class="container">
             <a class="navbar-brand" href="<c:url value="/"/>"> <spring:message code="application.title"/> </a>
         </div>
+        <div class="container">
+             <a class="btn btn-default" href="<c:url value="/LogoutProcess"/>"> <spring:message code="dashboard.logoutButton"/> </a>
+        </div>
     </header>
     <section id="main">
         <div class="container">

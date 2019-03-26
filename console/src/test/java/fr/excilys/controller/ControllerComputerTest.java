@@ -18,7 +18,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import fr.excilys.config.SpringBindingTestConfiguration;
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.exception.DAOException;
+import fr.excilys.exception.ServiceException;
 import fr.excilys.exception.NotCommandeException;
 import fr.excilys.exception.MappingException;
 import fr.excilys.exception.ComputerValidationException;
@@ -51,7 +51,7 @@ public class ControllerComputerTest {
 	}
 	
 	@Test
-	public void testListComputer() throws DAOException, IllegalArgumentException, IllegalAccessException, ComputerValidationException, NotCommandeException, MappingException {
+	public void testListComputer() throws ServiceException, IllegalArgumentException, IllegalAccessException, ComputerValidationException, NotCommandeException, MappingException {
 		List<ComputerDTO> listComputer = new ArrayList<>();
 		for(int i = 1; i < 4 ; i++) {
 			ComputerDTO computer = new ComputerDTO();
@@ -67,7 +67,7 @@ public class ControllerComputerTest {
 	}
 	
 	@Test
-	public void testFindComputer() throws ComputerValidationException, DAOException, IllegalArgumentException, IllegalAccessException, NotCommandeException, MappingException {
+	public void testFindComputer() throws ComputerValidationException, ServiceException, IllegalArgumentException, IllegalAccessException, NotCommandeException, MappingException {
 		ComputerDTO computer = new ComputerDTO();
 		computer.setId("1");
 		ComputerService service = mock(ComputerService.class);

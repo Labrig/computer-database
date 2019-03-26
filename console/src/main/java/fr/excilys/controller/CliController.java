@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.ComputerDTO;
-import fr.excilys.exception.DAOException;
+import fr.excilys.exception.ServiceException;
 import fr.excilys.exception.NotCommandeException;
 import fr.excilys.exception.CompanyMappingException;
 import fr.excilys.exception.ComputerMappingException;
@@ -95,7 +95,7 @@ public class CliController {
 		try {
 			this.companyService.delete(Long.valueOf(this.fillCompanyField(attributesD).getId()));
 			sb.append("Company as been deleted");
-		} catch(DAOException e) {
+		} catch(ServiceException e) {
 			throw new NotCommandeException("Can not delete this company");
 		}
 	}
@@ -111,7 +111,7 @@ public class CliController {
 		try {
 			this.computerService.delete(Long.valueOf(this.fillComputerField(attributesD).getId()));
 			sb.append("Computer as been deleted");
-		} catch(DAOException e) {
+		} catch(ServiceException e) {
 			throw new NotCommandeException("Can not delete this computer");
 		}
 	}
@@ -128,7 +128,7 @@ public class CliController {
 		try {
 			this.computerService.update(computer);
 			sb.append("Computer as been updated");
-		} catch(DAOException e) {
+		} catch(ServiceException e) {
 			throw new NotCommandeException("Can not update this computer");
 		}
 	}
@@ -144,7 +144,7 @@ public class CliController {
 		try {
 			ComputerDTO computer = this.computerService.find(Long.valueOf(this.fillComputerField(attributesR).getId()));
 			sb.append(computer.toString());
-		} catch(DAOException e) {
+		} catch(ServiceException e) {
 			throw new NotCommandeException(e.getMessage());
 		}
 	}
@@ -161,7 +161,7 @@ public class CliController {
 		try {
 			this.computerService.create(computer);
 			sb.append("Computer as been created");
-		} catch(DAOException e) {
+		} catch(ServiceException e) {
 			throw new NotCommandeException("Can not create this computer");
 		}
 	}

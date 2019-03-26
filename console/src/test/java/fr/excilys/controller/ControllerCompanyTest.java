@@ -18,7 +18,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import fr.excilys.config.SpringBindingTestConfiguration;
 import fr.excilys.dto.CompanyDTO;
-import fr.excilys.exception.DAOException;
+import fr.excilys.exception.ServiceException;
 import fr.excilys.exception.NotCommandeException;
 import fr.excilys.exception.MappingException;
 import fr.excilys.exception.ComputerValidationException;
@@ -51,7 +51,7 @@ public class ControllerCompanyTest {
 	}
 	
 	@Test
-	public void testListCompany() throws DAOException, ComputerValidationException, IllegalArgumentException, IllegalAccessException, NotCommandeException, MappingException {
+	public void testListCompany() throws ServiceException, ComputerValidationException, IllegalArgumentException, IllegalAccessException, NotCommandeException, MappingException {
 		List<CompanyDTO> listCompany = new ArrayList<>();
 		for(int i = 1; i < 4 ; i++) {
 			CompanyDTO company = new CompanyDTO();
@@ -67,7 +67,7 @@ public class ControllerCompanyTest {
 	}
 	
 	@Test
-	public void testDeleteCompany() throws NotCommandeException, MappingException, IllegalArgumentException, IllegalAccessException, ComputerValidationException, DAOException {
+	public void testDeleteCompany() throws NotCommandeException, MappingException, IllegalArgumentException, IllegalAccessException, ComputerValidationException, ServiceException {
 		CompanyDTO company = new CompanyDTO();
 		company.setId("1");
 		CompanyService service = mock(CompanyService.class);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,9 +35,9 @@ public class FindComputerByNameServlet {
 	 */
 	@GetMapping
 	public ModelAndView doGet(@RequestParam(value = "search", defaultValue = "") String search, ModelAndView modelView) {
-		List<ComputerDTO> computers = computerService.listByName(search);
+		List<ComputerDTO> computers = computerService.listByNameWithPagination(search, PageRequest.of(1, 50));
 		modelView.addObject("computers", computers);
-		modelView.addObject("totalComputer", computers.size());
+		modelView.addObject("totalComputer", computerService.countByName(search));
 		logger.info("Redirect to dashboard.jsp");
 		modelView.setViewName("dashboard");
 		return modelView;

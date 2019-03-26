@@ -17,7 +17,7 @@ import fr.excilys.config.SpringBindingTestConfiguration;
 import fr.excilys.dao.CompanyDAO;
 import fr.excilys.dto.CompanyDTO;
 import fr.excilys.dto.CompanyDTO.CompanyDTOBuilder;
-import fr.excilys.exception.DAOException;
+import fr.excilys.exception.ServiceException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Company.CompanyBuilder;
 import fr.excilys.service.CompanyService;
@@ -41,7 +41,7 @@ public class CompanyServiceTest {
 	}
 	
 	@Test
-	public void testListCompany() throws DAOException, IllegalArgumentException, IllegalAccessException {
+	public void testListCompany() throws ServiceException, IllegalArgumentException, IllegalAccessException {
 		List<Company> listCompanySet = new ArrayList<>();
 		when(mockedDAO.findAll()).thenReturn(listCompanySet);
 		
@@ -52,7 +52,7 @@ public class CompanyServiceTest {
 	}
 	
 	@Test
-	public void testFindCompany() throws DAOException, IllegalArgumentException, IllegalAccessException {
+	public void testFindCompany() throws ServiceException, IllegalArgumentException, IllegalAccessException {
 		Company companySet = new CompanyBuilder().setName("test").setId(1L).build();
 		when(mockedDAO.getById(1L)).thenReturn(companySet);
 		
