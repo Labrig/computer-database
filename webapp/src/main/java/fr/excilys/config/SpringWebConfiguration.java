@@ -20,7 +20,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @EnableWebMvc
 @Configuration
-@Import({SpringServiceConfiguration.class})
+@Import({SpringSecurityConfiguration.class, SpringServiceConfiguration.class})
 @ComponentScan({"fr.excilys.servlet"})
 public class SpringWebConfiguration implements WebMvcConfigurer {
 	

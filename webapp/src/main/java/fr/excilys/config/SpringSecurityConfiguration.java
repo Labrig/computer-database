@@ -1,31 +1,41 @@
 package fr.excilys.config;
 
-import org.springframework.context.annotation.Bean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	HikariDataSource dataSource;
+	
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("user").password(passwordEncoder().encode("user")).roles("USER");
-		auth.inMemoryAuthentication().withUser("admin").password(passwordEncoder().encode("admin")).roles("ADMIN");
+		
+		auth.jdbcAuthentication().dataSource(dataSource)
+		.usersByUsernameQuery(
+			"select username,password, enabled from user where username = ?")
+		.authoritiesByUsernameQuery(
+			"select user_role.username username, role.name auhority from user_role join role on role.id = user_role.idRole where user_role.username = ?")
+		.passwordEncoder(new BCryptPasswordEncoder());
 	}
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		
-		http.authorizeRequests()
-			.antMatchers("/AddComputer").hasRole("ADMIN")
-			.antMatchers("/EditComputer").hasRole("ADMIN")
-			.antMatchers("/DeleteComputer").hasRole("ADMIN")
+		http.csrf().disable()
+		.authorizeRequests()
+			.antMatchers("/AddComputer").hasAuthority("ADMIN")
+			.antMatchers("/EditComputer").hasAuthority("ADMIN")
+			.antMatchers("/DeleteComputer").hasAuthority("ADMIN")
 			.antMatchers("/").authenticated()
 			.antMatchers("/FindComputerByName").authenticated()
 			.antMatchers("/LoginProcess").permitAll()
@@ -36,15 +46,10 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.usernameParameter("username")
 			.passwordParameter("password")
 			.defaultSuccessUrl("/")
-			.failureForwardUrl("/Login?error=1")
+			.failureForwardUrl("/Login?error")
 		.and()
 			.logout()
-			.logoutSuccessUrl("/Login?logout=1")
+			.logoutSuccessUrl("/Login?logout")
 			.logoutUrl("/LogoutProcess");
 	}
-	
-	@Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
